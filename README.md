@@ -47,7 +47,7 @@ $ rspec-kickstarter lib/foo/example.rb
 ```ruby
 # -*- encoding: utf-8 -*-
 require 'spec_helper'
-require 'example'
+require 'foo/example'
 
 describe Foo::Example do
 
