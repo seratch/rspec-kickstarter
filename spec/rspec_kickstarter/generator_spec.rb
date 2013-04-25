@@ -80,12 +80,15 @@ describe RSpecKickstarter::Generator do
     it 'should work with classes' do
       c = stub(:c)
       c.stubs(:name).returns("Foo")
+      parent = stub(:parent)
+      parent.stubs(:name).returns(nil)
+      c.stubs(:parent).returns(parent)
       method = stub(:method)
       method.stubs(:singleton).returns(false)
       method.stubs(:name).returns("to_something")
       c.stubs(:method_list).returns([method])
       result = generator.get_instantiation_code(c, method)
-      result.should eq("\n      foo = stub('foo')")
+      result.should eq("\n      foo = Foo.new")
     end
   end
 

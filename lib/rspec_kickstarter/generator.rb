@@ -54,9 +54,9 @@ module RSpecKickstarter
       if method.singleton
         ""
       else
-        constructor = c.method_list.find { |m| m.name == :new }
+        constructor = c.method_list.find { |m| m.name == 'new' }
         if constructor.nil?
-          "\n      #{instance_name(c)} = stub('#{instance_name(c)}')"
+          "\n      #{instance_name(c)} = #{get_complete_class_name(c)}.new"
         else
           get_params_initialization_code(constructor) +
               "\n      #{instance_name(c)} = #{get_complete_class_name(c)}.new#{constructor.params}"
