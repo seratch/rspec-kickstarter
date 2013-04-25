@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require 'rspec_kickstarter/generator'
+
+generator = RSpecKickstarter::Generator.new
+
+dir_or_file = ARGV.first
+unless dir_or_file.match(/.rb$/)
+  dir_or_file = dir_or_file.gsub(/\/$/, '') + "/**/*.rb"
+end
+Dir.glob(dir_or_file).each do |file_path|
+  generator.wite_spec_if_absent(file_path)
+end
+
