@@ -109,7 +109,7 @@ describe #{get_complete_class_name(c)} do
 
 #{c.method_list.select { |m| m.visibility == :public }.map { |method|
           <<EACH_SPEC
-                    describe '#{method.name}' do
+  describe '#{method.name}' do
     it 'should work' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
       result = #{get_method_invocation_code(c, method)}
       # result.should_not be_nil
