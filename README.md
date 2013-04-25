@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # RspecKickstarter
 
 RSpec kickstarter generates spec files for existing code.
@@ -29,11 +28,5 @@ Or install it yourself as:
 
 MIT License
 
-https://github.com/seratch/rspec_kickstarter/blob/master/LICENSE.txt
+https://github.com/seratch/rspec-kickstarter/blob/master/LICENSE.txt
 
-=======
-rspec-kickstarter
-=================
-
-RSpec kickstarter generates spec files for existing code.
->>>>>>> 0c3acef9265a2734d26224ae005a5a2cd0c01ce9
