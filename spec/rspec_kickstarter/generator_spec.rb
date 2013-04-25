@@ -119,7 +119,7 @@ describe RSpecKickstarter::Generator do
       method.stubs(:params).returns("(a, b)")
       method.stubs(:block_params).returns("")
       result = generator.get_method_invocation_code(c, method)
-      result.should eq("classname.to_something(a, b)")
+      result.should eq("class_name.to_something(a, b)")
     end
   end
 
@@ -144,10 +144,14 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'wite_spec_if_absent' do
+  describe 'write_spec' do
     it 'should work' do
       file_path = "lib/rspec_kickstarter.rb"
-      generator.wite_spec_if_absent(file_path)
+      generator.write_spec(file_path)
+    end
+    it 'should work with -f option' do
+      file_path = "lib/rspec_kickstarter.rb"
+      generator.write_spec(file_path, true)
     end
   end
 

@@ -14,11 +14,11 @@ rspec-kickstarter supports you writing tests for existing code.
 
 ## Output example
 
-Unfortunately, `lib/foo/example.rb` has no test. That's too bad...
+Unfortunately, `lib/foo/bar_baz.rb` has no test. That's too bad...
 
 ```ruby
 module Foo
-  class Example
+  class BarBaz
 
     def self.xxx(a, b = "aaa")
     end
@@ -28,7 +28,7 @@ module Foo
 
     private
 
-    def zzz(a, b, c, d)
+    def zzz(a)
     end
 
   end
@@ -38,33 +38,83 @@ end
 OK, run `rspec-kickstarter` now!
 
 ```sh
-$ rspec-kickstarter lib/foo/example.rb
-./spec/foo/example_spec.rb created.
+$ rspec-kickstarter lib/foo/bar_baz.rb
+./spec/foo/bar_baz_spec.rb created.
 ```
 
-`spec/foo/example_spec.rb` will be created as follows.
+`spec/foo/bar_baz_spec.rb` will be created as follows.
 
 ```ruby
 # -*- encoding: utf-8 -*-
 require 'spec_helper'
-require 'foo/example'
+require 'foo/bar_baz'
 
-describe Foo::Example do
+describe Foo::BarBaz do
 
+  # TODO auto-generated
   describe 'xxx' do
     it 'should work' do
       a = stub('a')
       b = stub('b')
-      result = Foo::Example.xxx(a, b)
-      # result.should_not be_nil
+      result = Foo::BarBaz.xxx(a, b)
+      result.should_not be_nil
     end
   end
 
+  # TODO auto-generated
   describe 'yyy' do
     it 'should work' do
-      example = Example.new
-      result = example.yyy()
-      # result.should_not be_nil
+      bar_baz = Foo::BarBaz.new
+      result = bar_baz.yyy()
+      result.should_not be_nil
+    end
+  end
+
+end
+```
+
+## Appending lacking test templates
+
+`-f` option allows appending lacking test templates to existing specs.
+
+For instance, `additiona_ops` method is added after spec creation.
+
+```ruby
+module Foo
+  class BarBaz
+
+    def self.xxx(a, b = "aaa")
+    end
+
+    def yyy()
+    end
+
+    def additional_ops
+    end
+
+    private
+
+    def zzz(a)
+    end
+
+  end
+end
+```
+
+Execute command.
+
+`rspec-kickstarter -f lib/foo/bar_baz.rb`
+
+The following code will be appended.
+
+```ruby
+
+  # TODO auto-generated
+  describe 'additional_ops' do
+    it 'should work' do
+      bar_baz = Foo::BarBaz.new
+      result = bar_baz.additional_ops()
+      result.should_not be_nil
     end
   end
 

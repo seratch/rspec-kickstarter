@@ -37,8 +37,11 @@ module RSpecKickstarter
     end
 
     def instance_name(c)
-      # TODO prefer snake_case
-      c.name.downcase
+      c.name.gsub(/::/, '/').
+        gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+        gsub(/([a-z\d])([A-Z])/,'\1_\2').
+        tr("-", "_").
+        downcase
     end
 
     def to_param_names_array(params)
@@ -80,7 +83,7 @@ module RSpecKickstarter
       end
     end
 
-    def wite_spec_if_absent(file_path)
+    def write_spec(file_path, force_write = false, dry_run = false)
 
       body = File.read(file_path)
       RDoc::TopLevel.reset()
@@ -99,8 +102,48 @@ module RSpecKickstarter
         puts "#{file_path} skipped (Class/Module not found)."
       else
 
-        self_path = file_path.gsub(/^(lib\/)|(app\/)/, '').gsub(/\.rb$/, '')
-        code = <<SPEC
+        spec_path = spec_dir + '/' + file_path.gsub(/^(lib\/)|(app\/)/, '').gsub(/\.rb$/, '_spec.rb')
+
+        if force_write && File.exist?(spec_path)
+          existing_spec = File.read(spec_path)
+          racking_methods = c.method_list.select { |m| m.visibility == :public }.reject { |m| existing_spec.match(m.name) }
+          if racking_methods.empty? 
+            puts "#{spec_path} skipped."
+          else
+            additional_spec = <<SPEC
+#{racking_methods.map { |method|
+          <<EACH_SPEC
+  # TODO auto-generated
+  describe '#{method.name}' do
+    it 'should work' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
+      result = #{get_method_invocation_code(c, method)}
+      result.should_not be_nil
+    end
+  end
+EACH_SPEC
+}.join("\n")}
+SPEC
+            last_end_not_found = true
+            code = existing_spec.split("\n").reverse.reject { |line| 
+              if last_end_not_found 
+                last_end_not_found = line.strip.gsub(/#.+$/, '') != "end"
+                true
+              else
+                false
+              end
+            }.reverse.join("\n") + "\n" + additional_spec + "\nend\n"
+            if dry_run
+              puts "----- #{spec_path} -----"
+              puts code
+            else
+              File.open(spec_path, 'w') { |f| f.write(code) }
+            end
+            puts "#{spec_path} modified."
+          end
+
+        else
+          self_path = file_path.gsub(/^(lib\/)|(app\/)/, '').gsub(/\.rb$/, '')
+          code = <<SPEC
 # -*- encoding: utf-8 -*-
 require 'spec_helper'
 require '#{self_path}'
@@ -109,10 +152,11 @@ describe #{get_complete_class_name(c)} do
 
 #{c.method_list.select { |m| m.visibility == :public }.map { |method|
           <<EACH_SPEC
+  # TODO auto-generated
   describe '#{method.name}' do
     it 'should work' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
       result = #{get_method_invocation_code(c, method)}
-      # result.should_not be_nil
+      result.should_not be_nil
     end
   end
 EACH_SPEC
@@ -120,17 +164,23 @@ EACH_SPEC
 end
 SPEC
 
-        # TODO improve the logic
-        spec_path = spec_dir + '/' + file_path.gsub(/^(lib\/)|(app\/)/, '').gsub(/\.rb$/, '_spec.rb')
-        if File.exist?(spec_path)
-          puts "#{spec_path} already exists."
-        else
-          FileUtils.mkdir_p(File.dirname(spec_path))
-          File.open(spec_path, 'w') { |f| f.write(code) }
-          puts "#{spec_path} created."
+          if File.exist?(spec_path)
+            puts "#{spec_path} already exists."
+          else
+            if dry_run
+              puts "----- #{spec_path} -----"
+              puts code
+            else
+              FileUtils.mkdir_p(File.dirname(spec_path))
+              File.open(spec_path, 'w') { |f| f.write(code) }
+              puts "#{spec_path} created."
+            end
+          end
         end
       end
+
     end
+
   end
 end
 

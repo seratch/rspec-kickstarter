@@ -1,14 +1,32 @@
 #!/usr/bin/env ruby
+#
+# rspec-kickstarter [dir/*.rb]
+#
 
+require 'optparse'
 require 'rspec_kickstarter/generator'
 
-generator = RSpecKickstarter::Generator.new
+force_write = false
+dry_run = false
+spec_dir = './spec'
 
-dir_or_file = ARGV.first
+opt = OptionParser.new
+opt.on('-f', 'Creates new specs or appends on existing specs') { |_| force_write = true }
+opt.on('-n', 'Dry run') { |_| dry_run = true }
+opt.on('-o VAL', 'Output directory') { |dir| spec_dir = dir }
+
+args = opt.parse(ARGV)
+dir_or_file = args.first
+if dir_or_file.nil?
+  puts "Usage: rspec-kickstarter [dir/*.rb]"
+  exit 1
+end
 unless dir_or_file.match(/.rb$/)
   dir_or_file = dir_or_file.gsub(/\/$/, '') + "/**/*.rb"
 end
+
+generator = RSpecKickstarter::Generator.new(spec_dir)
 Dir.glob(dir_or_file).each do |file_path|
-  generator.wite_spec_if_absent(file_path)
+  generator.write_spec(file_path, force_write, dry_run)
 end
 

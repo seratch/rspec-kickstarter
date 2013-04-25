@@ -2,4 +2,8 @@
 require 'spec_helper'
 
 describe RSpecKickstarter do
+
+
+
+
 end
