@@ -14,7 +14,7 @@ rspec-kickstarter supports you writing tests for existing code.
 
 ## Output example
 
-Unfortunately, `lib/foo/example.rb` has no tests.
+Unfortunately, `lib/foo/example.rb` has no test. That's too bad...
 
 ```ruby
 module Foo
@@ -35,7 +35,7 @@ module Foo
 end
 ```
 
-Run `rspec-kickstarter'!
+OK, run `rspec-kickstarter` now!
 
 ```sh
 $ rspec-kickstarter lib/foo/example.rb
