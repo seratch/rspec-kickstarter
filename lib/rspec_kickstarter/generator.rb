@@ -104,11 +104,11 @@ module RSpecKickstarter
       end
 
       parser = RDoc::Parser::Ruby.new(
-          top_level,
-          file_path,
-          body,
-          RDoc::Options.new,
-          stats
+        top_level,
+        file_path,
+        body,
+        RDoc::Options.new,
+        stats
       )
       top_level = parser.scan
       c = get_target(top_level)
@@ -127,7 +127,7 @@ module RSpecKickstarter
           else
             additional_spec = <<SPEC
 #{racking_methods.map { |method|
-          <<EACH_SPEC
+  <<EACH_SPEC
   # TODO auto-generated
   describe '#{method.name}' do
     it 'should work' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
@@ -166,7 +166,7 @@ require '#{self_path}'
 describe #{get_complete_class_name(c)} do
 
 #{c.method_list.select { |m| m.visibility == :public }.map { |method|
-          <<EACH_SPEC
+  <<EACH_SPEC
   # TODO auto-generated
   describe '#{method.name}' do
     it 'should work' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
