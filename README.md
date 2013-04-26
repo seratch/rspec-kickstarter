@@ -2,6 +2,8 @@
 
 rspec-kickstarter supports you writing tests for existing code.
 
+[![Build Status](https://travis-ci.org/seratch/rspec-kickstarter.png)](https://travis-ci.org/seratch/rspec-kickstarter)
+
 ## Installation
 
     gem install rspec-kickstarter
