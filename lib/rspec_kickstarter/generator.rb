@@ -86,14 +86,29 @@ module RSpecKickstarter
     def write_spec(file_path, force_write = false, dry_run = false)
 
       body = File.read(file_path)
-      RDoc::TopLevel.reset()
+
       top_level = RDoc::TopLevel.new(file_path)
+      if RUBY_VERSION.to_f < 2.0
+        # reset is removed since 2.0
+        RDoc::TopLevel.reset()
+      end
+
+      # RDoc::Stats initialization
+      if RUBY_VERSION.to_f >= 2.0
+        # Ruby 2.0 requires RDoc::Store internally.
+        store = RDoc::Store.new
+        top_level.store = store
+        stats = RDoc::Stats.new(store, 1)
+      else
+        stats = RDoc::Stats.new(1)
+      end
+
       parser = RDoc::Parser::Ruby.new(
           top_level,
           file_path,
           body,
           RDoc::Options.new,
-          RDoc::Stats.new(1)
+          stats
       )
       top_level = parser.scan
       c = get_target(top_level)
