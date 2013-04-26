@@ -11,8 +11,8 @@ dry_run = false
 spec_dir = './spec'
 
 opt = OptionParser.new
-opt.on('-f', 'Creates new specs or appends on existing specs') { |_| force_write = true }
-opt.on('-n', 'Dry run') { |_| dry_run = true }
+opt.on('-f', 'Create if absent or append to the existing spec') { |_| force_write = true }
+opt.on('-n', 'Dry run mode') { |_| dry_run = true }
 opt.on('-o VAL', 'Output directory') { |dir| spec_dir = dir }
 
 args = opt.parse(ARGV)

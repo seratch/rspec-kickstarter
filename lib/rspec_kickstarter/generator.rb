@@ -62,7 +62,7 @@ module RSpecKickstarter
           "\n      #{instance_name(c)} = #{get_complete_class_name(c)}.new"
         else
           get_params_initialization_code(constructor) +
-              "\n      #{instance_name(c)} = #{get_complete_class_name(c)}.new#{constructor.params}"
+              "\n      #{instance_name(c)} = #{get_complete_class_name(c)}.new(#{to_param_names_array(constructor.params).join(', ')})"
         end
       end
     end
@@ -141,7 +141,7 @@ SPEC
             last_end_not_found = true
             code = existing_spec.split("\n").reverse.reject { |line| 
               if last_end_not_found 
-                last_end_not_found = line.strip.gsub(/#.+$/, '') != "end"
+                last_end_not_found = line.gsub(/#.+$/, '').strip != "end"
                 true
               else
                 false
@@ -179,12 +179,12 @@ EACH_SPEC
 end
 SPEC
 
-          if File.exist?(spec_path)
-            puts "#{spec_path} already exists."
+          if dry_run
+            puts "----- #{spec_path} -----"
+            puts code
           else
-            if dry_run
-              puts "----- #{spec_path} -----"
-              puts code
+            if File.exist?(spec_path)
+              puts "#{spec_path} already exists."
             else
               FileUtils.mkdir_p(File.dirname(spec_path))
               File.open(spec_path, 'w') { |f| f.write(code) }
