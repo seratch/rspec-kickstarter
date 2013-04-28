@@ -6,6 +6,8 @@ rspec-kickstarter supports you writing tests for existing code.
 
 ## Installation
 
+https://rubygems.org/gems/rspec-kickstarter
+
     gem install rspec-kickstarter
 
 ## Usage
