@@ -18,12 +18,12 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'get_target' do
+  describe 'extract_target_class_or_module' do
     it 'should work' do
       class1 = "Class1"
       top_level = stub(:top_level)
       top_level.stubs(:classes).returns([class1])
-      result = generator.get_target(top_level)
+      result = generator.extract_target_class_or_module(top_level)
       result.should eq(class1)
     end
   end
@@ -152,6 +152,35 @@ describe RSpecKickstarter::Generator do
     it 'should work with -f option' do
       file_path = "lib/rspec_kickstarter.rb"
       generator.write_spec(file_path, true)
+    end
+  end
+
+  describe 'get_ruby_parser' do
+    it 'should work' do
+      file_path = 'lib/rspec_kickstarter.rb'
+      result = generator.get_ruby_parser(file_path)
+      result.should_not be_nil
+    end
+  end
+
+  describe 'get_spec_path' do
+    it 'should work' do
+      file_path = 'lib/foo/bar.rb'
+      result = generator.get_spec_path(file_path)
+      result.should eq('./spec/foo/bar_spec.rb')
+    end
+    it 'should work with path which starts with current dir' do
+      file_path = './lib/foo/bar.rb'
+      result = generator.get_spec_path(file_path)
+      result.should eq('./spec/foo/bar_spec.rb')
+    end
+  end
+
+  describe 'to_string_value_to_require' do
+    it 'should work' do
+      file_path = 'lib/foo/bar.rb'
+      result = generator.to_string_value_to_require(file_path)
+      result.should eq('foo/bar')
     end
   end
 

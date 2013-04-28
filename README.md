@@ -123,6 +123,16 @@ The following code will be appended.
 end
 ```
 
+## Options
+
+```
+$ rspec-kickstarter -h
+Usage: rspec-kickstarter [options]
+    -f                               Create if absent or append to the existing spec
+    -n                               Dry run mode (shows generated code to console)
+    -o VAL                           Output directory (default: ./spec)
+```
+
 ## License
 
 MIT License
