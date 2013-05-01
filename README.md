@@ -135,6 +135,10 @@ Usage: rspec-kickstarter [options]
     -o VAL                           Output directory (default: ./spec)
 ```
 
+## TODO
+
+- Customizable code template
+
 ## License
 
 MIT License
