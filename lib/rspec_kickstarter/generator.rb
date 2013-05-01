@@ -41,7 +41,7 @@ class RSpecKickstarter::Generator
   <<EACH_SPEC
   # TODO auto-generated
   describe '#{method.name}' do
-    it 'should work' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
+    it 'works' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
       result = #{get_method_invocation_code(c, method)}
       result.should_not be_nil
     end
@@ -84,7 +84,7 @@ describe #{get_complete_class_name(c)} do
   <<EACH_SPEC
   # TODO auto-generated
   describe '#{method.name}' do
-    it 'should work' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
+    it 'works' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
       result = #{get_method_invocation_code(c, method)}
       result.should_not be_nil
     end

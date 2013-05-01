@@ -57,7 +57,7 @@ describe Foo::BarBaz do
 
   # TODO auto-generated
   describe 'xxx' do
-    it 'should work' do
+    it 'works' do
       a = stub('a')
       b = stub('b')
       result = Foo::BarBaz.xxx(a, b)
@@ -67,7 +67,7 @@ describe Foo::BarBaz do
 
   # TODO auto-generated
   describe 'yyy' do
-    it 'should work' do
+    it 'works' do
       bar_baz = Foo::BarBaz.new
       result = bar_baz.yyy()
       result.should_not be_nil
@@ -115,7 +115,7 @@ The following code will be appended.
 
   # TODO auto-generated
   describe 'additional_ops' do
-    it 'should work' do
+    it 'works' do
       bar_baz = Foo::BarBaz.new
       result = bar_baz.additional_ops()
       result.should_not be_nil
