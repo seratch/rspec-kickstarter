@@ -7,11 +7,11 @@ describe RSpecKickstarter::Generator do
   let(:generator) { RSpecKickstarter::Generator.new }
 
   describe 'new' do
-    it 'should work without params' do
+    it 'works without params' do
       result = RSpecKickstarter::Generator.new()
       result.should_not be_nil
     end
-    it 'should work' do
+    it 'works' do
       spec_dir = './spec'
       result = RSpecKickstarter::Generator.new(spec_dir)
       result.should_not be_nil
@@ -19,7 +19,7 @@ describe RSpecKickstarter::Generator do
   end
 
   describe 'extract_target_class_or_module' do
-    it 'should work' do
+    it 'works' do
       class1 = "Class1"
       top_level = stub(:top_level)
       top_level.stubs(:classes).returns([class1])
@@ -29,7 +29,7 @@ describe RSpecKickstarter::Generator do
   end
 
   describe 'get_complete_class_name' do
-    it 'should work' do
+    it 'works' do
       c = stub(:c)
       parent = stub(:parent)
       parent.stubs(:name).returns("Foo")
@@ -41,7 +41,7 @@ describe RSpecKickstarter::Generator do
   end
 
   describe 'instance_name' do
-    it 'should work' do
+    it 'works' do
       c = stub(:c)
       c.stubs(:name).returns("generator")
       result = generator.instance_name(c)
@@ -50,7 +50,7 @@ describe RSpecKickstarter::Generator do
   end
 
   describe 'to_param_names_array' do
-    it 'should work' do
+    it 'works' do
       params = "(a, b = 'foo', c = 123)"
       result = generator.to_param_names_array(params)
       result.should eq(['a', 'b', 'c'])
@@ -58,7 +58,7 @@ describe RSpecKickstarter::Generator do
   end
 
   describe 'get_params_initialization_code' do
-    it 'should work' do
+    it 'works' do
       method = stub(:method)
       method.stubs(:params).returns("(a = 1,b = 'aaaa')")
       result = generator.get_params_initialization_code(method)
@@ -67,7 +67,7 @@ describe RSpecKickstarter::Generator do
   end
 
   describe 'get_instantiation_code' do
-    it 'should work with modules' do
+    it 'works with modules' do
       c = stub(:c)
       c.stubs(:name).returns("Foo")
       method = stub(:method)
@@ -77,7 +77,7 @@ describe RSpecKickstarter::Generator do
       result = generator.get_instantiation_code(c, method)
       result.should eq("")
     end
-    it 'should work with classes' do
+    it 'works with classes' do
       c = stub(:c)
       c.stubs(:name).returns("Foo")
       parent = stub(:parent)
@@ -93,7 +93,7 @@ describe RSpecKickstarter::Generator do
   end
 
   describe 'get_method_invocation_code' do
-    it 'should work with modules' do
+    it 'works with modules' do
       c = stub(:c)
       c.stubs(:name).returns("Module")
       parent = stub(:parent)
@@ -107,7 +107,7 @@ describe RSpecKickstarter::Generator do
       result = generator.get_method_invocation_code(c, method)
       result.should eq("Module.to_something(a, b)")
     end
-    it 'should work with classes' do
+    it 'works with classes' do
       c = stub(:c)
       c.stubs(:name).returns("ClassName")
       parent = stub(:parent)
@@ -124,19 +124,19 @@ describe RSpecKickstarter::Generator do
   end
 
   describe 'get_block_code' do
-    it 'should work with no arg' do
+    it 'works with no arg' do
       method = stub(:method)
       method.stubs(:block_params).returns("")
       result = generator.get_block_code(method)
       result.should eq("")
     end
-    it 'should work with 1 arg block' do
+    it 'works with 1 arg block' do
       method = stub(:method)
       method.stubs(:block_params).returns("a")
       result = generator.get_block_code(method)
       result.should eq(" { |a| }")
     end
-    it 'should work with 2 args block' do
+    it 'works with 2 args block' do
       method = stub(:method)
       method.stubs(:block_params).returns("a, b")
       result = generator.get_block_code(method)
@@ -145,18 +145,18 @@ describe RSpecKickstarter::Generator do
   end
 
   describe 'write_spec' do
-    it 'should work' do
+    it 'works' do
       file_path = "lib/rspec_kickstarter.rb"
       generator.write_spec(file_path)
     end
-    it 'should work with -f option' do
+    it 'works with -f option' do
       file_path = "lib/rspec_kickstarter.rb"
       generator.write_spec(file_path, true)
     end
   end
 
   describe 'get_ruby_parser' do
-    it 'should work' do
+    it 'works' do
       file_path = 'lib/rspec_kickstarter.rb'
       result = generator.get_ruby_parser(file_path)
       result.should_not be_nil
@@ -164,12 +164,12 @@ describe RSpecKickstarter::Generator do
   end
 
   describe 'get_spec_path' do
-    it 'should work' do
+    it 'works' do
       file_path = 'lib/foo/bar.rb'
       result = generator.get_spec_path(file_path)
       result.should eq('./spec/foo/bar_spec.rb')
     end
-    it 'should work with path which starts with current dir' do
+    it 'works with path which starts with current dir' do
       file_path = './lib/foo/bar.rb'
       result = generator.get_spec_path(file_path)
       result.should eq('./spec/foo/bar_spec.rb')
@@ -177,7 +177,7 @@ describe RSpecKickstarter::Generator do
   end
 
   describe 'to_string_value_to_require' do
-    it 'should work' do
+    it 'works' do
       file_path = 'lib/foo/bar.rb'
       result = generator.to_string_value_to_require(file_path)
       result.should eq('foo/bar')
