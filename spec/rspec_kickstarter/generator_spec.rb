@@ -9,12 +9,12 @@ describe RSpecKickstarter::Generator do
   describe 'new' do
     it 'works without params' do
       result = RSpecKickstarter::Generator.new()
-      result.should_not be_nil
+      expect(result).not_to be_nil
     end
     it 'works' do
       spec_dir = './spec'
       result = RSpecKickstarter::Generator.new(spec_dir)
-      result.should_not be_nil
+      expect(result).not_to be_nil
     end
   end
 
@@ -24,7 +24,7 @@ describe RSpecKickstarter::Generator do
       top_level = stub(:top_level)
       top_level.stubs(:classes).returns([class1])
       result = generator.extract_target_class_or_module(top_level)
-      result.should eq(class1)
+      expect(result).to eq(class1)
     end
   end
 
@@ -36,7 +36,7 @@ describe RSpecKickstarter::Generator do
       c.stubs(:parent).returns(parent)
       name = "ClassName"
       result = generator.get_complete_class_name(c, name)
-      result.should eq("ClassName")
+      expect(result).to eq("ClassName")
     end
   end
 
@@ -45,7 +45,7 @@ describe RSpecKickstarter::Generator do
       c = stub(:c)
       c.stubs(:name).returns("generator")
       result = generator.instance_name(c)
-      result.should eq("generator")
+      expect(result).to eq("generator")
     end
   end
 
@@ -53,7 +53,7 @@ describe RSpecKickstarter::Generator do
     it 'works' do
       params = "(a, b = 'foo', c = 123)"
       result = generator.to_param_names_array(params)
-      result.should eq(['a', 'b', 'c'])
+      expect(result).to eq(['a', 'b', 'c'])
     end
   end
 
@@ -62,7 +62,7 @@ describe RSpecKickstarter::Generator do
       method = stub(:method)
       method.stubs(:params).returns("(a = 1,b = 'aaaa')")
       result = generator.get_params_initialization_code(method)
-      result.should eq("\n      a = stub('a')\n      b = stub('b')")
+      expect(result).to eq("\n      a = stub('a')\n      b = stub('b')")
     end
   end
 
@@ -75,7 +75,7 @@ describe RSpecKickstarter::Generator do
       method.stubs(:name).returns("to_something")
       c.stubs(:method_list).returns([method])
       result = generator.get_instantiation_code(c, method)
-      result.should eq("")
+      expect(result).to eq("")
     end
     it 'works with classes' do
       c = stub(:c)
@@ -88,7 +88,7 @@ describe RSpecKickstarter::Generator do
       method.stubs(:name).returns("to_something")
       c.stubs(:method_list).returns([method])
       result = generator.get_instantiation_code(c, method)
-      result.should eq("\n      foo = Foo.new")
+      expect(result).to eq("\n      foo = Foo.new")
     end
   end
 
@@ -105,7 +105,7 @@ describe RSpecKickstarter::Generator do
       method.stubs(:params).returns("(a, b)")
       method.stubs(:block_params).returns("")
       result = generator.get_method_invocation_code(c, method)
-      result.should eq("Module.to_something(a, b)")
+      expect(result).to eq("Module.to_something(a, b)")
     end
     it 'works with classes' do
       c = stub(:c)
@@ -119,7 +119,7 @@ describe RSpecKickstarter::Generator do
       method.stubs(:params).returns("(a, b)")
       method.stubs(:block_params).returns("")
       result = generator.get_method_invocation_code(c, method)
-      result.should eq("class_name.to_something(a, b)")
+      expect(result).to eq("class_name.to_something(a, b)")
     end
   end
 
@@ -128,19 +128,19 @@ describe RSpecKickstarter::Generator do
       method = stub(:method)
       method.stubs(:block_params).returns("")
       result = generator.get_block_code(method)
-      result.should eq("")
+      expect(result).to eq("")
     end
     it 'works with 1 arg block' do
       method = stub(:method)
       method.stubs(:block_params).returns("a")
       result = generator.get_block_code(method)
-      result.should eq(" { |a| }")
+      expect(result).to eq(" { |a| }")
     end
     it 'works with 2 args block' do
       method = stub(:method)
       method.stubs(:block_params).returns("a, b")
       result = generator.get_block_code(method)
-      result.should eq(" { |a, b| }")
+      expect(result).to eq(" { |a, b| }")
     end
   end
 
@@ -159,7 +159,7 @@ describe RSpecKickstarter::Generator do
     it 'works' do
       file_path = 'lib/rspec_kickstarter.rb'
       result = generator.get_ruby_parser(file_path)
-      result.should_not be_nil
+      expect(result).not_to be_nil
     end
   end
 
@@ -167,12 +167,12 @@ describe RSpecKickstarter::Generator do
     it 'works' do
       file_path = 'lib/foo/bar.rb'
       result = generator.get_spec_path(file_path)
-      result.should eq('./spec/foo/bar_spec.rb')
+      expect(result).to eq('./spec/foo/bar_spec.rb')
     end
     it 'works with path which starts with current dir' do
       file_path = './lib/foo/bar.rb'
       result = generator.get_spec_path(file_path)
-      result.should eq('./spec/foo/bar_spec.rb')
+      expect(result).to eq('./spec/foo/bar_spec.rb')
     end
   end
 
@@ -180,7 +180,7 @@ describe RSpecKickstarter::Generator do
     it 'works' do
       file_path = 'lib/foo/bar.rb'
       result = generator.to_string_value_to_require(file_path)
-      result.should eq('foo/bar')
+      expect(result).to eq('foo/bar')
     end
   end
 

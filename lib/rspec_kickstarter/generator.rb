@@ -43,7 +43,7 @@ class RSpecKickstarter::Generator
   describe '#{method.name}' do
     it 'works' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
       result = #{get_method_invocation_code(c, method)}
-      result.should_not be_nil
+      expect(result).not_to be_nil
     end
   end
 EACH_SPEC
@@ -86,7 +86,7 @@ describe #{get_complete_class_name(c)} do
   describe '#{method.name}' do
     it 'works' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
       result = #{get_method_invocation_code(c, method)}
-      result.should_not be_nil
+      expect(result).not_to be_nil
     end
   end
 EACH_SPEC
