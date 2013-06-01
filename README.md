@@ -4,6 +4,15 @@ rspec-kickstarter supports you writing tests for existing code.
 
 [![Build Status](https://travis-ci.org/seratch/rspec-kickstarter.png)](https://travis-ci.org/seratch/rspec-kickstarter)
 
+## RubyKaigi 2013
+
+Lightning talk about rspec-kickstarter at RubyKaigi 2013
+
+http://rubykaigi.org/2013/lightning_talks#seratch
+
+https://speakerdeck.com/seratch/a-test-code-generator-for-rspec-users
+
+
 ## Installation
 
 https://rubygems.org/gems/rspec-kickstarter
@@ -61,7 +70,7 @@ describe Foo::BarBaz do
       a = stub('a')
       b = stub('b')
       result = Foo::BarBaz.xxx(a, b)
-      result.should_not be_nil
+      expect(result).not_to be_nil
     end
   end
 
@@ -70,7 +79,7 @@ describe Foo::BarBaz do
     it 'works' do
       bar_baz = Foo::BarBaz.new
       result = bar_baz.yyy()
-      result.should_not be_nil
+      expect(result).not_to be_nil
     end
   end
 
@@ -118,7 +127,7 @@ The following code will be appended.
     it 'works' do
       bar_baz = Foo::BarBaz.new
       result = bar_baz.additional_ops()
-      result.should_not be_nil
+      expect(result).not_to be_nil
     end
   end
 
