@@ -29,15 +29,15 @@ class RSpecKickstarter::Generator
         # Append to the existing spec or skip
 
         existing_spec = File.read(spec_path)
-        racking_methods = c.method_list
+        lacking_methods = c.method_list
           .select { |m| m.visibility == :public }
           .reject { |m| existing_spec.match(m.name) }
 
-        if racking_methods.empty? 
+        if lacking_methods.empty? 
           puts "#{spec_path} skipped."
         else
           additional_spec = <<SPEC
-#{racking_methods.map { |method|
+#{lacking_methods.map { |method|
   <<EACH_SPEC
   # TODO auto-generated
   describe '#{method.name}' do
