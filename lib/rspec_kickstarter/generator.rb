@@ -10,10 +10,12 @@ require 'rspec_kickstarter'
 
 class RSpecKickstarter::Generator
 
-  attr_accessor :spec_dir
+  attr_accessor :spec_dir, :append_templtae, :full_template
 
-  def initialize(spec_dir = './spec')
+  def initialize(spec_dir = './spec', delta_template = nil, full_template = nil)
     @spec_dir = spec_dir.gsub(/\/$/, '')
+    @delta_template = delta_template
+    @full_template = full_template
   end
 
   def write_spec(file_path, force_write = false, dry_run = false, rails_mode = false)
@@ -40,12 +42,14 @@ class RSpecKickstarter::Generator
         else
           methods_to_generate = lacking_methods
 
-          if rails_mode && self_path.match(/controllers/)
-            additional_spec = ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
+          if ! @delta_template.nil? 
+            additional_spec = ERB.new(@delta_template, nil, '-', '_additional_spec_code').result(binding)
+          elsif rails_mode && self_path.match(/controllers/)
+            additional_spec = ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-', '_additional_spec_code').result(binding)
           elsif rails_mode && self_path.match(/helpers/)
-            additional_spec = ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
+            additional_spec = ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-', '_additional_spec_code').result(binding)
           else
-            additional_spec = ERB.new(BASIC_METHODS_PART_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
+            additional_spec = ERB.new(BASIC_METHODS_PART_TEMPLATE, nil, '-', '_additional_spec_code').result(binding)
           end
 
           last_end_not_found = true
@@ -71,7 +75,9 @@ class RSpecKickstarter::Generator
         self_path = to_string_value_to_require(file_path)
         methods_to_generate = c.method_list.select { |m| m.visibility == :public }
 
-        if rails_mode && self_path.match(/controllers/) 
+        if ! @full_template.nil?
+          code = ERB.new(@full_template, nil, '-', '_new_spec_code').result(binding)
+        elsif rails_mode && self_path.match(/controllers/) 
           code = ERB.new(RAILS_CONTROLLER_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
         elsif rails_mode && self_path.match(/helpers/) 
           code = ERB.new(RAILS_HELPER_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code').result(binding)

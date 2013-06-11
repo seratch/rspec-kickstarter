@@ -212,22 +212,34 @@ end
 ```
 
 
+## Constomizable code template
+
+See the template_samples.
+
+```
+ruby -Ilib bin/rspec-kickstarter --delta-template=samples/delta_template.erb --full-template=samples/full_template.erb lib/foo.rb -n
+```
+
 ## Options
 
 ```
 $ rspec-kickstarter -h
 Usage: rspec-kickstarter [options]
     -f                               Create if absent or append to the existing spec
+        --force
     -n                               Dry run mode (shows generated code to console)
+        --dry-run
     -r                               Run in Rails mode
-    -o VAL                           Output directory Output directory (default: ./spec)
+        --rails
+    -o VAL                           Output directory (default: ./spec)
+        --output-dir VAL
+        --delta-template VAL         Delta template filepath
+        --full-template VAL          Full template filepath
 ```
 
-## TODO
-
-- Customizable code template
-
 ## License
+
+Copyright (c) 2013 Kazuhiro Sera
 
 MIT License
 

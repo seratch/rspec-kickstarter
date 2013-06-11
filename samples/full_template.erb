@@ -1,0 +1,8 @@
+# -*- encoding: utf-8 -*-
+
+require 'spec_helper'
+
+describe <%= get_complete_class_name(c) %> do
+<%= ERB.new(@delta_template, nil, '-').result(binding) -%>
+end
+
