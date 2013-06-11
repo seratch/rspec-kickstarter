@@ -62,7 +62,7 @@ describe RSpecKickstarter::Generator do
       method = stub(:method)
       method.stubs(:params).returns("(a = 1,b = 'aaaa')")
       result = generator.get_params_initialization_code(method)
-      expect(result).to eq("\n      a = stub('a')\n      b = stub('b')")
+      expect(result).to eq("      a = stub('a')\n      b = stub('b')\n")
     end
   end
 
@@ -88,7 +88,7 @@ describe RSpecKickstarter::Generator do
       method.stubs(:name).returns("to_something")
       c.stubs(:method_list).returns([method])
       result = generator.get_instantiation_code(c, method)
-      expect(result).to eq("\n      foo = Foo.new")
+      expect(result).to eq("      foo = Foo.new\n")
     end
   end
 
@@ -181,6 +181,37 @@ describe RSpecKickstarter::Generator do
       file_path = 'lib/foo/bar.rb'
       result = generator.to_string_value_to_require(file_path)
       expect(result).to eq('foo/bar')
+    end
+  end
+
+
+  describe 'get_rails_helper_method_invocation_code' do
+    it 'works' do
+      c = stub(:c)
+      c.stubs(:name).returns("ClassName")
+      parent = stub(:parent)
+      parent.stubs(:name).returns(nil)
+      c.stubs(:parent).returns(parent)
+      method = stub(:method)
+      method.stubs(:singleton).returns(false)
+      method.stubs(:name).returns("to_something")
+      method.stubs(:params).returns("(a, b)")
+      method.stubs(:block_params).returns("")
+      result = generator.get_rails_helper_method_invocation_code(method)
+      expect(result).to eq("to_something(a, b)")
+    end
+  end
+
+  describe 'get_rails_http_method' do
+    it 'works' do
+      expect(generator.get_rails_http_method('foo')).to eq('get')
+      expect(generator.get_rails_http_method('index')).to eq('get')
+      expect(generator.get_rails_http_method('new')).to eq('get')
+      expect(generator.get_rails_http_method('create')).to eq('post')
+      expect(generator.get_rails_http_method('show')).to eq('get')
+      expect(generator.get_rails_http_method('edit')).to eq('get')
+      expect(generator.get_rails_http_method('update')).to eq('put')
+      expect(generator.get_rails_http_method('destroy')).to eq('delete')
     end
   end
 

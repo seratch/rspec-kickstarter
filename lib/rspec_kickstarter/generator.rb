@@ -1,9 +1,10 @@
 # -*- encoding: utf-8 -*-
 
+require 'erb'
 require 'rdoc'
-require 'rdoc/parser/ruby'
-require 'rdoc/options'
 require 'rdoc/generator'
+require 'rdoc/options'
+require 'rdoc/parser/ruby'
 require 'rdoc/stats'
 require 'rspec_kickstarter'
 
@@ -15,7 +16,7 @@ class RSpecKickstarter::Generator
     @spec_dir = spec_dir.gsub(/\/$/, '')
   end
 
-  def write_spec(file_path, force_write = false, dry_run = false)
+  def write_spec(file_path, force_write = false, dry_run = false, rails_mode = false)
 
     top_level = get_ruby_parser(file_path).scan
     c = extract_target_class_or_module(top_level)
@@ -37,19 +38,16 @@ class RSpecKickstarter::Generator
         if lacking_methods.empty? 
           puts "#{spec_path} skipped."
         else
-          additional_spec = <<SPEC
-#{lacking_methods.map { |method|
-  <<EACH_SPEC
-  # TODO auto-generated
-  describe '#{method.name}' do
-    it 'works' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
-      result = #{get_method_invocation_code(c, method)}
-      expect(result).not_to be_nil
-    end
-  end
-EACH_SPEC
-}.join("\n")}
-SPEC
+          methods_to_generate = lacking_methods
+
+          if rails_mode && self_path.match(/controllers/)
+            additional_spec = ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
+          elsif rails_mode && self_path.match(/helpers/)
+            additional_spec = ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
+          else
+            additional_spec = ERB.new(BASIC_METHODS_PART_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
+          end
+
           last_end_not_found = true
           code = existing_spec.split("\n").reverse.reject { |line| 
             if last_end_not_found 
@@ -70,30 +68,17 @@ SPEC
 
       else
         # Create a new spec 
-
         self_path = to_string_value_to_require(file_path)
-        code = <<SPEC
-# -*- encoding: utf-8 -*-
-require 'spec_helper'
-require '#{self_path}'
+        methods_to_generate = c.method_list.select { |m| m.visibility == :public }
 
-describe #{get_complete_class_name(c)} do
+        if rails_mode && self_path.match(/controllers/) 
+          code = ERB.new(RAILS_CONTROLLER_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
+        elsif rails_mode && self_path.match(/helpers/) 
+          code = ERB.new(RAILS_HELPER_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
+        else
+          code = ERB.new(BASIC_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
+        end
 
-#{c.method_list
-  .select { |m| m.visibility == :public }
-  .map { |method| 
-  <<EACH_SPEC
-  # TODO auto-generated
-  describe '#{method.name}' do
-    it 'works' do#{get_instantiation_code(c, method)}#{get_params_initialization_code(method)}
-      result = #{get_method_invocation_code(c, method)}
-      expect(result).not_to be_nil
-    end
-  end
-EACH_SPEC
-}.join("\n")}
-end
-SPEC
         if dry_run
           puts "----- #{spec_path} -----"
           puts code
@@ -222,10 +207,10 @@ SPEC
     else
       constructor = c.method_list.find { |m| m.name == 'new' }
       if constructor.nil?
-        "\n      #{instance_name(c)} = #{get_complete_class_name(c)}.new"
+        "      #{instance_name(c)} = #{get_complete_class_name(c)}.new\n"
       else
         get_params_initialization_code(constructor) +
-          "\n      #{instance_name(c)} = #{get_complete_class_name(c)}.new(#{to_param_names_array(constructor.params).join(', ')})"
+          "      #{instance_name(c)} = #{get_complete_class_name(c)}.new(#{to_param_names_array(constructor.params).join(', ')})\n"
       end
     end
   end
@@ -236,19 +221,23 @@ SPEC
   #     b = stub('b')
   #
   def get_params_initialization_code(method)
-    code = to_param_names_array(method.params).map { |p| "      #{p} = stub('#{p}')" }.join("\n")
-    code.empty? ? "" : "\n#{code}"
+    code = to_param_names_array(method.params).map { |p| "      #{p} = stub('#{p}')" }.join("\n") 
+    code.empty? ? "" : "#{code}\n"
   end
 
   #
   # e.g. BarBaz.do_something(a, b) { |c| }
   #
   def get_method_invocation_code(c, method)
-    if method.singleton
-      "#{get_complete_class_name(c)}.#{method.name}(#{to_param_names_array(method.params).join(', ')})#{get_block_code(method)}"
-    else
-      "#{instance_name(c)}.#{method.name}(#{to_param_names_array(method.params).join(', ')})#{get_block_code(method)}"
-    end
+    target = method.singleton ? get_complete_class_name(c) : instance_name(c)
+    "#{target}.#{method.name}(#{to_param_names_array(method.params).join(', ')})#{get_block_code(method)}"
+  end
+
+  #
+  # e.g. do_something(a, b) { |c| }
+  #
+  def get_rails_helper_method_invocation_code(method)
+    "#{method.name}(#{to_param_names_array(method.params).join(', ')})#{get_block_code(method)}"
   end
 
   #
@@ -261,6 +250,91 @@ SPEC
       " { |#{method.block_params}| }"
     end
   end
+
+  def get_rails_http_method(method_name)
+    http_method = RAILS_RESOURCE_METHOD_AND_HTTPMETHOD[method_name]
+    http_method.nil? ? 'get' : http_method
+  end
+
+  BASIC_METHODS_PART_TEMPLATE = <<SPEC
+<%- methods_to_generate.map { |method| %>
+  # TODO auto-generated
+  describe '<%= method.name %>' do
+    it 'works' do
+<%- unless get_instantiation_code(c, method).nil?      -%><%= get_instantiation_code(c, method) %><%- end -%>
+<%- unless get_params_initialization_code(method).nil? -%><%= get_params_initialization_code(method) %><%- end -%>
+      result = <%= get_method_invocation_code(c, method) %>
+      expect(result).not_to be_nil
+    end
+  end
+<% } %>
+SPEC
+
+  BASIC_NEW_SPEC_TEMPLATE = <<SPEC
+# -*- encoding: utf-8 -*-
+
+require 'spec_helper'
+<% unless rails_mode then %>require '<%= self_path %>'
+<% end -%>
+
+describe <%= get_complete_class_name(c) %> do
+<%= ERB.new(BASIC_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
+end
+SPEC
+
+  RAILS_RESOURCE_METHOD_AND_HTTPMETHOD = {
+    'index'   => 'get',
+    'new'     => 'get',
+    'create'  => 'post', 
+    'show'    => 'get',
+    'edit'    => 'get',
+    'update'  => 'put',
+    'destroy' => 'delete' 
+  }
+
+  RAILS_CONTROLLER_METHODS_PART_TEMPLATE = <<SPEC
+<%- methods_to_generate.map { |method| %>
+  # TODO auto-generated
+  describe '<%= method.name %>' do
+    it 'returns OK' do
+      <%= get_rails_http_method(method.name) %> :<%= method.name %>, {}, {}
+      expect(response.status).to eq(200)
+    end
+  end
+<% } %>
+SPEC
+
+  RAILS_CONTROLLER_NEW_SPEC_TEMPLATE = <<SPEC
+# -*- encoding: utf-8 -*-
+
+require 'spec_helper'
+
+describe <%= get_complete_class_name(c) %> do
+<%= ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
+end
+SPEC
+
+  RAILS_HELPER_METHODS_PART_TEMPLATE = <<SPEC
+<%- methods_to_generate.map { |method| %>
+  # TODO auto-generated
+  describe '<%= method.name %>' do
+    it 'works' do
+      result = <%= get_rails_helper_method_invocation_code(method) %>
+      expect(result).not_to be_nil
+    end
+  end
+<% } %>
+SPEC
+
+  RAILS_HELPER_NEW_SPEC_TEMPLATE = <<SPEC
+# -*- encoding: utf-8 -*-
+
+require 'spec_helper'
+
+describe <%= get_complete_class_name(c) %> do
+<%= ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
+end
+SPEC
 
 end
 

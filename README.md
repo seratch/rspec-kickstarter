@@ -135,6 +135,83 @@ The following code will be appended.
 end
 ```
 
+## Rails mode
+
+In Rails mode, rspec-kcikstarter generates Rails way spec code for controllers and helpers.
+
+```
+$ rspec-kickstarter -r app/controllers/root_controller.rb
+```
+
+Output for scaffold:
+
+```ruby
+# -*- encoding: utf-8 -*-
+
+require 'spec_helper'
+
+describe CommentsController do
+
+  # TODO auto-generated
+  describe 'index' do
+    it 'returns OK' do
+      get :index, {}, {}
+      expect(response.status).to eq(200)
+    end
+  end
+
+  # TODO auto-generated
+  describe 'show' do
+    it 'returns OK' do
+      get :show, {}, {}
+      expect(response.status).to eq(200)
+    end
+  end
+
+  # TODO auto-generated
+  describe 'new' do
+    it 'returns OK' do
+      get :new, {}, {}
+      expect(response.status).to eq(200)
+    end
+  end
+
+  # TODO auto-generated
+  describe 'edit' do
+    it 'returns OK' do
+      get :edit, {}, {}
+      expect(response.status).to eq(200)
+    end
+  end
+
+  # TODO auto-generated
+  describe 'create' do
+    it 'returns OK' do
+      post :create, {}, {}
+      expect(response.status).to eq(200)
+    end
+  end
+
+  # TODO auto-generated
+  describe 'update' do
+    it 'returns OK' do
+      put :update, {}, {}
+      expect(response.status).to eq(200)
+    end
+  end
+
+  # TODO auto-generated
+  describe 'destroy' do
+    it 'returns OK' do
+      delete :destroy, {}, {}
+      expect(response.status).to eq(200)
+    end
+  end
+
+end
+```
+
+
 ## Options
 
 ```
@@ -142,7 +219,8 @@ $ rspec-kickstarter -h
 Usage: rspec-kickstarter [options]
     -f                               Create if absent or append to the existing spec
     -n                               Dry run mode (shows generated code to console)
-    -o VAL                           Output directory (default: ./spec)
+    -r                               Run in Rails mode
+    -o VAL                           Output directory Output directory (default: ./spec)
 ```
 
 ## TODO

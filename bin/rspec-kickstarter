@@ -8,11 +8,13 @@ require 'rspec_kickstarter/generator'
 
 force_write = false
 dry_run = false
+rails_mode = false
 spec_dir = './spec'
 
 opt = OptionParser.new
 opt.on('-f', 'Create if absent or append to the existing spec') { |_| force_write = true }
 opt.on('-n', 'Dry run mode (shows generated code to console)') { |_| dry_run = true }
+opt.on('-r', 'Run in Rails mode') { |_| rails_mode = true }
 opt.on('-o VAL', 'Output directory Output directory (default: ./spec)') { |dir| spec_dir = dir }
 
 args = opt.parse(ARGV)
@@ -27,6 +29,6 @@ end
 
 generator = RSpecKickstarter::Generator.new(spec_dir)
 Dir.glob(dir_or_file).each do |file_path|
-  generator.write_spec(file_path, force_write, dry_run)
+  generator.write_spec(file_path, force_write, dry_run, rails_mode)
 end
 
