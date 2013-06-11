@@ -44,9 +44,9 @@ class RSpecKickstarter::Generator
 
           if ! @delta_template.nil? 
             additional_spec = ERB.new(@delta_template, nil, '-', '_additional_spec_code').result(binding)
-          elsif rails_mode && self_path.match(/controllers/)
+          elsif rails_mode && spec_path.match(/controllers/)
             additional_spec = ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-', '_additional_spec_code').result(binding)
-          elsif rails_mode && self_path.match(/helpers/)
+          elsif rails_mode && spec_path.match(/helpers/)
             additional_spec = ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-', '_additional_spec_code').result(binding)
           else
             additional_spec = ERB.new(BASIC_METHODS_PART_TEMPLATE, nil, '-', '_additional_spec_code').result(binding)
