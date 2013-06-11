@@ -10,7 +10,7 @@ require 'rspec_kickstarter'
 
 class RSpecKickstarter::Generator
 
-  attr_accessor :spec_dir, :append_templtae, :full_template
+  attr_accessor :spec_dir, :delta_templtae, :full_template
 
   def initialize(spec_dir = './spec', delta_template = nil, full_template = nil)
     @spec_dir = spec_dir.gsub(/\/$/, '')
