@@ -3,6 +3,7 @@
 require 'rdoc'
 require 'rdoc/parser/ruby'
 require 'rdoc/options'
+require 'rdoc/generator'
 require 'rdoc/stats'
 require 'rspec_kickstarter'
 
