@@ -233,8 +233,12 @@ Usage: rspec-kickstarter [options]
         --rails
     -o VAL                           Output directory (default: ./spec)
         --output-dir VAL
-        --delta-template VAL         Delta template filepath
-        --full-template VAL          Full template filepath
+    -D VAL                           Delta tempalte path (e.g. ./rails_controller_delta.erb)
+        --delta-template VAL
+    -F VAL                           Full template path (e.g. ./rails_controller_full.erb)
+        --full-template VAL
+    -v                               Print version
+        --version
 ```
 
 ## License
