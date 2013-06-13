@@ -5,10 +5,11 @@ require 'rspec_kickstarter/generator'
 describe RSpecKickstarter::Generator do
 
   let(:generator) { RSpecKickstarter::Generator.new }
+  let(:generator_tmp) { RSpecKickstarter::Generator.new("tmp/spec") }
 
-  describe 'new' do
+  describe '#new' do
     it 'works without params' do
-      result = RSpecKickstarter::Generator.new()
+      result = RSpecKickstarter::Generator.new
       expect(result).not_to be_nil
     end
     it 'works' do
@@ -18,7 +19,7 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'extract_target_class_or_module' do
+  describe '#extract_target_class_or_module' do
     it 'works' do
       class1 = "Class1"
       top_level = stub(:top_level)
@@ -28,7 +29,7 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'get_complete_class_name' do
+  describe '#get_complete_class_name' do
     it 'works' do
       c = stub(:c)
       parent = stub(:parent)
@@ -40,7 +41,7 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'instance_name' do
+  describe '#instance_name' do
     it 'works' do
       c = stub(:c)
       c.stubs(:name).returns("generator")
@@ -49,7 +50,7 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'to_param_names_array' do
+  describe '#to_param_names_array' do
     it 'works' do
       params = "(a, b = 'foo', c = 123)"
       result = generator.to_param_names_array(params)
@@ -57,7 +58,7 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'get_params_initialization_code' do
+  describe '#get_params_initialization_code' do
     it 'works' do
       method = stub(:method)
       method.stubs(:params).returns("(a = 1,b = 'aaaa')")
@@ -66,7 +67,7 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'get_instantiation_code' do
+  describe '#get_instantiation_code' do
     it 'works with modules' do
       c = stub(:c)
       c.stubs(:name).returns("Foo")
@@ -92,7 +93,7 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'get_method_invocation_code' do
+  describe '#get_method_invocation_code' do
     it 'works with modules' do
       c = stub(:c)
       c.stubs(:name).returns("Module")
@@ -123,7 +124,7 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'get_block_code' do
+  describe '#get_block_code' do
     it 'works with no arg' do
       method = stub(:method)
       method.stubs(:block_params).returns("")
@@ -144,18 +145,148 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'write_spec' do
-    it 'works' do
+  class CannotExtractTargetClass < RSpecKickstarter::Generator
+    def extract_target_class_or_module(top_level)
+      nil
+    end
+  end
+
+  describe '#write_spec' do
+
+    it 'just works' do
       file_path = "lib/rspec_kickstarter.rb"
       generator.write_spec(file_path)
     end
+
     it 'works with -f option' do
       file_path = "lib/rspec_kickstarter.rb"
       generator.write_spec(file_path, true)
     end
+
+    it 'works with -n option' do
+      file_path = "lib/rspec_kickstarter.rb"
+      generator.write_spec(file_path, false, true)
+    end
+
+    it 'works with no target class' do
+      file_path = "lib/rspec_kickstarter.rb"
+      CannotExtractTargetClass.new.write_spec(file_path, true)
+    end
+
+    it 'creates new spec with full_tempalte' do
+      FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
+      FileUtils.mkdir_p('tmp/spec')
+
+      code = <<CODE
+class Foo
+  def hello; "aaa"; end
+end
+CODE
+      FileUtils.mkdir_p('tmp/lib')
+      File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code) }
+
+      generator.full_template = "samples/full_template.erb"
+      generator.write_spec('tmp/lib/foo.rb', true)
+    end
+
+    it 'appends new cases' do
+      FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
+      FileUtils.mkdir_p('tmp/spec')
+
+      code = <<CODE
+class Foo
+  def hello; "aaa"; end
+end
+CODE
+      FileUtils.mkdir_p('tmp/lib')
+      File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code) }
+
+      generator_tmp.write_spec('tmp/lib/foo.rb')
+
+      code2 = <<CODE
+class Foo
+  def hello; "aaa"; end
+  def bye; "aaa"; end
+end
+CODE
+      File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code2) }
+      generator_tmp.write_spec("tmp/lib/foo.rb", true, true)
+      generator_tmp.write_spec("tmp/lib/foo.rb", true)
+    end
+
+    it 'appends new cases with delta_template' do
+      FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
+      FileUtils.mkdir_p('tmp/spec')
+
+      code = <<CODE
+class Foo
+  def hello; "aaa"; end
+end
+CODE
+      FileUtils.mkdir_p('tmp/lib')
+      File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code) }
+
+      generator_tmp.delta_template = "sample/delta_template.erb"
+      generator_tmp.write_spec('tmp/lib/foo.rb')
+
+      code2 = <<CODE
+class Foo
+  def hello; "aaa"; end
+  def bye; "aaa"; end
+end
+CODE
+      File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code2) }
+      generator_tmp.write_spec("tmp/lib/foo.rb", true, true)
+      generator_tmp.write_spec("tmp/lib/foo.rb", true)
+    end
+
+    it 'works with rails controllers' do 
+      FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
+      FileUtils.mkdir_p('tmp/spec')
+
+      code = <<CODE
+class FooController
+end
+CODE
+      FileUtils.mkdir_p('tmp/app/controllers')
+      File.open('tmp/app/controllers/foo_controller.rb', 'w') { |f| f.write(code) }
+      generator_tmp.write_spec('tmp/app/controllers/foo_controller.rb', true, false, true)
+
+      code = <<CODE
+class FooController
+  def foo
+  end
+end
+CODE
+      File.open('tmp/app/controllers/foo_controller.rb', 'w') { |f| f.write(code) }
+      generator_tmp.write_spec('tmp/app/controllers/foo_controller.rb', true, false, true)
+    end
+
+    it 'works with rails helpers' do
+      FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
+      FileUtils.mkdir_p('tmp/spec')
+
+      code = <<CODE
+class FooHelper
+end
+CODE
+      FileUtils.mkdir_p('tmp/app/helpers')
+      File.open('tmp/app/helpers/foo_helper.rb', 'w') { |f| f.write(code) }
+      generator_tmp.write_spec('tmp/app/helpers/foo_helper.rb', true, false, true)
+
+      code = <<CODE
+class FooHelper
+  def foo
+  end
+end
+CODE
+      File.open('tmp/app/helpers/foo_helper.rb', 'w') { |f| f.write(code) }
+      generator_tmp.write_spec('tmp/app/helpers/foo_helper.rb', true, false, true)
+    end
+
   end
 
-  describe 'get_ruby_parser' do
+  describe '#get_ruby_parser' do
     it 'works' do
       file_path = 'lib/rspec_kickstarter.rb'
       result = generator.get_ruby_parser(file_path)
@@ -163,7 +294,7 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'get_spec_path' do
+  describe '#get_spec_path' do
     it 'works' do
       file_path = 'lib/foo/bar.rb'
       result = generator.get_spec_path(file_path)
@@ -176,7 +307,7 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'to_string_value_to_require' do
+  describe '#to_string_value_to_require' do
     it 'works' do
       file_path = 'lib/foo/bar.rb'
       result = generator.to_string_value_to_require(file_path)
@@ -185,7 +316,7 @@ describe RSpecKickstarter::Generator do
   end
 
 
-  describe 'get_rails_helper_method_invocation_code' do
+  describe '#get_rails_helper_method_invocation_code' do
     it 'works' do
       c = stub(:c)
       c.stubs(:name).returns("ClassName")
@@ -202,7 +333,7 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe 'get_rails_http_method' do
+  describe '#get_rails_http_method' do
     it 'works' do
       expect(generator.get_rails_http_method('foo')).to eq('get')
       expect(generator.get_rails_http_method('index')).to eq('get')

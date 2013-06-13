@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe RSpecKickstarter do
 
-  describe 'write_spec' do
+  describe '#write_spec' do
     it 'works' do
       file_path = 'lib/rspec_kickstarter.rb'
       spec_dir = './spec'
