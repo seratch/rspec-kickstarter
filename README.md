@@ -66,7 +66,7 @@ require 'foo/bar_baz'
 describe Foo::BarBaz do
 
   # TODO auto-generated
-  describe 'xxx' do
+  describe '#xxx' do
     it 'works' do
       a = stub('a')
       b = stub('b')
@@ -76,7 +76,7 @@ describe Foo::BarBaz do
   end
 
   # TODO auto-generated
-  describe 'yyy' do
+  describe '#yyy' do
     it 'works' do
       bar_baz = Foo::BarBaz.new
       result = bar_baz.yyy()
@@ -124,7 +124,7 @@ The following code will be appended.
 ```ruby
 
   # TODO auto-generated
-  describe 'additional_ops' do
+  describe '#additional_ops' do
     it 'works' do
       bar_baz = Foo::BarBaz.new
       result = bar_baz.additional_ops()
@@ -153,56 +153,56 @@ require 'spec_helper'
 describe CommentsController do
 
   # TODO auto-generated
-  describe 'index' do
-    it 'returns OK' do
+  describe 'GET index' do
+    it 'works' do
       get :index, {}, {}
       expect(response.status).to eq(200)
     end
   end
 
   # TODO auto-generated
-  describe 'show' do
-    it 'returns OK' do
+  describe 'GET show' do
+    it 'works' do
       get :show, {}, {}
       expect(response.status).to eq(200)
     end
   end
 
   # TODO auto-generated
-  describe 'new' do
-    it 'returns OK' do
+  describe 'GET new' do
+    it 'works' do
       get :new, {}, {}
       expect(response.status).to eq(200)
     end
   end
 
   # TODO auto-generated
-  describe 'edit' do
-    it 'returns OK' do
+  describe 'GET edit' do
+    it 'works' do
       get :edit, {}, {}
       expect(response.status).to eq(200)
     end
   end
 
   # TODO auto-generated
-  describe 'create' do
-    it 'returns OK' do
+  describe 'POST create' do
+    it 'works' do
       post :create, {}, {}
       expect(response.status).to eq(200)
     end
   end
 
   # TODO auto-generated
-  describe 'update' do
-    it 'returns OK' do
+  describe 'PUT update' do
+    it 'works' do
       put :update, {}, {}
       expect(response.status).to eq(200)
     end
   end
 
   # TODO auto-generated
-  describe 'destroy' do
-    it 'returns OK' do
+  describe 'DELETE destroy' do
+    it 'works' do
       delete :destroy, {}, {}
       expect(response.status).to eq(200)
     end
