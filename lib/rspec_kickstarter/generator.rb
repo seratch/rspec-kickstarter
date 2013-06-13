@@ -197,6 +197,16 @@ class RSpecKickstarter::Generator
     params.split(',').map { |p| p.gsub(/[\(\)\s]/, '').gsub(/=.+$/, '') }.reject { |p| p.nil? || p.empty? }
   end
 
+  #
+  # Returns params part
+  # e.g. ["a","b"] -> "(a, b)"
+  # e.g. [] -> ""
+  #
+  def to_params_part(params)
+    param_csv = to_param_names_array(params).join(', ')
+    param_csv.empty? ? "" : "(#{param_csv})"
+  end
+
   # 
   # Code generation
   #
@@ -216,7 +226,7 @@ class RSpecKickstarter::Generator
         "      #{instance_name(c)} = #{get_complete_class_name(c)}.new\n"
       else
         get_params_initialization_code(constructor) +
-          "      #{instance_name(c)} = #{get_complete_class_name(c)}.new(#{to_param_names_array(constructor.params).join(', ')})\n"
+          "      #{instance_name(c)} = #{get_complete_class_name(c)}.new#{to_params_part(constructor.params)}\n"
       end
     end
   end
@@ -236,14 +246,14 @@ class RSpecKickstarter::Generator
   #
   def get_method_invocation_code(c, method)
     target = method.singleton ? get_complete_class_name(c) : instance_name(c)
-    "#{target}.#{method.name}(#{to_param_names_array(method.params).join(', ')})#{get_block_code(method)}"
+    "#{target}.#{method.name}#{to_params_part(method.params)}#{get_block_code(method)}"
   end
 
   #
   # e.g. do_something(a, b) { |c| }
   #
   def get_rails_helper_method_invocation_code(method)
-    "#{method.name}(#{to_param_names_array(method.params).join(', ')})#{get_block_code(method)}"
+    "#{method.name}#{to_params_part(method.params)}#{get_block_code(method)}"
   end
 
   #
@@ -265,7 +275,7 @@ class RSpecKickstarter::Generator
   BASIC_METHODS_PART_TEMPLATE = <<SPEC
 <%- methods_to_generate.map { |method| %>
   # TODO auto-generated
-  describe '<%= method.name %>' do
+  describe '#<%= method.name %>' do
     it 'works' do
 <%- unless get_instantiation_code(c, method).nil?      -%><%= get_instantiation_code(c, method) %><%- end -%>
 <%- unless get_params_initialization_code(method).nil? -%><%= get_params_initialization_code(method) %><%- end -%>
@@ -301,8 +311,8 @@ SPEC
   RAILS_CONTROLLER_METHODS_PART_TEMPLATE = <<SPEC
 <%- methods_to_generate.map { |method| %>
   # TODO auto-generated
-  describe '<%= method.name %>' do
-    it 'returns OK' do
+  describe '<%= get_rails_http_method(method.name).upcase %> <%= method.name %>' do
+    it 'works' do
       <%= get_rails_http_method(method.name) %> :<%= method.name %>, {}, {}
       expect(response.status).to eq(200)
     end
@@ -323,7 +333,7 @@ SPEC
   RAILS_HELPER_METHODS_PART_TEMPLATE = <<SPEC
 <%- methods_to_generate.map { |method| %>
   # TODO auto-generated
-  describe '<%= method.name %>' do
+  describe '#<%= method.name %>' do
     it 'works' do
       result = <%= get_rails_helper_method_invocation_code(method) %>
       expect(result).not_to be_nil
