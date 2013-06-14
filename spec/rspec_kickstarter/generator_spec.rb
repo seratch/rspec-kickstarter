@@ -4,8 +4,7 @@ require 'rspec_kickstarter/generator'
 
 describe RSpecKickstarter::Generator do
 
-  let(:generator) { RSpecKickstarter::Generator.new }
-  let(:generator_tmp) { RSpecKickstarter::Generator.new("tmp/spec") }
+  let(:generator) { RSpecKickstarter::Generator.new("tmp/spec") }
 
   describe '#new' do
     it 'works without params' do
@@ -186,7 +185,7 @@ CODE
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code) }
 
       generator.full_template = "samples/full_template.erb"
-      generator.write_spec('tmp/lib/foo.rb', true)
+      generator.write_spec('tmp/lib/foo.rb')
     end
 
     it 'appends new cases' do
@@ -201,7 +200,7 @@ CODE
       FileUtils.mkdir_p('tmp/lib')
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code) }
 
-      generator_tmp.write_spec('tmp/lib/foo.rb')
+      generator.write_spec('tmp/lib/foo.rb')
 
       code2 = <<CODE
 class Foo
@@ -210,8 +209,8 @@ class Foo
 end
 CODE
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code2) }
-      generator_tmp.write_spec("tmp/lib/foo.rb", true, true)
-      generator_tmp.write_spec("tmp/lib/foo.rb", true)
+      generator.write_spec("tmp/lib/foo.rb", true, true)
+      generator.write_spec("tmp/lib/foo.rb", true)
     end
 
     it 'appends new cases with delta_template' do
@@ -226,8 +225,8 @@ CODE
       FileUtils.mkdir_p('tmp/lib')
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code) }
 
-      generator_tmp.delta_template = "sample/delta_template.erb"
-      generator_tmp.write_spec('tmp/lib/foo.rb')
+      generator.delta_template = "sample/delta_template.erb"
+      generator.write_spec('tmp/lib/foo.rb')
 
       code2 = <<CODE
 class Foo
@@ -236,8 +235,8 @@ class Foo
 end
 CODE
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code2) }
-      generator_tmp.write_spec("tmp/lib/foo.rb", true, true)
-      generator_tmp.write_spec("tmp/lib/foo.rb", true)
+      generator.write_spec("tmp/lib/foo.rb", true, true)
+      generator.write_spec("tmp/lib/foo.rb", true)
     end
 
     it 'works with rails controllers' do 
@@ -250,7 +249,7 @@ end
 CODE
       FileUtils.mkdir_p('tmp/app/controllers')
       File.open('tmp/app/controllers/foo_controller.rb', 'w') { |f| f.write(code) }
-      generator_tmp.write_spec('tmp/app/controllers/foo_controller.rb', true, false, true)
+      generator.write_spec('tmp/app/controllers/foo_controller.rb', true, false, true)
 
       code = <<CODE
 class FooController
@@ -259,7 +258,7 @@ class FooController
 end
 CODE
       File.open('tmp/app/controllers/foo_controller.rb', 'w') { |f| f.write(code) }
-      generator_tmp.write_spec('tmp/app/controllers/foo_controller.rb', true, false, true)
+      generator.write_spec('tmp/app/controllers/foo_controller.rb', true, false, true)
     end
 
     it 'works with rails helpers' do
@@ -272,7 +271,7 @@ end
 CODE
       FileUtils.mkdir_p('tmp/app/helpers')
       File.open('tmp/app/helpers/foo_helper.rb', 'w') { |f| f.write(code) }
-      generator_tmp.write_spec('tmp/app/helpers/foo_helper.rb', true, false, true)
+      generator.write_spec('tmp/app/helpers/foo_helper.rb', true, false, true)
 
       code = <<CODE
 class FooHelper
@@ -281,7 +280,7 @@ class FooHelper
 end
 CODE
       File.open('tmp/app/helpers/foo_helper.rb', 'w') { |f| f.write(code) }
-      generator_tmp.write_spec('tmp/app/helpers/foo_helper.rb', true, false, true)
+      generator.write_spec('tmp/app/helpers/foo_helper.rb', true, false, true)
     end
 
   end
@@ -298,12 +297,12 @@ CODE
     it 'works' do
       file_path = 'lib/foo/bar.rb'
       result = generator.get_spec_path(file_path)
-      expect(result).to eq('./spec/foo/bar_spec.rb')
+      expect(result).to eq('tmp/spec/foo/bar_spec.rb')
     end
     it 'works with path which starts with current dir' do
       file_path = './lib/foo/bar.rb'
       result = generator.get_spec_path(file_path)
-      expect(result).to eq('./spec/foo/bar_spec.rb')
+      expect(result).to eq('tmp/spec/foo/bar_spec.rb')
     end
   end
 

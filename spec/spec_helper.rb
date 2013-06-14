@@ -1,13 +1,15 @@
-require 'coveralls'
-Coveralls.wear!
-
 require 'simplecov'
-require 'simplecov-rcov'
-SimpleCov.start
-SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+
+
+if ENV['TRAVIS']
+  require 'coveralls'
+  Coveralls.wear!
+else
+  require 'simplecov'
+  SimpleCov.start
+end
 
 RSpec.configure do |config|
   config.mock_framework = :mocha
 end
-
 
