@@ -40,18 +40,9 @@ class RSpecKickstarter::Generator
         if lacking_methods.empty? 
           puts "#{spec_path} skipped."
         else
+          # Since 'methods_to_generate' is used in ERB template, don't delete.
           methods_to_generate = lacking_methods
-
-          if ! @delta_template.nil? 
-            additional_spec = ERB.new(@delta_template, nil, '-', '_additional_spec_code').result(binding)
-          elsif rails_mode && spec_path.match(/controllers/)
-            additional_spec = ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-', '_additional_spec_code').result(binding)
-          elsif rails_mode && spec_path.match(/helpers/)
-            additional_spec = ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-', '_additional_spec_code').result(binding)
-          else
-            additional_spec = ERB.new(BASIC_METHODS_PART_TEMPLATE, nil, '-', '_additional_spec_code').result(binding)
-          end
-
+          additional_spec = create_erb_instance(rails_mode, spec_path).result(binding)
           last_end_not_found = true
           code = existing_spec.split("\n").reverse.reject { |line| 
             if last_end_not_found 
@@ -72,18 +63,11 @@ class RSpecKickstarter::Generator
 
       else
         # Create a new spec 
-        self_path = to_string_value_to_require(file_path)
-        methods_to_generate = c.method_list.select { |m| m.visibility == :public }
 
-        if ! @full_template.nil?
-          code = ERB.new(@full_template, nil, '-', '_new_spec_code').result(binding)
-        elsif rails_mode && self_path.match(/controllers/) 
-          code = ERB.new(RAILS_CONTROLLER_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
-        elsif rails_mode && self_path.match(/helpers/) 
-          code = ERB.new(RAILS_HELPER_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
-        else
-          code = ERB.new(BASIC_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code').result(binding)
-        end
+        # Since 'methods_to_generate' is used in ERB template, don't delete.
+        methods_to_generate = c.method_list.select { |m| m.visibility == :public }
+        self_path = to_string_value_to_require(file_path)
+        code = create_erb_instance(rails_mode, self_path).result(binding)
 
         if dry_run
           puts "----- #{spec_path} -----"
@@ -205,6 +189,21 @@ class RSpecKickstarter::Generator
   def to_params_part(params)
     param_csv = to_param_names_array(params).join(', ')
     param_csv.empty? ? "" : "(#{param_csv})"
+  end
+
+  #
+  # Returns ERB instance
+  #
+  def create_erb_instance(rails_mode, target_path)
+    if ! @full_template.nil?
+      ERB.new(@full_template, nil, '-', '_new_spec_code')
+    elsif rails_mode && target_path.match(/controllers/)
+      ERB.new(RAILS_CONTROLLER_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code')
+    elsif rails_mode && target_path.match(/helpers/)
+      ERB.new(RAILS_HELPER_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code')
+    else
+      ERB.new(BASIC_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code')
+    end
   end
 
   # 
