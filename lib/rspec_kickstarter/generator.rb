@@ -113,8 +113,8 @@ class RSpecKickstarter::Generator
     end
 
     # RDoc::Stats initialization
-    if RUBY_VERSION.to_f >= 2.0
-      # Ruby 2.0 requires RDoc::Store internally.
+    if defined?(RDoc::Store)
+      # RDoc 4.0.0 requires RDoc::Store internally.
       store = RDoc::Store.new
       top_level.store = store
       stats = RDoc::Stats.new(store, 1)
