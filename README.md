@@ -4,6 +4,7 @@ rspec-kickstarter supports you writing tests for existing code.
 
 [![Build Status](https://travis-ci.org/seratch/rspec-kickstarter.png)](https://travis-ci.org/seratch/rspec-kickstarter)
 [![Coverage Status](https://coveralls.io/repos/seratch/rspec-kickstarter/badge.png)](https://coveralls.io/r/seratch/rspec-kickstarter)
+[![Code Climate](https://codeclimate.com/github/seratch/rspec-kickstarter.png)](https://codeclimate.com/github/seratch/rspec-kickstarter)
 
 ## RubyKaigi 2013
 
