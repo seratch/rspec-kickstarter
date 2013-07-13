@@ -30,7 +30,7 @@ class RSpecKickstarter::RDocFactory
     top_level = RDoc::TopLevel.new(file_path)
     if RUBY_VERSION.to_f < 2.0
       # reset is removed since 2.0
-      RDoc::TopLevel.reset()
+      RDoc::TopLevel.reset
     end
 
     # RDoc::Stats initialization

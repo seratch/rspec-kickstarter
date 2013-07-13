@@ -24,7 +24,7 @@ class RSpecKickstarter::Generator
   # Writes new spec or appends to the existing spec.
   #
   def write_spec(file_path, force_write = false, dry_run = false, rails_mode = false)
-    class_or_module = RSpecKickstarter::RDocFactory::get_rdoc_class_or_module(file_path)
+    class_or_module = RSpecKickstarter::RDocFactory.get_rdoc_class_or_module(file_path)
     if class_or_module
       spec_path = get_spec_path(file_path)
       if force_write && File.exist?(spec_path)
@@ -53,7 +53,7 @@ class RSpecKickstarter::Generator
   # e.g. "lib/foo/bar_baz.rb" -> "spec/foo/bar_baz_spec.rb"
   #
   def get_spec_path(file_path)
-    spec_dir + '/' + file_path.gsub(/^\.\//, '').gsub(/^(lib\/)|(app\/)/, '').gsub(/\.rb$/, '_spec.rb')
+    spec_dir + '/' + file_path.gsub(/^\.\//, '').gsub(%r{^(lib/)|(app/)}, '').gsub(/\.rb$/, '_spec.rb')
   end
 
   #
@@ -61,19 +61,19 @@ class RSpecKickstarter::Generator
   # e.g. "lib/foo/bar_baz.rb" -> "foo/bar_baz"
   #
   def to_string_value_to_require(file_path)
-    file_path.gsub(/^(lib\/)|(app\/)/, '').gsub(/\.rb$/, '')
+    file_path.gsub(%r{^(lib/)|(app/)}, '').gsub(/\.rb$/, '')
   end
 
-  # 
+  #
   # Returns snake_case name.
   # e.g. FooBar -> "foo_bar"
   #
   def instance_name(c)
     c.name
       .gsub(/::/, '/')
-      .gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
-      .gsub(/([a-z\d])([A-Z])/,'\1_\2')
-      .tr("-", "_")
+      .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+      .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+      .tr('-', '_')
       .downcase
   end
 
@@ -93,7 +93,7 @@ class RSpecKickstarter::Generator
   #
   def to_params_part(params)
     param_csv = to_param_names_array(params).join(', ')
-    param_csv.empty? ? "" : "(#{param_csv})"
+    param_csv.empty? ? '' : "(#{param_csv})"
   end
 
   #
@@ -141,15 +141,14 @@ class RSpecKickstarter::Generator
 
       erb = RSpecKickstarter::ERBFactory.new(@delta_template).get_instance_for_appending(rails_mode, spec_path)
       additional_spec = erb.result(binding)
+
       last_end_not_found = true
       code = existing_spec.split("\n").reverse.reject { |line|
-        if last_end_not_found
-          last_end_not_found = line.gsub(/#.+$/, '').strip != "end"
-          true
-        else
-          false
-        end
+        before_modified = last_end_not_found
+        last_end_not_found = line.gsub(/#.+$/, '').strip != 'end' if before_modified
+        before_modified
       }.reverse.join("\n") + "\n" + additional_spec + "\nend\n"
+
       if dry_run
         puts "----- #{spec_path} -----"
         puts code
@@ -172,7 +171,7 @@ class RSpecKickstarter::Generator
   #
   def get_instantiation_code(c, method)
     if method.singleton
-      ""
+     ''
     else
       constructor = c.method_list.find { |m| m.name == 'new' }
       if constructor.nil?
@@ -190,8 +189,8 @@ class RSpecKickstarter::Generator
   #     b = stub('b')
   #
   def get_params_initialization_code(method)
-    code = to_param_names_array(method.params).map { |p| "      #{p} = stub('#{p}')" }.join("\n") 
-    code.empty? ? "" : "#{code}\n"
+    code = to_param_names_array(method.params).map { |p| "      #{p} = stub('#{p}')" }.join("\n")
+    code.empty? ? '' : "#{code}\n"
   end
 
   #
@@ -214,7 +213,7 @@ class RSpecKickstarter::Generator
   #
   def get_block_code(method)
     if method.block_params.nil? || method.block_params.empty?
-      ""
+     ''
     else
       " { |#{method.block_params}| }"
     end

@@ -1,0 +1,44 @@
+AllCops:
+  Includes: []
+  Excludes: 
+    - 'bin/**'
+    - 'spec/**'
+    - 'tmp/**'
+
+LineLength:
+  Max: 119
+
+MethodLength:
+  CountComments: false 
+  Max: 30
+
+ParameterLists:
+  Max: 5
+  CountKeywordArgs: true
+
+Semicolon:
+  AllowAfterParameterListInOneLineMethods: false
+  AllowBeforeEndInOneLineMethods: true
+
+SingleLineMethods:
+  AllowIfMethodIsEmpty: true
+
+SpaceInsideHashLiteralBraces:
+  EnforcedStyleIsWithSpaces: true
+
+SymbolName:
+  AllowCamelCase: true
+
+BlockNesting:
+  Max: 3
+
+RegexpLiteral:
+  MaxSlashes: 1
+
+CollectionMethods:
+  PreferredMethods:
+    collect: 'map'
+    inject: 'reduce'
+    detect: 'find'
+    find_all: 'select'
+
