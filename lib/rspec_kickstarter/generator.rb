@@ -7,11 +7,14 @@ require 'rdoc/options'
 require 'rdoc/parser/ruby'
 require 'rdoc/stats'
 require 'rspec_kickstarter'
+require 'rspec_kickstarter/erb_factory'
+require 'rspec_kickstarter/erb_templates'
 
 #
 # RSpec Code Generator
 #
 class RSpecKickstarter::Generator
+  include RSpecKickstarter::ERBTemplates
 
   attr_accessor :spec_dir, :delta_template, :full_template
 
@@ -146,45 +149,17 @@ class RSpecKickstarter::Generator
   end
 
   #
-  # Returns ERB instance for creating new spec
-  #
-  def create_erb_instance_for_new_spec(rails_mode, target_path)
-    ERB.new(get_erb_template(@full_template, true, rails_mode, target_path), nil, '-', '_new_spec_code')
-  end
-
-  #
-  # Returns ERB instance for appeding lacking tests
-  #
-  def create_erb_instance_for_appending(rails_mode, target_path)
-    ERB.new(get_erb_template(@delta_template, false, rails_mode, target_path), nil, '-', '_additional_spec_code')
-  end
-
-  #
-  # Returns ERB template
-  #
-  def get_erb_template(custom_template, is_full, rails_mode, target_path)
-    if custom_template
-      custom_template
-    elsif rails_mode && target_path.match(/controllers/)
-      is_full ? RAILS_CONTROLLER_NEW_SPEC_TEMPLATE : RAILS_CONTROLLER_METHODS_PART_TEMPLATE
-    elsif rails_mode && target_path.match(/helpers/)
-      is_full ? RAILS_HELPER_NEW_SPEC_TEMPLATE : RAILS_HELPER_METHODS_PART_TEMPLATE
-    else
-      is_full ? BASIC_NEW_SPEC_TEMPLATE : BASIC_METHODS_PART_TEMPLATE
-    end
-  end
-
-  #
   # Creates new spec.
   #
   def create_new_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
-    # Since 'methods_to_generate' is used in ERB template, don't delete.
-    methods_to_generate = class_or_module.method_list.select { |m| m.visibility == :public }
-    # Since 'c' is used in ERB template, don't delete.
-    c = class_or_module
 
+    # These names are used in ERB template, don't delete.
+    methods_to_generate = class_or_module.method_list.select { |m| m.visibility == :public }
+    c = class_or_module
     self_path = to_string_value_to_require(file_path)
-    code = create_erb_instance_for_new_spec(rails_mode, self_path).result(binding)
+
+    erb = RSpecKickstarter::ERBFactory.new(@full_template).get_instance_for_new_spec(rails_mode, file_path)
+    code = erb.result(binding)
 
     if dry_run
       puts "----- #{spec_path} -----"
@@ -212,11 +187,12 @@ class RSpecKickstarter::Generator
     if lacking_methods.empty?
       puts "#{spec_path} skipped."
     else
-      # Since 'methods_to_generate' is used in ERB template, don't delete.
+      # These names are used in ERB template, don't delete.
       methods_to_generate = lacking_methods
-      # Since 'c' is used in ERB template, don't delete.
       c = class_or_module
-      additional_spec = create_erb_instance_for_appending(rails_mode, spec_path).result(binding)
+
+      erb = RSpecKickstarter::ERBFactory.new(@delta_template).get_instance_for_appending(rails_mode, spec_path)
+      additional_spec = erb.result(binding)
       last_end_not_found = true
       code = existing_spec.split("\n").reverse.reject { |line|
         if last_end_not_found
@@ -301,85 +277,15 @@ class RSpecKickstarter::Generator
     http_method.nil? ? 'get' : http_method
   end
 
-  BASIC_METHODS_PART_TEMPLATE = <<SPEC
-<%- methods_to_generate.map { |method| %>
-  # TODO auto-generated
-  describe '#<%= method.name %>' do
-    it 'works' do
-<%- unless get_instantiation_code(c, method).nil?      -%><%= get_instantiation_code(c, method) %><%- end -%>
-<%- unless get_params_initialization_code(method).nil? -%><%= get_params_initialization_code(method) %><%- end -%>
-      result = <%= get_method_invocation_code(c, method) %>
-      expect(result).not_to be_nil
-    end
-  end
-<% } %>
-SPEC
-
-  BASIC_NEW_SPEC_TEMPLATE = <<SPEC
-# -*- encoding: utf-8 -*-
-
-require 'spec_helper'
-<% unless rails_mode then %>require '<%= self_path %>'
-<% end -%>
-
-describe <%= get_complete_class_name(c) %> do
-<%= ERB.new(BASIC_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
-end
-SPEC
-
   RAILS_RESOURCE_METHOD_AND_HTTPMETHOD = {
     'index'   => 'get',
     'new'     => 'get',
-    'create'  => 'post', 
+    'create'  => 'post',
     'show'    => 'get',
     'edit'    => 'get',
     'update'  => 'put',
-    'destroy' => 'delete' 
+    'destroy' => 'delete'
   }
-
-  RAILS_CONTROLLER_METHODS_PART_TEMPLATE = <<SPEC
-<%- methods_to_generate.map { |method| %>
-  # TODO auto-generated
-  describe '<%= get_rails_http_method(method.name).upcase %> <%= method.name %>' do
-    it 'works' do
-      <%= get_rails_http_method(method.name) %> :<%= method.name %>, {}, {}
-      expect(response.status).to eq(200)
-    end
-  end
-<% } %>
-SPEC
-
-  RAILS_CONTROLLER_NEW_SPEC_TEMPLATE = <<SPEC
-# -*- encoding: utf-8 -*-
-
-require 'spec_helper'
-
-describe <%= get_complete_class_name(c) %> do
-<%= ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
-end
-SPEC
-
-  RAILS_HELPER_METHODS_PART_TEMPLATE = <<SPEC
-<%- methods_to_generate.map { |method| %>
-  # TODO auto-generated
-  describe '#<%= method.name %>' do
-    it 'works' do
-      result = <%= get_rails_helper_method_invocation_code(method) %>
-      expect(result).not_to be_nil
-    end
-  end
-<% } %>
-SPEC
-
-  RAILS_HELPER_NEW_SPEC_TEMPLATE = <<SPEC
-# -*- encoding: utf-8 -*-
-
-require 'spec_helper'
-
-describe <%= get_complete_class_name(c) %> do
-<%= ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
-end
-SPEC
 
 end
 
