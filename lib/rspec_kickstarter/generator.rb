@@ -8,6 +8,9 @@ require 'rdoc/parser/ruby'
 require 'rdoc/stats'
 require 'rspec_kickstarter'
 
+#
+# RSpec Code Generator
+#
 class RSpecKickstarter::Generator
 
   attr_accessor :spec_dir, :delta_template, :full_template
@@ -18,72 +21,23 @@ class RSpecKickstarter::Generator
     @full_template = full_template
   end
 
+  #
+  # Writes new spec or appends to the existing spec.
+  #
   def write_spec(file_path, force_write = false, dry_run = false, rails_mode = false)
-
     top_level = get_ruby_parser(file_path).scan
     c = extract_target_class_or_module(top_level)
 
-    if c.nil?
-      puts "#{file_path} skipped (Class/Module not found)."
-    else
-
+    if c
       spec_path = get_spec_path(file_path)
-
       if force_write && File.exist?(spec_path)
-        # Append to the existing spec or skip
-
-        existing_spec = File.read(spec_path)
-        lacking_methods = c.method_list
-          .select { |m| m.visibility == :public }
-          .reject { |m| existing_spec.match(m.name) }
-
-        if lacking_methods.empty? 
-          puts "#{spec_path} skipped."
-        else
-          # Since 'methods_to_generate' is used in ERB template, don't delete.
-          methods_to_generate = lacking_methods
-          additional_spec = create_erb_instance_for_appending(rails_mode, spec_path).result(binding)
-          last_end_not_found = true
-          code = existing_spec.split("\n").reverse.reject { |line| 
-            if last_end_not_found 
-              last_end_not_found = line.gsub(/#.+$/, '').strip != "end"
-              true
-            else
-              false
-            end
-          }.reverse.join("\n") + "\n" + additional_spec + "\nend\n"
-          if dry_run
-            puts "----- #{spec_path} -----"
-            puts code
-          else
-            File.open(spec_path, 'w') { |f| f.write(code) }
-          end
-          puts "#{spec_path} modified."
-        end
-
+        append_to_existing_spec(c, dry_run, rails_mode, spec_path)
       else
-        # Create a new spec 
-
-        # Since 'methods_to_generate' is used in ERB template, don't delete.
-        methods_to_generate = c.method_list.select { |m| m.visibility == :public }
-        self_path = to_string_value_to_require(file_path)
-        code = create_erb_instance_for_new_spec(rails_mode, self_path).result(binding)
-
-        if dry_run
-          puts "----- #{spec_path} -----"
-          puts code
-        else
-          if File.exist?(spec_path)
-            puts "#{spec_path} already exists."
-          else
-            FileUtils.mkdir_p(File.dirname(spec_path))
-            File.open(spec_path, 'w') { |f| f.write(code) }
-            puts "#{spec_path} created."
-          end
-        end
+        create_new_spec(c, dry_run, rails_mode, file_path, spec_path)
       end
+    else
+      puts "#{file_path} skipped (Class/Module not found)."
     end
-
   end
 
   #
@@ -221,9 +175,71 @@ class RSpecKickstarter::Generator
     end
   end
 
-  # 
-  # Code generation
   #
+  # Creates new spec.
+  #
+  def create_new_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
+    # Since 'methods_to_generate' is used in ERB template, don't delete.
+    methods_to_generate = class_or_module.method_list.select { |m| m.visibility == :public }
+    # Since 'c' is used in ERB template, don't delete.
+    c = class_or_module
+
+    self_path = to_string_value_to_require(file_path)
+    code = create_erb_instance_for_new_spec(rails_mode, self_path).result(binding)
+
+    if dry_run
+      puts "----- #{spec_path} -----"
+      puts code
+    else
+      if File.exist?(spec_path)
+        puts "#{spec_path} already exists."
+      else
+        FileUtils.mkdir_p(File.dirname(spec_path))
+        File.open(spec_path, 'w') { |f| f.write(code) }
+        puts "#{spec_path} created."
+      end
+    end
+  end
+
+  #
+  # Appends new tests to the existing spec.
+  #
+  def append_to_existing_spec(class_or_module, dry_run, rails_mode, spec_path)
+    existing_spec = File.read(spec_path)
+    lacking_methods = class_or_module.method_list
+      .select { |m| m.visibility == :public }
+      .reject { |m| existing_spec.match(m.name) }
+
+    if lacking_methods.empty?
+      puts "#{spec_path} skipped."
+    else
+      # Since 'methods_to_generate' is used in ERB template, don't delete.
+      methods_to_generate = lacking_methods
+      # Since 'c' is used in ERB template, don't delete.
+      c = class_or_module
+      additional_spec = create_erb_instance_for_appending(rails_mode, spec_path).result(binding)
+      last_end_not_found = true
+      code = existing_spec.split("\n").reverse.reject { |line|
+        if last_end_not_found
+          last_end_not_found = line.gsub(/#.+$/, '').strip != "end"
+          true
+        else
+          false
+        end
+      }.reverse.join("\n") + "\n" + additional_spec + "\nend\n"
+      if dry_run
+        puts "----- #{spec_path} -----"
+        puts code
+      else
+        File.open(spec_path, 'w') { |f| f.write(code) }
+      end
+      puts "#{spec_path} modified."
+    end
+  end
+
+  # -----
+  # Code generation
+  # -----
 
   #
   # e.g.

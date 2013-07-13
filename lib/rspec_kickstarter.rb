@@ -3,6 +3,9 @@
 require "rspec_kickstarter/generator"
 require "rspec_kickstarter/version"
 
+#
+# RSpecKickstarter Facade
+#
 module RSpecKickstarter
 
   def self.write_spec(file_path, spec_dir = './spec', force_write = false, dry_run = false)
