@@ -149,29 +149,28 @@ class RSpecKickstarter::Generator
   # Returns ERB instance for creating new spec
   #
   def create_erb_instance_for_new_spec(rails_mode, target_path)
-    if ! @full_template.nil? 
-      ERB.new(@full_template, nil, '-', '_new_spec_code')
-    elsif rails_mode && target_path.match(/controllers/)
-      ERB.new(RAILS_CONTROLLER_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code')
-    elsif rails_mode && target_path.match(/helpers/)
-      ERB.new(RAILS_HELPER_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code')
-    else
-      ERB.new(BASIC_NEW_SPEC_TEMPLATE, nil, '-', '_new_spec_code')
-    end
+    ERB.new(get_erb_template(@full_template, true, rails_mode, target_path), nil, '-', '_new_spec_code')
   end
 
   #
   # Returns ERB instance for appeding lacking tests
   #
   def create_erb_instance_for_appending(rails_mode, target_path)
-    if ! @delta_template.nil?
-      ERB.new(@delta_template, nil, '-', '_additional_spec_code')
+    ERB.new(get_erb_template(@delta_template, false, rails_mode, target_path), nil, '-', '_additional_spec_code')
+  end
+
+  #
+  # Returns ERB template
+  #
+  def get_erb_template(custom_template, is_full, rails_mode, target_path)
+    if custom_template
+      custom_template
     elsif rails_mode && target_path.match(/controllers/)
-      ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-', '_additional_spec_code')
+      is_full ? RAILS_CONTROLLER_NEW_SPEC_TEMPLATE : RAILS_CONTROLLER_METHODS_PART_TEMPLATE
     elsif rails_mode && target_path.match(/helpers/)
-      ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-', '_additional_spec_code')
+      is_full ? RAILS_HELPER_NEW_SPEC_TEMPLATE : RAILS_HELPER_METHODS_PART_TEMPLATE
     else
-      ERB.new(BASIC_METHODS_PART_TEMPLATE, nil, '-', '_additional_spec_code')
+      is_full ? BASIC_NEW_SPEC_TEMPLATE : BASIC_METHODS_PART_TEMPLATE
     end
   end
 
