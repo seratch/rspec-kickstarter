@@ -1,14 +1,10 @@
 # -*- encoding: utf-8 -*-
 
-require 'erb'
 require 'rdoc'
-require 'rdoc/generator'
-require 'rdoc/options'
-require 'rdoc/parser/ruby'
-require 'rdoc/stats'
 require 'rspec_kickstarter'
 require 'rspec_kickstarter/erb_factory'
 require 'rspec_kickstarter/erb_templates'
+require 'rspec_kickstarter/rdoc_factory'
 
 #
 # RSpec Code Generator
@@ -28,15 +24,13 @@ class RSpecKickstarter::Generator
   # Writes new spec or appends to the existing spec.
   #
   def write_spec(file_path, force_write = false, dry_run = false, rails_mode = false)
-    top_level = get_ruby_parser(file_path).scan
-    c = extract_target_class_or_module(top_level)
-
-    if c
+    class_or_module = RSpecKickstarter::RDocFactory::get_rdoc_class_or_module(file_path)
+    if class_or_module
       spec_path = get_spec_path(file_path)
       if force_write && File.exist?(spec_path)
-        append_to_existing_spec(c, dry_run, rails_mode, spec_path)
+        append_to_existing_spec(class_or_module, dry_run, rails_mode, spec_path)
       else
-        create_new_spec(c, dry_run, rails_mode, file_path, spec_path)
+        create_new_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
       end
     else
       puts "#{file_path} skipped (Class/Module not found)."
@@ -44,57 +38,11 @@ class RSpecKickstarter::Generator
   end
 
   #
-  # Creates new RDoc::Parser::Ruby instance.
-  #
-  def get_ruby_parser(file_path)
-    top_level = RDoc::TopLevel.new(file_path)
-    if RUBY_VERSION.to_f < 2.0
-      # reset is removed since 2.0
-      RDoc::TopLevel.reset()
-    end
-
-    # RDoc::Stats initialization
-    if defined?(RDoc::Store)
-      # RDoc 4.0.0 requires RDoc::Store internally.
-      store = RDoc::Store.new
-      top_level.store = store
-      stats = RDoc::Stats.new(store, 1)
-    else
-      stats = RDoc::Stats.new(1)
-    end
-
-    RDoc::Parser::Ruby.new(
-      top_level,
-      file_path,
-      File.read(file_path),
-      RDoc::Options.new,
-      stats
-    )
-  end
-
-  #
-  # Extracts RDoc::NormalClass/RDoc::NormalModule from RDoc::TopLevel.
-  #
-  def extract_target_class_or_module(top_level)
-    c = top_level.classes.first
-    if c.nil?
-      m = top_level.modules.first
-      if m.nil?
-        top_level.is_a?(RDoc::NormalModule) ? top_level : nil
-      else
-        extract_target_class_or_module(m)
-      end
-    else
-      c
-    end
-  end
-
-  #
   # Gets the complete class name from RDoc::NormalClass/RDoc::NormalModule instance.
   #
-  def get_complete_class_name(c, name = c.name)
-    if !c.parent.name.nil? && c.parent.is_a?(RDoc::NormalModule)
-      get_complete_class_name(c.parent, "#{c.parent.name}::#{name}")
+  def get_complete_class_name(class_or_module, name = class_or_module.name)
+    if !class_or_module.parent.name.nil? && class_or_module.parent.is_a?(RDoc::NormalModule)
+      get_complete_class_name(class_or_module.parent, "#{class_or_module.parent.name}::#{name}")
     else
       name
     end

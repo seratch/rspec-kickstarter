@@ -18,16 +18,6 @@ describe RSpecKickstarter::Generator do
     end
   end
 
-  describe '#extract_target_class_or_module' do
-    it 'works' do
-      class1 = "Class1"
-      top_level = stub(:top_level)
-      top_level.stubs(:classes).returns([class1])
-      result = generator.extract_target_class_or_module(top_level)
-      expect(result).to eq(class1)
-    end
-  end
-
   describe '#get_complete_class_name' do
     it 'works' do
       c = stub(:c)
@@ -283,14 +273,6 @@ CODE
       generator.write_spec('tmp/app/helpers/foo_helper.rb', true, false, true)
     end
 
-  end
-
-  describe '#get_ruby_parser' do
-    it 'works' do
-      file_path = 'lib/rspec_kickstarter.rb'
-      result = generator.get_ruby_parser(file_path)
-      expect(result).not_to be_nil
-    end
   end
 
   describe '#get_spec_path' do
