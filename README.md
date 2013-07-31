@@ -69,8 +69,8 @@ describe Foo::BarBaz do
   # TODO auto-generated
   describe '#xxx' do
     it 'works' do
-      a = stub('a')
-      b = stub('b')
+      a = double('a')
+      b = double('b')
       result = Foo::BarBaz.xxx(a, b)
       expect(result).not_to be_nil
     end

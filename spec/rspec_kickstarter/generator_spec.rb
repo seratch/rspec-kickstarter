@@ -4,7 +4,7 @@ require 'rspec_kickstarter/generator'
 
 describe RSpecKickstarter::Generator do
 
-  let(:generator) { RSpecKickstarter::Generator.new("tmp/spec") }
+  let(:generator) { RSpecKickstarter::Generator.new('tmp/spec') }
 
   describe '#new' do
     it 'works without params' do
@@ -13,6 +13,7 @@ describe RSpecKickstarter::Generator do
     end
     it 'works' do
       spec_dir = './spec'
+
       result = RSpecKickstarter::Generator.new(spec_dir)
       expect(result).not_to be_nil
     end
@@ -20,28 +21,28 @@ describe RSpecKickstarter::Generator do
 
   describe '#get_complete_class_name' do
     it 'works' do
-      c = stub(:c)
-      parent = stub(:parent)
-      parent.stubs(:name).returns("Foo")
-      c.stubs(:parent).returns(parent)
-      name = "ClassName"
+      parent = double(:parent, name: nil)
+      c = double(:c, parent: parent)
+      name = 'ClassName'
+
       result = generator.get_complete_class_name(c, name)
-      expect(result).to eq("ClassName")
+      expect(result).to eq('ClassName')
     end
   end
 
   describe '#instance_name' do
     it 'works' do
-      c = stub(:c)
-      c.stubs(:name).returns("generator")
+      c = double(:c, name: 'generator')
+
       result = generator.instance_name(c)
-      expect(result).to eq("generator")
+      expect(result).to eq('generator')
     end
   end
 
   describe '#to_param_names_array' do
     it 'works' do
       params = "(a, b = 'foo', c = 123)"
+
       result = generator.to_param_names_array(params)
       expect(result).to eq(['a', 'b', 'c'])
     end
@@ -49,34 +50,27 @@ describe RSpecKickstarter::Generator do
 
   describe '#get_params_initialization_code' do
     it 'works' do
-      method = stub(:method)
-      method.stubs(:params).returns("(a = 1,b = 'aaaa')")
+      method = double(:method, params: "(a = 1,b = 'aaaa')")
+
       result = generator.get_params_initialization_code(method)
-      expect(result).to eq("      a = stub('a')\n      b = stub('b')\n")
+      expect(result).to eq("      a = double('a')\n      b = double('b')\n")
     end
   end
 
   describe '#get_instantiation_code' do
     it 'works with modules' do
-      c = stub(:c)
-      c.stubs(:name).returns("Foo")
-      method = stub(:method)
-      method.stubs(:singleton).returns(true)
-      method.stubs(:name).returns("to_something")
-      c.stubs(:method_list).returns([method])
+      method = double(:method, singleton: true, name: 'do_something')
+      c = double(:c, name: 'Foo', method_list: [method])
+
       result = generator.get_instantiation_code(c, method)
-      expect(result).to eq("")
+      expect(result).to eq('')
     end
+
     it 'works with classes' do
-      c = stub(:c)
-      c.stubs(:name).returns("Foo")
-      parent = stub(:parent)
-      parent.stubs(:name).returns(nil)
-      c.stubs(:parent).returns(parent)
-      method = stub(:method)
-      method.stubs(:singleton).returns(false)
-      method.stubs(:name).returns("to_something")
-      c.stubs(:method_list).returns([method])
+      parent = double(:parent, name: nil)
+      method = double(:method, singleton: false, name: 'do_something')
+      c = double(:c, name: 'Foo', parent: parent, method_list: [method])
+
       result = generator.get_instantiation_code(c, method)
       expect(result).to eq("      foo = Foo.new\n")
     end
@@ -84,53 +78,41 @@ describe RSpecKickstarter::Generator do
 
   describe '#get_method_invocation_code' do
     it 'works with modules' do
-      c = stub(:c)
-      c.stubs(:name).returns("Module")
-      parent = stub(:parent)
-      parent.stubs(:name).returns(nil)
-      c.stubs(:parent).returns(parent)
-      method = stub(:method)
-      method.stubs(:singleton).returns(true)
-      method.stubs(:name).returns("to_something")
-      method.stubs(:params).returns("(a, b)")
-      method.stubs(:block_params).returns("")
+      parent = double(:parent, name: nil)
+      method = double(:method, singleton: true, name: 'do_something', params: '(a, b)', block_params: '')
+      c = double(:c, name: 'Module', parent: parent, method_list: [method])
+
       result = generator.get_method_invocation_code(c, method)
-      expect(result).to eq("Module.to_something(a, b)")
+      expect(result).to eq('Module.do_something(a, b)')
     end
     it 'works with classes' do
-      c = stub(:c)
-      c.stubs(:name).returns("ClassName")
-      parent = stub(:parent)
-      parent.stubs(:name).returns(nil)
-      c.stubs(:parent).returns(parent)
-      method = stub(:method)
-      method.stubs(:singleton).returns(false)
-      method.stubs(:name).returns("to_something")
-      method.stubs(:params).returns("(a, b)")
-      method.stubs(:block_params).returns("")
+      parent = double(:parent, name: 'Module')
+      method = double(:method, singleton: false, name: 'do_something', params: '(a, b)', block_params: '')
+      c = double(:c, name: 'ClassName', parent: parent, method_list: [method])
+
       result = generator.get_method_invocation_code(c, method)
-      expect(result).to eq("class_name.to_something(a, b)")
+      expect(result).to eq('class_name.do_something(a, b)')
     end
   end
 
   describe '#get_block_code' do
     it 'works with no arg' do
-      method = stub(:method)
-      method.stubs(:block_params).returns("")
+      method = double(:method, block_params: '')
+
       result = generator.get_block_code(method)
-      expect(result).to eq("")
+      expect(result).to eq('')
     end
     it 'works with 1 arg block' do
-      method = stub(:method)
-      method.stubs(:block_params).returns("a")
+      method = double(:method, block_params: 'a')
+
       result = generator.get_block_code(method)
-      expect(result).to eq(" { |a| }")
+      expect(result).to eq(' { |a| }')
     end
     it 'works with 2 args block' do
-      method = stub(:method)
-      method.stubs(:block_params).returns("a, b")
+      method = double(:method, block_params: 'a, b')
+
       result = generator.get_block_code(method)
-      expect(result).to eq(" { |a, b| }")
+      expect(result).to eq(' { |a, b| }')
     end
   end
 
@@ -143,22 +125,22 @@ describe RSpecKickstarter::Generator do
   describe '#write_spec' do
 
     it 'just works' do
-      file_path = "lib/rspec_kickstarter.rb"
+      file_path = 'lib/rspec_kickstarter.rb'
       generator.write_spec(file_path)
     end
 
     it 'works with -f option' do
-      file_path = "lib/rspec_kickstarter.rb"
+      file_path = 'lib/rspec_kickstarter.rb'
       generator.write_spec(file_path, true)
     end
 
     it 'works with -n option' do
-      file_path = "lib/rspec_kickstarter.rb"
+      file_path = 'lib/rspec_kickstarter.rb'
       generator.write_spec(file_path, false, true)
     end
 
     it 'works with no target class' do
-      file_path = "lib/rspec_kickstarter.rb"
+      file_path = 'lib/rspec_kickstarter.rb'
       CannotExtractTargetClass.new.write_spec(file_path, true)
     end
 
@@ -168,13 +150,13 @@ describe RSpecKickstarter::Generator do
 
       code = <<CODE
 class Foo
-  def hello; "aaa"; end
+  def hello; 'aaa'; end
 end
 CODE
       FileUtils.mkdir_p('tmp/lib')
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code) }
 
-      generator.full_template = "samples/full_template.erb"
+      generator.full_template = 'samples/full_template.erb'
       generator.write_spec('tmp/lib/foo.rb')
     end
 
@@ -184,7 +166,7 @@ CODE
 
       code = <<CODE
 class Foo
-  def hello; "aaa"; end
+  def hello; 'aaa'; end
 end
 CODE
       FileUtils.mkdir_p('tmp/lib')
@@ -194,13 +176,13 @@ CODE
 
       code2 = <<CODE
 class Foo
-  def hello; "aaa"; end
-  def bye; "aaa"; end
+  def hello; 'aaa'; end
+  def bye; 'aaa'; end
 end
 CODE
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code2) }
-      generator.write_spec("tmp/lib/foo.rb", true, true)
-      generator.write_spec("tmp/lib/foo.rb", true)
+      generator.write_spec('tmp/lib/foo.rb', true, true)
+      generator.write_spec('tmp/lib/foo.rb', true)
     end
 
     it 'appends new cases with delta_template' do
@@ -209,24 +191,24 @@ CODE
 
       code = <<CODE
 class Foo
-  def hello; "aaa"; end
+  def hello; 'aaa'; end
 end
 CODE
       FileUtils.mkdir_p('tmp/lib')
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code) }
 
-      generator.delta_template = "sample/delta_template.erb"
+      generator.delta_template = 'sample/delta_template.erb'
       generator.write_spec('tmp/lib/foo.rb')
 
       code2 = <<CODE
 class Foo
-  def hello; "aaa"; end
-  def bye; "aaa"; end
+  def hello; 'aaa'; end
+  def bye; 'aaa'; end
 end
 CODE
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code2) }
-      generator.write_spec("tmp/lib/foo.rb", true, true)
-      generator.write_spec("tmp/lib/foo.rb", true)
+      generator.write_spec('tmp/lib/foo.rb', true, true)
+      generator.write_spec('tmp/lib/foo.rb', true)
     end
 
     it 'works with rails controllers' do 
@@ -299,18 +281,12 @@ CODE
 
   describe '#get_rails_helper_method_invocation_code' do
     it 'works' do
-      c = stub(:c)
-      c.stubs(:name).returns("ClassName")
-      parent = stub(:parent)
-      parent.stubs(:name).returns(nil)
-      c.stubs(:parent).returns(parent)
-      method = stub(:method)
-      method.stubs(:singleton).returns(false)
-      method.stubs(:name).returns("to_something")
-      method.stubs(:params).returns("(a, b)")
-      method.stubs(:block_params).returns("")
+      parent = double(:parent, name: nil)
+      c = double(:c, name: 'ClassName', parent: parent)
+      method = double(:method, singleton: false, name: 'do_something', params: '(a, b)', block_params: '')
+
       result = generator.get_rails_helper_method_invocation_code(method)
-      expect(result).to eq("to_something(a, b)")
+      expect(result).to eq('do_something(a, b)')
     end
   end
 

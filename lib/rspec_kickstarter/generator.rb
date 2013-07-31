@@ -165,8 +165,8 @@ class RSpecKickstarter::Generator
 
   #
   # e.g.
-  #     a = stub('a')
-  #     b = stub('b')
+  #     a = double('a')
+  #     b = double('b')
   #     bar_baz = BarBaz.new(a, b)
   #
   def get_instantiation_code(c, method)
@@ -185,11 +185,11 @@ class RSpecKickstarter::Generator
 
   #
   # e.g.
-  #     a = stub('a')
-  #     b = stub('b')
+  #     a = double('a')
+  #     b = double('b')
   #
   def get_params_initialization_code(method)
-    code = to_param_names_array(method.params).map { |p| "      #{p} = stub('#{p}')" }.join("\n")
+    code = to_param_names_array(method.params).map { |p| "      #{p} = double('#{p}')" }.join("\n")
     code.empty? ? '' : "#{code}\n"
   end
 
