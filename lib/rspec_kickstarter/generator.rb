@@ -220,11 +220,11 @@ class RSpecKickstarter::Generator
   end
 
   def get_rails_http_method(method_name)
-    http_method = RAILS_RESOURCE_METHOD_AND_HTTPMETHOD[method_name]
+    http_method = RAILS_RESOURCE_METHOD_AND_HTTP_METHOD[method_name]
     http_method.nil? ? 'get' : http_method
   end
 
-  RAILS_RESOURCE_METHOD_AND_HTTPMETHOD = {
+  RAILS_RESOURCE_METHOD_AND_HTTP_METHOD = {
     'index'   => 'get',
     'new'     => 'get',
     'create'  => 'post',
