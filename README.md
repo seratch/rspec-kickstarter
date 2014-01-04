@@ -27,6 +27,27 @@ https://rubygems.org/gems/rspec-kickstarter
     rspec-kickstarter ./lib
     rspec-kickstarter ./lib/yourapp/util.rb
 
+## Options
+
+```
+$ rspec-kickstarter -h
+Usage: rspec-kickstarter [options]
+    -f                               Create if absent or append to the existing spec
+        --force
+    -n                               Dry run mode (shows generated code to console)
+        --dry-run
+    -r                               Run in Rails mode
+        --rails
+    -o VAL                           Output directory (default: ./spec)
+        --output-dir VAL
+    -D VAL                           Delta tempalte path (e.g. ./rails_controller_delta.erb)
+        --delta-template VAL
+    -F VAL                           Full template path (e.g. ./rails_controller_full.erb)
+        --full-template VAL
+    -v                               Print version
+        --version
+```
+
 ## Output example
 
 Unfortunately, `lib/foo/bar_baz.rb` has no test. That's too bad...
@@ -213,33 +234,18 @@ end
 ```
 
 
-## Constomizable code template
+## Customizable code template
 
-See the template_samples.
+Try the template_samples.
 
 ```
 ruby -Ilib bin/rspec-kickstarter --delta-template=samples/delta_template.erb --full-template=samples/full_template.erb lib/foo.rb -n
 ```
 
-## Options
+When you use customized templates for your apps, `gem install rspec-kickstarter` and do like this:
 
 ```
-$ rspec-kickstarter -h
-Usage: rspec-kickstarter [options]
-    -f                               Create if absent or append to the existing spec
-        --force
-    -n                               Dry run mode (shows generated code to console)
-        --dry-run
-    -r                               Run in Rails mode
-        --rails
-    -o VAL                           Output directory (default: ./spec)
-        --output-dir VAL
-    -D VAL                           Delta tempalte path (e.g. ./rails_controller_delta.erb)
-        --delta-template VAL
-    -F VAL                           Full template path (e.g. ./rails_controller_full.erb)
-        --full-template VAL
-    -v                               Print version
-        --version
+rspec-kickstarter lib -D misc/delta_template.erb -F misc/full_template.erb
 ```
 
 ## License
