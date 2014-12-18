@@ -248,6 +248,13 @@ When you use customized templates for your apps, `gem install rspec-kickstarter`
 rspec-kickstarter lib -D misc/delta_template.erb -F misc/full_template.erb
 ```
 
+## Vintage fork 
+
+https://github.com/ifad/rspec-kickstarter-vintage
+
+This fork supports ruby 1.8.7 and RSpec 1.x with the old syntax.
+
+
 ## License
 
 Copyright (c) 2013 Kazuhiro Sera
