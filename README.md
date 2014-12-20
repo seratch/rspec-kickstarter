@@ -1,6 +1,6 @@
 # rspec-kickstarter
 
-rspec-kickstarter supports you writing tests for existing code.
+RSpec 3 code generator toward existing Ruby code. This gem will help you working on existing legacy code which has no tests.
 
 [![Build Status](https://travis-ci.org/seratch/rspec-kickstarter.png)](https://travis-ci.org/seratch/rspec-kickstarter)
 [![Coverage Status](https://coveralls.io/repos/seratch/rspec-kickstarter/badge.png)](https://coveralls.io/r/seratch/rspec-kickstarter)
