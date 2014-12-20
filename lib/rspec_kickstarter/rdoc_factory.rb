@@ -42,11 +42,11 @@ module RSpecKickstarter
       end
 
       RDoc::Parser::Ruby.new(
-          top_level,
-          file_path,
-          File.read(file_path),
-          RDoc::Options.new,
-          stats
+        top_level,
+        file_path,
+        File.read(file_path),
+        RDoc::Options.new,
+        stats
       )
     end
 

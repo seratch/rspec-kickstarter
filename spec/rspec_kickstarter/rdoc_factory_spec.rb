@@ -29,7 +29,9 @@ describe RSpecKickstarter::RDocFactory do
           result = RSpecKickstarter::RDocFactory.get_rdoc_class_or_module(file_path)
           expect(result).not_to be_nil
         ensure
-          RDoc.class_eval do remove_const :Store end
+          RDoc.class_eval do
+            remove_const :Store
+          end
         end
       end
     end

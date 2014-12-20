@@ -11,7 +11,7 @@ module RSpecKickstarter
 
     BASIC_METHODS_PART_TEMPLATE = <<SPEC
 <%- methods_to_generate.map { |method| %>
-  # TODO auto-generated
+  # TODO: auto-generated
   describe '#<%= method.name %>' do
     it 'works' do
 <%- unless get_instantiation_code(c, method).nil?      -%><%= get_instantiation_code(c, method) %><%- end -%>
@@ -37,7 +37,7 @@ SPEC
 
     RAILS_CONTROLLER_METHODS_PART_TEMPLATE = <<SPEC
 <%- methods_to_generate.map { |method| %>
-  # TODO auto-generated
+  # TODO: auto-generated
   describe '<%= get_rails_http_method(method.name).upcase %> <%= method.name %>' do
     it 'works' do
       <%= get_rails_http_method(method.name) %> :<%= method.name %>, {}, {}
@@ -59,7 +59,7 @@ SPEC
 
     RAILS_HELPER_METHODS_PART_TEMPLATE = <<SPEC
 <%- methods_to_generate.map { |method| %>
-  # TODO auto-generated
+  # TODO: auto-generated
   describe '#<%= method.name %>' do
     it 'works' do
       result = <%= get_rails_helper_method_invocation_code(method) %>

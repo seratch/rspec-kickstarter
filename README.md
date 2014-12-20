@@ -6,15 +6,6 @@ rspec-kickstarter supports you writing tests for existing code.
 [![Coverage Status](https://coveralls.io/repos/seratch/rspec-kickstarter/badge.png)](https://coveralls.io/r/seratch/rspec-kickstarter)
 [![Code Climate](https://codeclimate.com/github/seratch/rspec-kickstarter.png)](https://codeclimate.com/github/seratch/rspec-kickstarter)
 
-## RubyKaigi 2013
-
-Lightning talk about rspec-kickstarter at RubyKaigi 2013
-
-http://rubykaigi.org/2013/lightning_talks#seratch
-
-https://speakerdeck.com/seratch/a-test-code-generator-for-rspec-users
-
-
 ## Installation
 
 https://rubygems.org/gems/rspec-kickstarter
@@ -87,7 +78,7 @@ require 'foo/bar_baz'
 
 describe Foo::BarBaz do
 
-  # TODO auto-generated
+  # TODO: auto-generated
   describe '#xxx' do
     it 'works' do
       a = double('a')
@@ -97,7 +88,7 @@ describe Foo::BarBaz do
     end
   end
 
-  # TODO auto-generated
+  # TODO: auto-generated
   describe '#yyy' do
     it 'works' do
       bar_baz = Foo::BarBaz.new
@@ -145,7 +136,7 @@ The following code will be appended.
 
 ```ruby
 
-  # TODO auto-generated
+  # TODO: auto-generated
   describe '#additional_ops' do
     it 'works' do
       bar_baz = Foo::BarBaz.new
@@ -174,7 +165,7 @@ require 'spec_helper'
 
 describe CommentsController do
 
-  # TODO auto-generated
+  # TODO: auto-generated
   describe 'GET index' do
     it 'works' do
       get :index, {}, {}
@@ -182,7 +173,7 @@ describe CommentsController do
     end
   end
 
-  # TODO auto-generated
+  # TODO: auto-generated
   describe 'GET show' do
     it 'works' do
       get :show, {}, {}
@@ -190,7 +181,7 @@ describe CommentsController do
     end
   end
 
-  # TODO auto-generated
+  # TODO: auto-generated
   describe 'GET new' do
     it 'works' do
       get :new, {}, {}
@@ -198,7 +189,7 @@ describe CommentsController do
     end
   end
 
-  # TODO auto-generated
+  # TODO: auto-generated
   describe 'GET edit' do
     it 'works' do
       get :edit, {}, {}
@@ -206,7 +197,7 @@ describe CommentsController do
     end
   end
 
-  # TODO auto-generated
+  # TODO: auto-generated
   describe 'POST create' do
     it 'works' do
       post :create, {}, {}
@@ -214,7 +205,7 @@ describe CommentsController do
     end
   end
 
-  # TODO auto-generated
+  # TODO: auto-generated
   describe 'PUT update' do
     it 'works' do
       put :update, {}, {}
@@ -222,7 +213,7 @@ describe CommentsController do
     end
   end
 
-  # TODO auto-generated
+  # TODO: auto-generated
   describe 'DELETE destroy' do
     it 'works' do
       delete :destroy, {}, {}
@@ -248,6 +239,14 @@ When you use customized templates for your apps, `gem install rspec-kickstarter`
 rspec-kickstarter lib -D misc/delta_template.erb -F misc/full_template.erb
 ```
 
+## RubyKaigi 2013
+
+Lightning talk about rspec-kickstarter at RubyKaigi 2013
+
+http://rubykaigi.org/2013/lightning_talks#seratch
+
+https://speakerdeck.com/seratch/a-test-code-generator-for-rspec-users
+
 ## Vintage fork 
 
 https://github.com/ifad/rspec-kickstarter-vintage
@@ -257,7 +256,7 @@ This fork supports ruby 1.8.7 and RSpec 1.x with the old syntax.
 
 ## License
 
-Copyright (c) 2013 Kazuhiro Sera
+Copyright (c) 2013 - 2015 Kazuhiro Sera
 
 MIT License
 
