@@ -1,44 +1,98 @@
 AllCops:
-  Includes: []
-  Excludes: 
-    - 'bin/**'
-    - 'spec/**'
-    - 'tmp/**'
+  # Include gemspec and Rakefile
+  Include:
+    - '**/*.rb'
+  Exclude:
+    - 'bin/**/*'
+    - 'tmp/**/*' 
+    - 'vendor/**/*'
+    - 'Guardfile'
+  RunRailsCops: true
 
-LineLength:
-  Max: 119
+AsciiComments:
+  Enabled: false
 
-MethodLength:
-  CountComments: false 
-  Max: 30
+Metrics/ClassLength:
+  Max: 200
 
-ParameterLists:
-  Max: 5
-  CountKeywordArgs: true
+Metrics/CyclomaticComplexity:
+  Max: 8 
 
-Semicolon:
-  AllowAfterParameterListInOneLineMethods: false
-  AllowBeforeEndInOneLineMethods: true
+Metrics/LineLength:
+  Max: 120
 
-SingleLineMethods:
-  AllowIfMethodIsEmpty: true
+Metrics/MethodLength:
+  Max: 80
 
-SpaceInsideHashLiteralBraces:
-  EnforcedStyleIsWithSpaces: true
+Style/AsciiComments:
+  Enabled: false
 
-SymbolName:
-  AllowCamelCase: true
+Style/Blocks:
+  Enabled: false
 
-BlockNesting:
-  Max: 3
+# Respect RubyMine formatter
+Style/CaseIndentation:
+  Enabled: false
 
-RegexpLiteral:
-  MaxSlashes: 1
+Style/Documentation:
+  Enabled: false
 
-CollectionMethods:
-  PreferredMethods:
-    collect: 'map'
-    inject: 'reduce'
-    detect: 'find'
-    find_all: 'select'
+Style/DotPosition:
+  EnforcedStyle: trailing
 
+Style/GuardClause:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+# Name reduce block params |a, e|.
+Style/SingleLineBlockParams:
+  Enabled: false
+
+# Respect RubyMine formatter
+Style/SpaceInsideHashLiteralBraces:
+  Enabled: false
+
+# Cannot deal with AR#eager_load
+Style/SymbolProc:
+  Enabled: false
+
+# Final newline missing.
+Style/TrailingBlankLines:
+  Enabled: false
+
+TrivialAccessors:
+  Enabled: true
+  ExactNameMatch: true
+
+Style/SpaceInsideBlockBraces:
+  Enabled: false
+
+Style/MultilineBlockChain:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/AlignArray:
+  Enabled: false
+
+# Do not prefix writer method names with set_
+Style/AccessorMethodName:
+  Enabled: false
+
+Rails/Output:
+  Enabled: false
+
+Style/MultilineOperationIndentation:
+  Enabled: false
+
+Style/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Style/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+Style/EmptyLinesAroundModuleBody:
+  Enabled: false

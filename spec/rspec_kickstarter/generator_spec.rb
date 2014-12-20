@@ -44,7 +44,7 @@ describe RSpecKickstarter::Generator do
       params = "(a, b = 'foo', c = 123)"
 
       result = generator.to_param_names_array(params)
-      expect(result).to eq(['a', 'b', 'c'])
+      expect(result).to eq(%w(a b c))
     end
   end
 
@@ -117,7 +117,7 @@ describe RSpecKickstarter::Generator do
   end
 
   class CannotExtractTargetClass < RSpecKickstarter::Generator
-    def extract_target_class_or_module(top_level)
+    def extract_target_class_or_module(*)
       nil
     end
   end
@@ -211,7 +211,7 @@ CODE
       generator.write_spec('tmp/lib/foo.rb', true)
     end
 
-    it 'works with rails controllers' do 
+    it 'works with rails controllers' do
       FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
       FileUtils.mkdir_p('tmp/spec')
 
@@ -278,13 +278,9 @@ CODE
     end
   end
 
-
   describe '#get_rails_helper_method_invocation_code' do
     it 'works' do
-      parent = double(:parent, name: nil)
-      c = double(:c, name: 'ClassName', parent: parent)
       method = double(:method, singleton: false, name: 'do_something', params: '(a, b)', block_params: '')
-
       result = generator.get_rails_helper_method_invocation_code(method)
       expect(result).to eq('do_something(a, b)')
     end

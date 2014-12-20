@@ -6,9 +6,10 @@ require 'rspec_kickstarter'
 #
 # ERB templates
 #
-module RSpecKickstarter::ERBTemplates
+module RSpecKickstarter
+  module ERBTemplates
 
-  BASIC_METHODS_PART_TEMPLATE = <<SPEC
+    BASIC_METHODS_PART_TEMPLATE = <<SPEC
 <%- methods_to_generate.map { |method| %>
   # TODO auto-generated
   describe '#<%= method.name %>' do
@@ -22,7 +23,7 @@ module RSpecKickstarter::ERBTemplates
 <% } %>
 SPEC
 
-  BASIC_NEW_SPEC_TEMPLATE = <<SPEC
+    BASIC_NEW_SPEC_TEMPLATE = <<SPEC
 # -*- encoding: utf-8 -*-
 
 require 'spec_helper'
@@ -34,7 +35,7 @@ describe <%= get_complete_class_name(c) %> do
 end
 SPEC
 
-  RAILS_CONTROLLER_METHODS_PART_TEMPLATE = <<SPEC
+    RAILS_CONTROLLER_METHODS_PART_TEMPLATE = <<SPEC
 <%- methods_to_generate.map { |method| %>
   # TODO auto-generated
   describe '<%= get_rails_http_method(method.name).upcase %> <%= method.name %>' do
@@ -46,7 +47,7 @@ SPEC
 <% } %>
 SPEC
 
-  RAILS_CONTROLLER_NEW_SPEC_TEMPLATE = <<SPEC
+    RAILS_CONTROLLER_NEW_SPEC_TEMPLATE = <<SPEC
 # -*- encoding: utf-8 -*-
 
 require 'spec_helper'
@@ -56,7 +57,7 @@ describe <%= get_complete_class_name(c) %> do
 end
 SPEC
 
-  RAILS_HELPER_METHODS_PART_TEMPLATE = <<SPEC
+    RAILS_HELPER_METHODS_PART_TEMPLATE = <<SPEC
 <%- methods_to_generate.map { |method| %>
   # TODO auto-generated
   describe '#<%= method.name %>' do
@@ -68,7 +69,7 @@ SPEC
 <% } %>
 SPEC
 
-  RAILS_HELPER_NEW_SPEC_TEMPLATE = <<SPEC
+    RAILS_HELPER_NEW_SPEC_TEMPLATE = <<SPEC
 # -*- encoding: utf-8 -*-
 
 require 'spec_helper'
@@ -78,4 +79,5 @@ describe <%= get_complete_class_name(c) %> do
 end
 SPEC
 
+  end
 end

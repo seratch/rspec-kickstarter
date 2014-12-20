@@ -14,10 +14,16 @@ describe RSpecKickstarter::RDocFactory do
 
     it 'works with Ruby 2.0' do
       unless defined?(RDoc::Store)
-        class RDoc::Store; end
-        class RDoc::TopLevel
-          def store=(store); end
+        module RDoc
+          class Store
+          end
+
+          class TopLevel
+            def store=(*)
+            end
+          end
         end
+
         begin
           file_path = 'lib/rspec_kickstarter.rb'
           result = RSpecKickstarter::RDocFactory.get_rdoc_class_or_module(file_path)

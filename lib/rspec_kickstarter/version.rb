@@ -4,5 +4,5 @@
 # Gem version
 #
 module RSpecKickstarter
-  VERSION = '0.3.0'
+  VERSION = '1.0.0'
 end
