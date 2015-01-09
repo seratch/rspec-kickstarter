@@ -247,12 +247,19 @@ http://rubykaigi.org/2013/lightning_talks#seratch
 
 https://speakerdeck.com/seratch/a-test-code-generator-for-rspec-users
 
-## Vintage fork 
+## Related Projects
+
+### Vintage fork 
 
 https://github.com/ifad/rspec-kickstarter-vintage
 
 This fork supports ruby 1.8.7 and RSpec 1.x with the old syntax.
 
+### ToFactory
+
+https://github.com/markburns/to_factory
+
+ToFactory is a FactoryGirl's factories code generator for existing projects.
 
 ## License
 
