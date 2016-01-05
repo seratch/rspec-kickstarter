@@ -104,7 +104,7 @@ end
 
 `-f` option allows appending lacking test templates to existing specs.
 
-For instance, `additiona_ops` method is added after spec creation.
+For instance, `additional_ops` method is added after spec creation.
 
 ```ruby
 module Foo
@@ -150,7 +150,7 @@ end
 
 ## Rails mode
 
-In Rails mode, rspec-kcikstarter generates Rails way spec code for controllers and helpers.
+In Rails mode, rspec-kickstarter generates Rails way spec code for controllers and helpers.
 
 ```
 $ rspec-kickstarter -r app/controllers/root_controller.rb
@@ -249,7 +249,7 @@ https://speakerdeck.com/seratch/a-test-code-generator-for-rspec-users
 
 ## Related Projects
 
-### Vintage fork 
+### Vintage fork
 
 https://github.com/ifad/rspec-kickstarter-vintage
 
