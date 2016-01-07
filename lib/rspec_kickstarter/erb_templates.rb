@@ -50,7 +50,7 @@ SPEC
     RAILS_CONTROLLER_NEW_SPEC_TEMPLATE = <<SPEC
 # -*- encoding: utf-8 -*-
 
-require 'spec_helper'
+require 'rails_helper'
 
 describe <%= get_complete_class_name(c) %> do
 <%= ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
@@ -72,7 +72,7 @@ SPEC
     RAILS_HELPER_NEW_SPEC_TEMPLATE = <<SPEC
 # -*- encoding: utf-8 -*-
 
-require 'spec_helper'
+require 'rails_helper'
 
 describe <%= get_complete_class_name(c) %> do
 <%= ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
