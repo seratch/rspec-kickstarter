@@ -1,7 +1,6 @@
 PATH
   remote: .
   specs:
-    rspec-kickstarter (1.0.0)
 
 GEM
   remote: https://rubygems.org/
