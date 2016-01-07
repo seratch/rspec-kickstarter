@@ -263,7 +263,7 @@ ToFactory is a FactoryGirl's factories code generator for existing projects.
 
 ## License
 
-Copyright (c) 2013 - 2015 Kazuhiro Sera
+Copyright (c) 2013 - Kazuhiro Sera
 
 MIT License
 
