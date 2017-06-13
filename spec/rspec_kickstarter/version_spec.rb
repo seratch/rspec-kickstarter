@@ -2,7 +2,7 @@
 require 'spec_helper'
 require 'rspec_kickstarter/version'
 
-describe RSpecKickstarter do
+RSpec.describe RSpecKickstarter do
 
   describe RSpecKickstarter::VERSION do
     it 'exists' do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rspec_kickstarter/rdoc_factory'
 
-describe RSpecKickstarter::RDocFactory do
+RSpec.describe RSpecKickstarter::RDocFactory do
 
   describe '#get_rdoc_class_or_module' do
     it 'works' do

@@ -23,7 +23,7 @@ opt.on('-r', 'Run in Rails mode') { |_| rails_mode = true }
 opt.on('--rails', '') { |_| rails_mode = true }
 opt.on('-o VAL', 'Output directory (default: ./spec)') { |dir| spec_dir = dir }
 opt.on('--output-dir VAL', '') { |dir| spec_dir = dir }
-opt.on('-D VAL', 'Delta tempalte path (e.g. ./rails_controller_delta.erb)') { |path| delta_path = path }
+opt.on('-D VAL', 'Delta template path (e.g. ./rails_controller_delta.erb)') { |path| delta_path = path }
 opt.on('--delta-template VAL', '') { |path| delta_path = path }
 opt.on('-F VAL', 'Full template path (e.g. ./rails_controller_full.erb)') { |path| full_path = path }
 opt.on('--full-template VAL', '') { |path| full_path = path }
@@ -47,7 +47,7 @@ unless dir_or_file.match(/.rb$/)
 end
 
 delta_template = nil
-if ! delta_path.nil? 
+if delta_path
   if File.exist?(delta_path)
     delta_template = File.read(delta_path)
   else
@@ -56,7 +56,7 @@ if ! delta_path.nil?
   end
 end
 full_template = nil
-if ! full_path.nil? 
+if full_path
   if File.exist?(full_path)
     full_template = File.read(full_path)
   else

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 require 'spec_helper'
 
-describe RSpecKickstarter do
+RSpec.describe RSpecKickstarter do
 
   describe '#write_spec' do
     it 'works' do

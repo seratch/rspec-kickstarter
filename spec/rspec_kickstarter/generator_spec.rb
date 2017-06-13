@@ -2,7 +2,7 @@
 require 'spec_helper'
 require 'rspec_kickstarter/generator'
 
-describe RSpecKickstarter::Generator do
+RSpec.describe RSpecKickstarter::Generator do
 
   let(:generator) { RSpecKickstarter::Generator.new('tmp/spec') }
 
@@ -26,7 +26,7 @@ describe RSpecKickstarter::Generator do
       name = 'ClassName'
 
       result = generator.get_complete_class_name(c, name)
-      expect(result).to eq('ClassName')
+      expect(result).to eql('ClassName')
     end
   end
 
@@ -35,7 +35,7 @@ describe RSpecKickstarter::Generator do
       c = double(:c, name: 'generator')
 
       result = generator.instance_name(c)
-      expect(result).to eq('generator')
+      expect(result).to eql('generator')
     end
   end
 
@@ -44,7 +44,7 @@ describe RSpecKickstarter::Generator do
       params = "(a, b = 'foo', c = 123)"
 
       result = generator.to_param_names_array(params)
-      expect(result).to eq(%w(a b c))
+      expect(result).to eql(%w(a b c))
     end
   end
 
@@ -53,7 +53,7 @@ describe RSpecKickstarter::Generator do
       method = double(:method, params: "(a = 1,b = 'aaaa')")
 
       result = generator.get_params_initialization_code(method)
-      expect(result).to eq("      a = double('a')\n      b = double('b')\n")
+      expect(result).to eql("      a = double('a')\n      b = double('b')\n")
     end
   end
 
@@ -63,7 +63,7 @@ describe RSpecKickstarter::Generator do
       c = double(:c, name: 'Foo', method_list: [method])
 
       result = generator.get_instantiation_code(c, method)
-      expect(result).to eq('')
+      expect(result).to eql('')
     end
 
     it 'works with classes' do
@@ -72,7 +72,7 @@ describe RSpecKickstarter::Generator do
       c = double(:c, name: 'Foo', parent: parent, method_list: [method])
 
       result = generator.get_instantiation_code(c, method)
-      expect(result).to eq("      foo = Foo.new\n")
+      expect(result).to eql("      foo = Foo.new\n")
     end
   end
 
@@ -83,7 +83,7 @@ describe RSpecKickstarter::Generator do
       c = double(:c, name: 'Module', parent: parent, method_list: [method])
 
       result = generator.get_method_invocation_code(c, method)
-      expect(result).to eq('Module.do_something(a, b)')
+      expect(result).to eql('Module.do_something(a, b)')
     end
     it 'works with classes' do
       parent = double(:parent, name: 'Module')
@@ -91,7 +91,7 @@ describe RSpecKickstarter::Generator do
       c = double(:c, name: 'ClassName', parent: parent, method_list: [method])
 
       result = generator.get_method_invocation_code(c, method)
-      expect(result).to eq('class_name.do_something(a, b)')
+      expect(result).to eql('class_name.do_something(a, b)')
     end
   end
 
@@ -100,19 +100,19 @@ describe RSpecKickstarter::Generator do
       method = double(:method, block_params: '')
 
       result = generator.get_block_code(method)
-      expect(result).to eq('')
+      expect(result).to eql('')
     end
     it 'works with 1 arg block' do
       method = double(:method, block_params: 'a')
 
       result = generator.get_block_code(method)
-      expect(result).to eq(' { |a| }')
+      expect(result).to eql(' { |a| }')
     end
     it 'works with 2 args block' do
       method = double(:method, block_params: 'a, b')
 
       result = generator.get_block_code(method)
-      expect(result).to eq(' { |a, b| }')
+      expect(result).to eql(' { |a, b| }')
     end
   end
 
@@ -261,12 +261,12 @@ CODE
     it 'works' do
       file_path = 'lib/foo/bar.rb'
       result = generator.get_spec_path(file_path)
-      expect(result).to eq('tmp/spec/foo/bar_spec.rb')
+      expect(result).to eql('tmp/spec/foo/bar_spec.rb')
     end
     it 'works with path which starts with current dir' do
       file_path = './lib/foo/bar.rb'
       result = generator.get_spec_path(file_path)
-      expect(result).to eq('tmp/spec/foo/bar_spec.rb')
+      expect(result).to eql('tmp/spec/foo/bar_spec.rb')
     end
   end
 
@@ -274,7 +274,7 @@ CODE
     it 'works' do
       file_path = 'lib/foo/bar.rb'
       result = generator.to_string_value_to_require(file_path)
-      expect(result).to eq('foo/bar')
+      expect(result).to eql('foo/bar')
     end
   end
 
@@ -282,20 +282,21 @@ CODE
     it 'works' do
       method = double(:method, singleton: false, name: 'do_something', params: '(a, b)', block_params: '')
       result = generator.get_rails_helper_method_invocation_code(method)
-      expect(result).to eq('do_something(a, b)')
+
+      expect(result).to eql('do_something(a, b)')
     end
   end
 
   describe '#get_rails_http_method' do
     it 'works' do
-      expect(generator.get_rails_http_method('foo')).to eq('get')
-      expect(generator.get_rails_http_method('index')).to eq('get')
-      expect(generator.get_rails_http_method('new')).to eq('get')
-      expect(generator.get_rails_http_method('create')).to eq('post')
-      expect(generator.get_rails_http_method('show')).to eq('get')
-      expect(generator.get_rails_http_method('edit')).to eq('get')
-      expect(generator.get_rails_http_method('update')).to eq('put')
-      expect(generator.get_rails_http_method('destroy')).to eq('delete')
+      expect(generator.get_rails_http_method('foo')).to eql('get')
+      expect(generator.get_rails_http_method('index')).to eql('get')
+      expect(generator.get_rails_http_method('new')).to eql('get')
+      expect(generator.get_rails_http_method('create')).to eql('post')
+      expect(generator.get_rails_http_method('show')).to eql('get')
+      expect(generator.get_rails_http_method('edit')).to eql('get')
+      expect(generator.get_rails_http_method('update')).to eql('put')
+      expect(generator.get_rails_http_method('destroy')).to eql('delete')
     end
   end
 

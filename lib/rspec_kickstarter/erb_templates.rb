@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'erb'
 require 'rspec_kickstarter'
@@ -24,13 +24,13 @@ module RSpecKickstarter
 SPEC
 
     BASIC_NEW_SPEC_TEMPLATE = <<SPEC
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'spec_helper'
 <% unless rails_mode then %>require '<%= self_path %>'
 <% end -%>
 
-describe <%= get_complete_class_name(c) %> do
+RSpec.describe <%= get_complete_class_name(c) %> do
 <%= ERB.new(BASIC_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
 end
 SPEC
@@ -48,11 +48,11 @@ SPEC
 SPEC
 
     RAILS_CONTROLLER_NEW_SPEC_TEMPLATE = <<SPEC
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'rails_helper'
 
-describe <%= get_complete_class_name(c) %> do
+RSpec.describe <%= get_complete_class_name(c) %> do
 <%= ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
 end
 SPEC
@@ -70,11 +70,11 @@ SPEC
 SPEC
 
     RAILS_HELPER_NEW_SPEC_TEMPLATE = <<SPEC
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'rails_helper'
 
-describe <%= get_complete_class_name(c) %> do
+RSpec.describe <%= get_complete_class_name(c) %> do
 <%= ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
 end
 SPEC
