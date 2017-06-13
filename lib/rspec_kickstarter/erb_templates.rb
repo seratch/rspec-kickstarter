@@ -50,7 +50,8 @@ SPEC
     RAILS_CONTROLLER_NEW_SPEC_TEMPLATE = <<SPEC
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'rails_helper' 
+require '<%= self_path %>'
 
 RSpec.describe <%= get_complete_class_name(c) %>, type: :controller do
 <%= ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
