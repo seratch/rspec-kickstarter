@@ -39,9 +39,9 @@ SPEC
 <%- methods_to_generate.map { |method| %>
   # TODO: auto-generated
   describe '<%= get_rails_http_method(method.name).upcase %> <%= method.name %>' do
-    it 'works' do
+    it '<%= method.name.pluralize %>' do
       <%= get_rails_http_method(method.name) %> :<%= method.name %>, {}, {}
-      expect(response.status).to eq(200)
+      expect(response.status).to have_http_status(:ok)
     end
   end
 <% } %>
@@ -52,7 +52,7 @@ SPEC
 
 require 'rails_helper'
 
-RSpec.describe <%= get_complete_class_name(c) %> do
+RSpec.describe <%= get_complete_class_name(c) %>, type: :controller do
 <%= ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
 end
 SPEC
@@ -74,7 +74,7 @@ SPEC
 
 require 'rails_helper'
 
-RSpec.describe <%= get_complete_class_name(c) %> do
+RSpec.describe <%= get_complete_class_name(c) %>, type: :helper do
 <%= ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
 end
 SPEC
