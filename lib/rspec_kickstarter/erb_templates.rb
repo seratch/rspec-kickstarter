@@ -39,7 +39,7 @@ SPEC
 <%- methods_to_generate.map { |method| %>
   # TODO: auto-generated
   describe '<%= get_rails_http_method(method.name).upcase %> <%= method.name %>' do
-    it '<%= method.name.pluralize %>' do
+    it '<%= method.name %>s' do
       <%= get_rails_http_method(method.name) %> :<%= method.name %>, {}, {}
       expect(response.status).to have_http_status(:ok)
     end
