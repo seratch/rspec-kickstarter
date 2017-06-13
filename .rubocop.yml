@@ -1,5 +1,8 @@
+require: rubocop-rspec
+
 AllCops:
   # Include gemspec and Rakefile
+  TargetRubyVersion: 2.4
   Include:
     - '**/*.rb'
   Exclude:
