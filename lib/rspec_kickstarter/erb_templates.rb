@@ -50,10 +50,9 @@ SPEC
     RAILS_CONTROLLER_NEW_SPEC_TEMPLATE = <<SPEC
 # frozen_string_literal: true
 
-require 'rails_helper' 
-require '<%= self_path %>'
+require 'rails_helper'  
 
-RSpec.describe <%= get_complete_class_name(c) %>, type: :controller do
+RSpec.describe <%= to_string_namespaced_path(self_path) %>::<%= get_complete_class_name(c) %>, type: :controller do
 <%= ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
 end
 SPEC
@@ -75,7 +74,7 @@ SPEC
 
 require 'rails_helper'
 
-RSpec.describe <%= get_complete_class_name(c) %>, type: :helper do
+RSpec.describe <%= to_string_namespaced_path(self_path) %>::<%= get_complete_class_name(c) %>, type: :helper do
 <%= ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
 end
 SPEC

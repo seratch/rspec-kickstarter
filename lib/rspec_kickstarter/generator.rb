@@ -49,6 +49,15 @@ module RSpecKickstarter
       end
     end
 
+
+    def to_string_namespaced_path(self_path)
+      self_path.split('/').map{|x| camelize(x) }[1..-2].join('::')
+    end
+
+    def camelize(str)
+      str.split('_').map {|w| w.capitalize}.join
+    end
+
     #
     # Returns spec file path.
     # e.g. "lib/foo/bar_baz.rb" -> "spec/foo/bar_baz_spec.rb"
