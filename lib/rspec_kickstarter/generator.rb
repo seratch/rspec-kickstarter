@@ -48,15 +48,10 @@ module RSpecKickstarter
         name
       end
     end
-
-
+    
     def to_string_namespaced_path(self_path)
       path = self_path.split('/').map { |x| camelize(x) }[1..-2].uniq.join('::')
       path.empty? ? '' : path + '::'  
-    end
-
-    def camelize(str)
-      str.split('_').map { |w| w.capitalize }.join
     end
 
     #
@@ -145,7 +140,7 @@ module RSpecKickstarter
     def append_to_existing_spec(class_or_module, dry_run, rails_mode, spec_path)
       existing_spec   = File.read(spec_path)
       lacking_methods = class_or_module.method_list.
-        select { |m| m.visibility == :public }.
+        select { |m| m.visibility.equal?(:public) }.
         reject { |m| existing_spec.match(m.name) }
 
       if lacking_methods.empty?
@@ -217,7 +212,7 @@ module RSpecKickstarter
     # e.g. BarBaz.do_something(a, b) { |c| }
     #
     def get_method_invocation_code(c, method)
-      target = method.singleton ? get_complete_class_name(c) : instance_name(c)
+      target = 'described_class'
       "#{target}.#{method.name}#{to_params_part(method.params)}#{get_block_code(method)}"
     end
 
@@ -239,8 +234,15 @@ module RSpecKickstarter
       end
     end
 
+
     def get_rails_http_method(method_name)
       RAILS_RESOURCE_METHOD_AND_HTTP_METHOD[method_name] || 'get'
+    end
+
+    private
+
+    def camelize(str)
+      str.split('_').map { |w| w.capitalize }.join
     end
 
     RAILS_RESOURCE_METHOD_AND_HTTP_METHOD = {
@@ -249,7 +251,7 @@ module RSpecKickstarter
       'create'  => 'post',
       'show'    => 'get',
       'edit'    => 'get',
-      'update'  => 'put',
+      'update'  => 'patch',
       'destroy' => 'delete'
     }.freeze
 

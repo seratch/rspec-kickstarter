@@ -9,12 +9,14 @@ RSpec.describe RSpecKickstarter::Generator do
   describe '#new' do
     it 'works without params' do
       result = RSpecKickstarter::Generator.new
+
       expect(result).not_to be_nil
     end
     it 'works' do
       spec_dir = './spec'
 
       result = RSpecKickstarter::Generator.new(spec_dir)
+
       expect(result).not_to be_nil
     end
   end
@@ -26,6 +28,7 @@ RSpec.describe RSpecKickstarter::Generator do
       name = 'ClassName'
 
       result = generator.get_complete_class_name(c, name)
+
       expect(result).to eql('ClassName')
     end
   end
@@ -35,6 +38,7 @@ RSpec.describe RSpecKickstarter::Generator do
       c = double(:c, name: 'generator')
 
       result = generator.instance_name(c)
+
       expect(result).to eql('generator')
     end
   end
@@ -44,6 +48,7 @@ RSpec.describe RSpecKickstarter::Generator do
       params = "(a, b = 'foo', c = 123)"
 
       result = generator.to_param_names_array(params)
+
       expect(result).to eql(%w(a b c))
     end
   end
@@ -63,6 +68,7 @@ RSpec.describe RSpecKickstarter::Generator do
       c = double(:c, name: 'Foo', method_list: [method])
 
       result = generator.get_instantiation_code(c, method)
+
       expect(result).to eql('')
     end
 
@@ -72,7 +78,18 @@ RSpec.describe RSpecKickstarter::Generator do
       c = double(:c, name: 'Foo', parent: parent, method_list: [method])
 
       result = generator.get_instantiation_code(c, method)
-      expect(result).to eql("      foo = Foo.new\n")
+      
+      expect(result).to eql("      foo = described_class.new\n")
+    end
+
+    it 'works with classes' do
+      parent = double(:parent, name: 'Parent')
+      method = double(:method, singleton: false, name: 'do_something')
+      c = double(:c, name: 'Foo', parent: parent, method_list: [method])
+
+      result = generator.get_instantiation_code(c, method)
+
+      expect(result).to eql("      foo = described_class.new\n")
     end
   end
 
@@ -83,7 +100,7 @@ RSpec.describe RSpecKickstarter::Generator do
       c = double(:c, name: 'Module', parent: parent, method_list: [method])
 
       result = generator.get_method_invocation_code(c, method)
-      expect(result).to eql('Module.do_something(a, b)')
+      expect(result).to eql('described_class.do_something(a, b)')
     end
     it 'works with classes' do
       parent = double(:parent, name: 'Module')
@@ -91,7 +108,7 @@ RSpec.describe RSpecKickstarter::Generator do
       c = double(:c, name: 'ClassName', parent: parent, method_list: [method])
 
       result = generator.get_method_invocation_code(c, method)
-      expect(result).to eql('class_name.do_something(a, b)')
+      expect(result).to eql('described_class.do_something(a, b)')
     end
   end
 
@@ -278,6 +295,33 @@ CODE
     end
   end
 
+  describe '#to_string_namespaced_path' do
+    it 'works' do
+      file_path = 'lib/foo/bar.rb'
+      result = generator.to_string_namespaced_path(file_path)
+      expect(result).to eql('Foo::')
+    end
+
+    it 'works' do
+      file_path = 'lib/foo_baz/bar_bar/bar.rb'
+      result = generator.to_string_namespaced_path(file_path)
+      expect(result).to eql('FooBaz::BarBar::')
+    end
+
+    it 'works' do
+      file_path = 'lib/foo/foo/bar.rb'
+      result = generator.to_string_namespaced_path(file_path)
+      expect(result).to eql('Foo::')
+    end
+
+    it 'works' do
+      file_path = 'lib/bar.rb'
+      result = generator.to_string_namespaced_path(file_path)
+      expect(result).to eql('')
+    end
+  end
+
+
   describe '#get_rails_helper_method_invocation_code' do
     it 'works' do
       method = double(:method, singleton: false, name: 'do_something', params: '(a, b)', block_params: '')
@@ -295,7 +339,7 @@ CODE
       expect(generator.get_rails_http_method('create')).to eql('post')
       expect(generator.get_rails_http_method('show')).to eql('get')
       expect(generator.get_rails_http_method('edit')).to eql('get')
-      expect(generator.get_rails_http_method('update')).to eql('put')
+      expect(generator.get_rails_http_method('update')).to eql('patch') # RAILS 4.x+
       expect(generator.get_rails_http_method('destroy')).to eql('delete')
     end
   end
