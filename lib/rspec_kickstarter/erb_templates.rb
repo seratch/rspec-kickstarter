@@ -12,7 +12,7 @@ module RSpecKickstarter
     BASIC_METHODS_PART_TEMPLATE = <<SPEC
 <%- methods_to_generate.map { |method| %>
   # TODO: auto-generated
-  describe '#<%= method.name %>' do
+  describe '<%= method.singleton ? '.' : '#' %><%= method.name %>' do
     it '<%= method.name %>' do
 <%- if get_instantiation_code(c, method)      -%><%= get_instantiation_code(c, method) %><%- end -%>
 <%- if get_params_initialization_code(method) -%><%= get_params_initialization_code(method) %><%- end -%>

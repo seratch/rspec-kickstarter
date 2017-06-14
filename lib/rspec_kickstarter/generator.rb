@@ -212,7 +212,7 @@ module RSpecKickstarter
     # e.g. BarBaz.do_something(a, b) { |c| }
     #
     def get_method_invocation_code(c, method)
-      target = 'described_class'
+      target = method.singleton ? 'described_class' : instance_name(c)
       "#{target}.#{method.name}#{to_params_part(method.params)}#{get_block_code(method)}"
     end
 

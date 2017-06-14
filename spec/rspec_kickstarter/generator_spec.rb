@@ -108,7 +108,7 @@ RSpec.describe RSpecKickstarter::Generator do
       c = double(:c, name: 'ClassName', parent: parent, method_list: [method])
 
       result = generator.get_method_invocation_code(c, method)
-      expect(result).to eql('described_class.do_something(a, b)')
+      expect(result).to eql('class_name.do_something(a, b)')
     end
   end
 
