@@ -13,8 +13,8 @@ module RSpecKickstarter
 <%- methods_to_generate.map { |method| %>
   # TODO: auto-generated
   describe '#<%= method.name %>' do
-    it 'works' do
-<%- unless get_instantiation_code(c, method).nil?      -%><%= get_instantiation_code('described_class', method) %><%- end -%>
+    it '<%= method.name %>' do
+<%- unless get_instantiation_code(c, method).nil?      -%><%= get_instantiation_code(c, method).sub(c.to_s,'described_class') %><%- end -%>
 <%- unless get_params_initialization_code(method).nil? -%><%= get_params_initialization_code(method) %><%- end -%>
       result = <%= get_method_invocation_code(c, method) %>  
 
