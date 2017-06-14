@@ -16,9 +16,9 @@ module RSpecKickstarter
     attr_accessor :spec_dir, :delta_template, :full_template
 
     def initialize(spec_dir = './spec', delta_template = nil, full_template = nil)
-      @spec_dir = spec_dir.gsub(/\/$/, '')
+      @spec_dir       = spec_dir.gsub(/\/$/, '')
       @delta_template = delta_template
-      @full_template = full_template
+      @full_template  = full_template
     end
 
     #
@@ -51,12 +51,12 @@ module RSpecKickstarter
 
 
     def to_string_namespaced_path(self_path)
-      path = self_path.split('/').uniq.map{|x| camelize(x) }[1..-2].join('::')
+      path = self_path.split('/').uniq.map { |x| camelize(x) }[1..-2].join('::')
       path.present? ? path + '::' : ''
     end
 
     def camelize(str)
-      str.split('_').map {|w| w.capitalize}.join
+      str.split('_').map { |w| w.capitalize }.join
     end
 
     #
@@ -115,11 +115,11 @@ module RSpecKickstarter
       # These names are used in ERB template, don't delete.
       # rubocop:disable Lint/UselessAssignment
       methods_to_generate = class_or_module.method_list.select { |m| m.visibility == :public }
-      c = class_or_module
-      self_path = to_string_value_to_require(file_path)
+      c                   = class_or_module
+      self_path           = to_string_value_to_require(file_path)
       # rubocop:enable Lint/UselessAssignment
 
-      erb = RSpecKickstarter::ERBFactory.new(@full_template).get_instance_for_new_spec(rails_mode, file_path)
+      erb  = RSpecKickstarter::ERBFactory.new(@full_template).get_instance_for_new_spec(rails_mode, file_path)
       code = erb.result(binding)
 
       if dry_run
@@ -143,7 +143,7 @@ module RSpecKickstarter
     #
     # rubocop:disable Metrics/AbcSize
     def append_to_existing_spec(class_or_module, dry_run, rails_mode, spec_path)
-      existing_spec = File.read(spec_path)
+      existing_spec   = File.read(spec_path)
       lacking_methods = class_or_module.method_list.
         select { |m| m.visibility == :public }.
         reject { |m| existing_spec.match(m.name) }
@@ -154,15 +154,15 @@ module RSpecKickstarter
         # These names are used in ERB template, don't delete.
         # rubocop:disable Lint/UselessAssignment
         methods_to_generate = lacking_methods
-        c = class_or_module
+        c                   = class_or_module
         # rubocop:enable Lint/UselessAssignment
 
-        erb = RSpecKickstarter::ERBFactory.new(@delta_template).get_instance_for_appending(rails_mode, spec_path)
+        erb             = RSpecKickstarter::ERBFactory.new(@delta_template).get_instance_for_appending(rails_mode, spec_path)
         additional_spec = erb.result(binding)
 
         last_end_not_found = true
-        code = existing_spec.split("\n").reverse.reject { |line|
-          before_modified = last_end_not_found
+        code               = existing_spec.split("\n").reverse.reject { |line|
+          before_modified    = last_end_not_found
           last_end_not_found = line.gsub(/#.+$/, '').strip != 'end' if before_modified
           before_modified
         }.reverse.join("\n") + "\n" + additional_spec + "\nend\n"
@@ -195,10 +195,10 @@ module RSpecKickstarter
       else
         constructor = c.method_list.find { |m| m.name == 'new' }
         if constructor.nil?
-          "      #{instance_name(c)} = #{get_complete_class_name(c)}.new\n"
+          "      #{instance_name(c)} = described_class.new\n"
         else
           get_params_initialization_code(constructor) +
-            "      #{instance_name(c)} = #{get_complete_class_name(c)}.new#{to_params_part(constructor.params)}\n"
+            "      #{instance_name(c)} = described_class.new#{to_params_part(constructor.params)}\n"
         end
       end
     end
@@ -240,19 +240,18 @@ module RSpecKickstarter
     end
 
     def get_rails_http_method(method_name)
-      http_method = RAILS_RESOURCE_METHOD_AND_HTTP_METHOD[method_name]
-      http_method.nil? ? 'get' : http_method
+      RAILS_RESOURCE_METHOD_AND_HTTP_METHOD[method_name] || 'get'
     end
 
     RAILS_RESOURCE_METHOD_AND_HTTP_METHOD = {
-      'index' => 'get',
-      'new' => 'get',
-      'create' => 'post',
-      'show' => 'get',
-      'edit' => 'get',
-      'update' => 'put',
+      'index'   => 'get',
+      'new'     => 'get',
+      'create'  => 'post',
+      'show'    => 'get',
+      'edit'    => 'get',
+      'update'  => 'put',
       'destroy' => 'delete'
-    }
+    }.freeze
 
   end
 end
