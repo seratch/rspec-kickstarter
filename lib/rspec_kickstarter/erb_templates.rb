@@ -27,7 +27,9 @@ SPEC
     BASIC_NEW_SPEC_TEMPLATE = <<SPEC
 # frozen_string_literal: true
 
-require 'spec_helper'
+<% if rails_mode then %>require 'rails_helper'
+<% else -%>require 'spec_helper'
+<% end -%>
 <% unless rails_mode then %>require '<%= self_path %>'
 <% end -%>
 
