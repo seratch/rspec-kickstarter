@@ -54,6 +54,10 @@ module RSpecKickstarter
       path.empty? ? '' : path + '::'
     end
 
+    def to_string_namespaced_path_whole(self_path)
+      self_path.sub('.rb', '').split('/').map { |x| camelize(x) }[1..-1].uniq.join('::')
+    end
+
     #
     # Returns spec file path.
     # e.g. "lib/foo/bar_baz.rb" -> "spec/foo/bar_baz_spec.rb"
@@ -114,7 +118,9 @@ module RSpecKickstarter
       self_path           = to_string_value_to_require(file_path)
       # rubocop:enable Lint/UselessAssignment
 
-      erb  = RSpecKickstarter::ERBFactory.new(@full_template).get_instance_for_new_spec(rails_mode, file_path)
+      erb  = RSpecKickstarter::ERBFactory
+               .new(@full_template)
+               .get_instance_for_new_spec(rails_mode, file_path)
       code = erb.result(binding)
 
       if dry_run

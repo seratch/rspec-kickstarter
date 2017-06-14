@@ -31,6 +31,16 @@ RSpec.describe RSpecKickstarter::Generator do
 
       expect(result).to eql('ClassName')
     end
+
+    it 'works' do
+      parent = double(:parent, name: 'A')
+      c = double(:c, parent: parent)
+      name = 'A::ClassName'
+
+      result = generator.get_complete_class_name(c, name)
+
+      expect(result).to eql('A::ClassName')
+    end
   end
 
   describe '#instance_name' do
@@ -226,6 +236,36 @@ CODE
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code2) }
       generator.write_spec('tmp/lib/foo.rb', true, true)
       generator.write_spec('tmp/lib/foo.rb', true)
+    end
+
+    it 'appends new cases with namespaced delta_template and namespaced' do
+      FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
+      FileUtils.rm_rf('tmp/lib') if File.exist?('tmp/lib')
+      FileUtils.mkdir_p('tmp/spec')
+
+      code = <<CODE
+class Foo::Bar < Foo
+  def hello; 'aaa'; end
+end
+CODE
+      FileUtils.mkdir_p('tmp/lib/foo')
+      File.open('tmp/lib/foo/bar.rb', 'w') { |f| f.write(code) }
+
+      generator.delta_template = 'sample/delta_template.erb'
+      generator.write_spec('tmp/lib/foo/bar.rb')
+
+      code2 = <<CODE
+class Foo::Bar < Foo
+  def hello; 'aaa'; end
+  def bye; 'aaa'; end
+end
+CODE
+
+      FileUtils.rm_rf('tmp/lib') if File.exist?('tmp/lib')
+      FileUtils.mkdir_p('tmp/lib/foo')
+      File.open('tmp/lib/foo/bar.rb', 'w') { |f| f.write(code2) }
+      generator.write_spec('tmp/lib/foo/bar.rb', true, true)
+      generator.write_spec('tmp/lib/foo/bar.rb', true)
     end
 
     it 'works with rails controllers' do
