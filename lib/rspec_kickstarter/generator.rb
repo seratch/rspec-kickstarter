@@ -42,8 +42,8 @@ module RSpecKickstarter
     # Gets the complete class name from RDoc::NormalClass/RDoc::NormalModule instance.
     #
     def get_complete_class_name(class_or_module, name = class_or_module.name)
-      if !class_or_module.parent.name.nil? && class_or_module.parent.is_a?(RDoc::NormalModule)
-        get_complete_class_name(class_or_module.parent, "#{class_or_module.parent.name}::#{name}")
+      if class_or_module.parent.name && class_or_module.parent.is_a?(RDoc::NormalModule)
+        get_complete_class_name(class_or_module.parent, "#{name}")
       else
         name
       end
