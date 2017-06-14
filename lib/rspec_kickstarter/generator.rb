@@ -205,7 +205,7 @@ module RSpecKickstarter
     #     b = double('b')
     #
     def get_params_initialization_code(method)
-      code = to_param_names_array(method.params).map { |p| "      #{p} = double('#{p}')" }.join("\n")
+      code = to_param_names_array(method.params).map { |p| "      #{p.sub('*','').sub('&','')} = double('#{p.sub('*','').sub('&','')}')" }.join("\n")
       code.empty? ? '' : "#{code}\n"
     end
 
