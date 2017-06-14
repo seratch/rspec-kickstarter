@@ -42,17 +42,16 @@ module RSpecKickstarter
     # Gets the complete class name from RDoc::NormalClass/RDoc::NormalModule instance.
     #
     def get_complete_class_name(class_or_module, name = class_or_module.name)
-      return name
       if class_or_module.parent.name && class_or_module.parent.is_a?(RDoc::NormalModule)
-        get_complete_class_name(class_or_module.parent, "#{name}")
+        get_complete_class_name(class_or_module.parent, "#{class_or_module.parent.name}::#{name}")
       else
         name
       end
     end
-    
+
     def to_string_namespaced_path(self_path)
       path = self_path.split('/').map { |x| camelize(x) }[1..-2].uniq.join('::')
-      path.empty? ? '' : path + '::'  
+      path.empty? ? '' : path + '::'
     end
 
     #
@@ -205,7 +204,10 @@ module RSpecKickstarter
     #     b = double('b')
     #
     def get_params_initialization_code(method)
-      code = to_param_names_array(method.params).map { |p| "      #{p.sub('*','').sub('&','')} = double('#{p.sub('*','').sub('&','')}')" }.join("\n")
+      code = to_param_names_array(method.params).map do |p|
+        x = p.sub('*', '').sub('&', '')
+        "      #{x} = double('#{x}')" unless x.empty?
+      end.compact.join("\n")
       code.empty? ? '' : "#{code}\n"
     end
 

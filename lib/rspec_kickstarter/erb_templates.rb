@@ -33,7 +33,7 @@ SPEC
 <% unless rails_mode then %>require '<%= self_path %>'
 <% end -%>
 
-RSpec.describe <%= to_string_namespaced_path(self_path) %><%= get_complete_class_name(c) %> do
+RSpec.describe <%= (to_string_namespaced_path(self_path) + get_complete_class_name(c)).split('::').uniq.join('::') %> do
 <%= ERB.new(BASIC_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
 end
 SPEC
@@ -56,7 +56,7 @@ SPEC
 
 require 'rails_helper'  
 
-RSpec.describe <%= to_string_namespaced_path(self_path) %><%= get_complete_class_name(c) %>, type: :controller do
+RSpec.describe <%= (to_string_namespaced_path(self_path) + get_complete_class_name(c)).split('::').uniq.join('::') %>, type: :controller do
 <%= ERB.new(RAILS_CONTROLLER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
 end
 SPEC
@@ -79,7 +79,7 @@ SPEC
 
 require 'rails_helper'
 
-RSpec.describe <%= to_string_namespaced_path(self_path) %><%= get_complete_class_name(c) %>, type: :helper do
+RSpec.describe <%= (to_string_namespaced_path(self_path) + get_complete_class_name(c)).split('::').uniq.join('::') %>, type: :helper do
 <%= ERB.new(RAILS_HELPER_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
 end
 SPEC
