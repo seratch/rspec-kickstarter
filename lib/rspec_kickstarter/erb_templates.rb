@@ -14,9 +14,9 @@ module RSpecKickstarter
   # TODO: auto-generated
   describe '#<%= method.name %>' do
     it '<%= method.name %>' do
-<%- unless get_instantiation_code(c, method).nil?      -%><%= get_instantiation_code(c, method).sub(c.to_s,'described_class') %><%- end -%>
-<%- unless get_params_initialization_code(method).nil? -%><%= get_params_initialization_code(method) %><%- end -%>
-      result = <%= get_method_invocation_code(c, method) %>  
+<%- if get_instantiation_code(c, method)      -%><%= get_instantiation_code(c, method) %><%- end -%>
+<%- if get_params_initialization_code(method) -%><%= get_params_initialization_code(method) %><%- end -%>
+      result = <%= get_method_invocation_code(c, method).sub(c.to_s,'described_class') %>  
 
       expect(result).not_to be_nil
     end
