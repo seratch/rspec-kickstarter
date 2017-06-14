@@ -51,7 +51,8 @@ module RSpecKickstarter
 
 
     def to_string_namespaced_path(self_path)
-      self_path.split('/').map{|x| camelize(x) }[1..-2].join('::')
+      path = self_path.split('/').uniq.map{|x| camelize(x) }[1..-2].join('::')
+      path.present? ? path + '::' : ''
     end
 
     def camelize(str)
