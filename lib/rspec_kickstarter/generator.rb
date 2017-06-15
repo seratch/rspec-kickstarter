@@ -55,7 +55,7 @@ module RSpecKickstarter
     end
 
     def to_string_namespaced_path_whole(self_path)
-      self_path.sub('.rb', '').split('/').map { |x| camelize(x) }[1..-1].uniq.join('::')
+      self_path.sub('.rb', '').split('/').map { |x| camelize(x) }[2..-1].uniq.join('::')
     end
 
     #
