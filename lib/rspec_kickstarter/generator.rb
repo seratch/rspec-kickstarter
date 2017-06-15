@@ -133,7 +133,7 @@ module RSpecKickstarter
         puts code
       else
         if File.exist?(spec_path)
-          puts "#{spec_path} already exists."
+          # puts yellow("#{spec_path} already exists.")
         else
           FileUtils.mkdir_p(File.dirname(spec_path))
           File.open(spec_path, 'w') { |f| f.write(code) }
