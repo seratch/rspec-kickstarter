@@ -34,7 +34,7 @@ module RSpecKickstarter
           create_new_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
         end
       else
-        puts "#{file_path} skipped (Class/Module not found)."
+        puts red("#{file_path} skipped (Class/Module not found).")
       end
     end
 
@@ -132,7 +132,7 @@ module RSpecKickstarter
         else
           FileUtils.mkdir_p(File.dirname(spec_path))
           File.open(spec_path, 'w') { |f| f.write(code) }
-          puts "#{spec_path} created."
+          puts green("#{spec_path} created.")
         end
       end
     end
@@ -150,7 +150,7 @@ module RSpecKickstarter
         reject { |m| existing_spec.match(m.name) }
 
       if lacking_methods.empty?
-        puts "#{spec_path} skipped."
+        puts blue("#{spec_path} skipped.")
       else
         # These names are used in ERB template, don't delete.
         # rubocop:disable Lint/UselessAssignment
@@ -174,7 +174,7 @@ module RSpecKickstarter
         else
           File.open(spec_path, 'w') { |f| f.write(code) }
         end
-        puts "#{spec_path} modified."
+        puts green("#{spec_path} modified.")
       end
     end
 
@@ -249,6 +249,26 @@ module RSpecKickstarter
     end
 
     private
+ 
+    def colorize(text, color_code)
+      "#{color_code}#{text}e[0m"
+    end
+
+    def red(text)
+      colorize(text, "e[31m")
+    end
+
+    def green(text)
+      colorize(text, "e[32m")
+    end
+
+    def blue(text)
+      colorize(text, "e[34m")
+    end
+
+    def yellow(text)
+      colorize(text, "e[33m")
+    end
 
     def camelize(str)
       str.split('_').map { |w| w.capitalize }.join
