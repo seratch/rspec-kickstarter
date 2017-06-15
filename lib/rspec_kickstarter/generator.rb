@@ -25,20 +25,21 @@ module RSpecKickstarter
     # Writes new spec or appends to the existing spec.
     #
     def write_spec(file_path, force_write = false, dry_run = false, rails_mode = false)
-      class_or_module = RSpecKickstarter::RDocFactory.get_rdoc_class_or_module(file_path)
-      if class_or_module
-        spec_path = get_spec_path(file_path)
-        begin
+      begin
+        class_or_module = RSpecKickstarter::RDocFactory.get_rdoc_class_or_module(file_path)
+        if class_or_module
+          spec_path = get_spec_path(file_path)
+
           if force_write && File.exist?(spec_path)
             append_to_existing_spec(class_or_module, dry_run, rails_mode, spec_path)
           else
             create_new_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
           end
-        rescue Exception => e
-          puts red("#{file_path} aborted - misc failure")
+        else
+          puts red("#{file_path} skipped (Class/Module not found).")
         end
-      else
-        puts red("#{file_path} skipped (Class/Module not found).")
+      rescue
+        puts red("#{file_path} aborted - misc failure")
       end
     end
 
