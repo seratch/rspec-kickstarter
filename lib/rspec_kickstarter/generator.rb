@@ -159,7 +159,7 @@ module RSpecKickstarter
     def append_to_existing_spec(class_or_module, dry_run, rails_mode, spec_path)
       existing_spec   = File.read(spec_path)
       lacking_methods = public_methods_found(class_or_module).
-        reject { |m| existing_spec.match(decorated_name(m)) }
+        reject { |m| existing_spec.match(signature(m)) }
 
       if lacking_methods.empty?
         puts yellow("#{spec_path} skipped.")
@@ -261,6 +261,10 @@ module RSpecKickstarter
     end
 
     private
+
+    def signature(method)
+      "'#{decorated_name(method)}'"
+    end
  
     def colorize(text, color_code)
       "#{color_code}#{text}\033[0m"
