@@ -63,6 +63,10 @@ module RSpecKickstarter
       self_path.sub('.rb', '').split('/').map { |x| camelize(x) }[2..-1].uniq.join('::')
     end
 
+    def decorated_name(method)
+      (method.singleton ? '.' : '#') + method.name
+    end
+
     #
     # Returns spec file path.
     # e.g. "lib/foo/bar_baz.rb" -> "spec/foo/bar_baz_spec.rb"
@@ -118,7 +122,7 @@ module RSpecKickstarter
     def create_new_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
       # These names are used in ERB template, don't delete.
       # rubocop:disable Lint/UselessAssignment
-      methods_to_generate = class_or_module.method_list.select { |m| m.visibility == :public }
+      methods_to_generate = public_methods_found(class_or_module)
       c                   = class_or_module
       self_path           = to_string_value_to_require(file_path)
       # rubocop:enable Lint/UselessAssignment
@@ -142,6 +146,10 @@ module RSpecKickstarter
       end
     end
 
+    def public_methods_found(class_or_module)
+      class_or_module.method_list.select { |m| m.visibility.equal?(:public) }
+    end
+
     # rubocop:enable Metrics/AbcSize
 
     #
@@ -150,8 +158,7 @@ module RSpecKickstarter
     # rubocop:disable Metrics/AbcSize
     def append_to_existing_spec(class_or_module, dry_run, rails_mode, spec_path)
       existing_spec   = File.read(spec_path)
-      lacking_methods = class_or_module.method_list.
-        select { |m| m.visibility.equal?(:public) }.
+      lacking_methods = public_methods_found(class_or_module).
         reject { |m| existing_spec.match(m.name) }
 
       if lacking_methods.empty?
