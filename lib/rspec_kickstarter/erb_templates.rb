@@ -62,6 +62,7 @@ end
 SPEC
 
     RAILS_MODEL_METHODS_PART_TEMPLATE = <<SPEC
+<%= ERB.new(RAILS_MODEL_SCOPE_PART_TEMPLATE, nil, '-').result(binding) -%>
 <%- methods_to_generate.map { |method| %>
   # TODO: auto-generated
   describe '<%= decorated_name(method) %>' do
@@ -76,6 +77,16 @@ SPEC
 <% } %>
 SPEC
 
+    RAILS_MODEL_SCOPE_PART_TEMPLATE = <<SPEC
+<%- scope_methods_to_generate.map { |method| %>
+  # TODO: auto-generated
+  describe '.<%= method %>' do # scope test
+    it 'supports named scope <%= method %>' do
+      expect(described_class.limit(3).<%= method %>).to all(be_a(described_class)) 
+    end
+  end<% } %>
+SPEC
+
     RAILS_MODEL_NEW_SPEC_TEMPLATE = <<SPEC
 # frozen_string_literal: true
 
@@ -84,7 +95,6 @@ require 'shared_model_stuff'
 
 RSpec.describe <%= (to_string_namespaced_path(self_path) + get_complete_class_name(c)).split('::').uniq.join('::') %>, type: :model do 
      it_behaves_like 'real_model'
-
 <%= ERB.new(RAILS_MODEL_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
 end
 SPEC

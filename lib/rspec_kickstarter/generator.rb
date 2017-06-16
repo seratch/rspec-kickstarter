@@ -26,21 +26,24 @@ module RSpecKickstarter
     #
     def write_spec(file_path, force_write = false, dry_run = false, rails_mode = false)
       begin
+        code            = ''
         class_or_module = RSpecKickstarter::RDocFactory.get_rdoc_class_or_module(file_path)
         if class_or_module
           spec_path = get_spec_path(file_path)
 
-          if force_write && File.exist?(spec_path)
-            append_to_existing_spec(class_or_module, dry_run, rails_mode, spec_path)
-          else
-            create_new_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
-          end
+          code = if force_write && File.exist?(spec_path)
+                   append_to_existing_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
+                 else
+                   create_new_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
+                 end
         else
           puts red("#{file_path} skipped (Class/Module not found).")
         end
-      rescue
-        puts red("#{file_path} aborted - misc failure")
+        # rescue
+        #puts red("#{file_path} aborted - misc failure")
       end
+
+      code
     end
 
     #
@@ -122,9 +125,10 @@ module RSpecKickstarter
     def create_new_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
       # These names are used in ERB template, don't delete.
       # rubocop:disable Lint/UselessAssignment
-      methods_to_generate = public_methods_found(class_or_module)
-      c                   = class_or_module
-      self_path           = to_string_value_to_require(file_path)
+      methods_to_generate       = public_methods_found(class_or_module)
+      scope_methods_to_generate = scopes(class_or_module, file_path, spec_path)
+      c                         = class_or_module
+      self_path                 = to_string_value_to_require(file_path)
       # rubocop:enable Lint/UselessAssignment
 
       erb  = RSpecKickstarter::ERBFactory
@@ -144,6 +148,8 @@ module RSpecKickstarter
           puts green("#{spec_path} created.")
         end
       end
+
+      code
     end
 
     def public_methods_found(class_or_module)
@@ -156,12 +162,13 @@ module RSpecKickstarter
     # Appends new tests to the existing spec.
     #
     # rubocop:disable Metrics/AbcSize
-    def append_to_existing_spec(class_or_module, dry_run, rails_mode, spec_path)
+    def append_to_existing_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
       existing_spec   = File.read(spec_path)
       lacking_methods = public_methods_found(class_or_module).
         reject { |m| existing_spec.match(signature(m)) }
 
-      if lacking_methods.empty?
+      scope_methods_to_generate = scopes(class_or_module, file_path, spec_path)
+      if lacking_methods.empty? && scope_methods_to_generate.empty?
         puts yellow("#{spec_path} skipped.")
       else
         # These names are used in ERB template, don't delete.
@@ -188,6 +195,8 @@ module RSpecKickstarter
         end
         puts green("#{spec_path} modified.")
       end
+
+      code
     end
 
     # rubocop:enable Metrics/AbcSize
@@ -255,17 +264,70 @@ module RSpecKickstarter
       end
     end
 
-
     def get_rails_http_method(method_name)
       RAILS_RESOURCE_METHOD_AND_HTTP_METHOD[method_name] || 'get'
     end
 
     private
 
+    def parse_sexp(sexp, scopes, methods, stack = [])
+      case sexp[0]
+        when :module
+          parse_sexp(sexp[2], scopes, methods, stack+[sexp[0], sexp[1][1][1]])
+
+        when :vcall
+          name = sexp[1][1]
+          return if name.eql?('private')
+
+        when :command
+          if sexp[1][0] == :@ident && sexp[1][1] == 'scope'
+            name = sexp[2][1][0][1][1][1] 
+            scopes << name
+          end
+
+        when :class
+          parse_sexp(sexp[3], scopes, methods, stack+[sexp[0], sexp[1][1][1]])
+
+        when :def
+          name = sexp[1][1]
+          # line_number = sexp[1][2][0]
+
+          parse_sexp(sexp[3], scopes, methods, stack+[sexp[0], sexp[1][1]])
+
+          # puts "#{line_number}: Method: #{stack.last}##{name}\n"
+          methods << name
+        else
+          if sexp.is_a?(Array)
+            sexp.each { |s| parse_sexp(s, scopes, methods, stack) if s.is_a?(Array) }
+          end
+      end
+    end
+
+    require 'ripper'
+
+    def scopes(klass, file_path, spec_path)
+      content      = File.read(file_path)
+      spec_content = (File.read(spec_path) rescue '')
+      sexp         = Ripper.sexp(content)
+      methods      = []
+      scopes       = []
+
+      parse_sexp(sexp, scopes, methods)
+
+      scope_methods = []
+      scopes.each do |method|
+        unless spec_content.include?("'.#{method}'")
+          scope_methods << method
+        end
+      end 
+
+      scope_methods
+    end
+
     def signature(method)
       "'#{decorated_name(method)}'"
     end
- 
+
     def colorize(text, color_code)
       "#{color_code}#{text}\033[0m"
     end

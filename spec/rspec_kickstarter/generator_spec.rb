@@ -273,7 +273,8 @@ CODE
       FileUtils.mkdir_p('tmp/spec')
 
       code = <<CODE
-class FooModel
+class FooModel 
+  scope :test_scope, -> { where(nil) }
 end
 CODE
       FileUtils.mkdir_p('tmp/app/models')
@@ -282,12 +283,15 @@ CODE
 
       code = <<CODE
 class FooModel
+  scope :test_scope, -> { where(nil) }
+  scope :test_scope1, -> { where(nil) }   
+
   def foo
   end
 end
 CODE
       File.open('tmp/app/models/foo_model.rb', 'w') { |f| f.write(code) }
-      generator.write_spec('tmp/app/models/foo_model.rb', true, false, true)
+      puts generator.write_spec('tmp/app/models/foo_model.rb', true, false, true)
     end
 
     it 'works with rails controllers' do
