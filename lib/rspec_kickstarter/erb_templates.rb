@@ -61,6 +61,33 @@ RSpec.describe <%= (to_string_namespaced_path(self_path) + get_complete_class_na
 end
 SPEC
 
+    RAILS_MODEL_METHODS_PART_TEMPLATE = <<SPEC
+<%- methods_to_generate.map { |method| %>
+  # TODO: auto-generated
+  describe '<%= method.singleton ? '.' : '#' %><%= method.name %>' do
+    it '<%= method.name %>' do
+<%- if get_instantiation_code(c, method)      -%><%= get_instantiation_code(c, method) %><%- end -%>
+<%- if get_params_initialization_code(method) -%><%= get_params_initialization_code(method) %><%- end -%>
+      result = <%= get_method_invocation_code(c, method).sub(c.to_s,'described_class') %>  
+
+      expect(result).not_to be_nil
+    end
+  end
+<% } %>
+SPEC
+
+    RAILS_MODEL_NEW_SPEC_TEMPLATE = <<SPEC
+# frozen_string_literal: true
+
+require 'rails_helper'  
+
+RSpec.describe <%= (to_string_namespaced_path(self_path) + get_complete_class_name(c)).split('::').uniq.join('::') %>, type: :model do 
+     it_behaves_like 'real_model'
+
+<%= ERB.new(RAILS_MODEL_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
+end
+SPEC
+
     RAILS_HELPER_METHODS_PART_TEMPLATE = <<SPEC
 <%- methods_to_generate.map { |method| %>
   # TODO: auto-generated

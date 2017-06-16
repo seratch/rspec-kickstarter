@@ -268,6 +268,28 @@ CODE
       generator.write_spec('tmp/lib/foo/bar.rb', true)
     end
 
+    it 'works with rails models' do
+      FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
+      FileUtils.mkdir_p('tmp/spec')
+
+      code = <<CODE
+class FooModel
+end
+CODE
+      FileUtils.mkdir_p('tmp/app/models')
+      File.open('tmp/app/models/foo_model.rb', 'w') { |f| f.write(code) }
+      generator.write_spec('tmp/app/models/foo_model.rb', true, false, true)
+
+      code = <<CODE
+class FooModel
+  def foo
+  end
+end
+CODE
+      File.open('tmp/app/models/foo_model.rb', 'w') { |f| f.write(code) }
+      generator.write_spec('tmp/app/models/foo_model.rb', true, false, true)
+    end
+
     it 'works with rails controllers' do
       FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
       FileUtils.mkdir_p('tmp/spec')

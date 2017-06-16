@@ -155,7 +155,7 @@ module RSpecKickstarter
         reject { |m| existing_spec.match(m.name) }
 
       if lacking_methods.empty?
-        puts blue("#{spec_path} skipped.")
+        puts yellow("#{spec_path} skipped.")
       else
         # These names are used in ERB template, don't delete.
         # rubocop:disable Lint/UselessAssignment

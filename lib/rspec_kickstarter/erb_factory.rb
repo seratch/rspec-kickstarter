@@ -23,7 +23,7 @@ module RSpecKickstarter
     end
 
     #
-    # Returns ERB instance for appeding lacking tests
+    # Returns ERB instance for appending lacking tests
     #
     def get_instance_for_appending(rails_mode, target_path)
       template = get_erb_template(@custom_template, false, rails_mode, target_path)
@@ -40,6 +40,8 @@ module RSpecKickstarter
         custom_template
       elsif rails_mode && target_path.match(/controllers/)
         get_rails_controller_template(is_full)
+      elsif rails_mode && target_path.match(/models/)
+        get_rails_model_template(is_full)
       elsif rails_mode && target_path.match(/helpers/)
         get_rails_helper_template(is_full)
       else
@@ -52,6 +54,14 @@ module RSpecKickstarter
         RSpecKickstarter::ERBTemplates::RAILS_CONTROLLER_NEW_SPEC_TEMPLATE
       else
         RSpecKickstarter::ERBTemplates::RAILS_CONTROLLER_METHODS_PART_TEMPLATE
+      end
+    end
+
+    def get_rails_model_template(is_full)
+      if is_full
+        RSpecKickstarter::ERBTemplates::RAILS_MODEL_NEW_SPEC_TEMPLATE
+      else
+        RSpecKickstarter::ERBTemplates::RAILS_MODEL_METHODS_PART_TEMPLATE
       end
     end
 
