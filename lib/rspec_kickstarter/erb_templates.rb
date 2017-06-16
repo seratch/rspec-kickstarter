@@ -79,7 +79,8 @@ SPEC
     RAILS_MODEL_NEW_SPEC_TEMPLATE = <<SPEC
 # frozen_string_literal: true
 
-require 'rails_helper'  
+require 'rails_helper' 
+require 'shared_model_stuff' 
 
 RSpec.describe <%= (to_string_namespaced_path(self_path) + get_complete_class_name(c)).split('::').uniq.join('::') %>, type: :model do 
      it_behaves_like 'real_model'
