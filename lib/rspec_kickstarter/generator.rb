@@ -39,8 +39,8 @@ module RSpecKickstarter
         else
           puts red("#{file_path} skipped (Class/Module not found).")
         end
-        # rescue
-        #puts red("#{file_path} aborted - misc failure")
+      rescue
+        puts red("#{file_path} aborted - misc failure")
       end
 
       code
