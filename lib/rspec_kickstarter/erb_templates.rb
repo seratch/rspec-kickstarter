@@ -45,7 +45,7 @@ SPEC
     it '<%= method.name %>s' do
       <%= get_rails_http_method(method.name) %> :<%= method.name %>, {}, {}     
 
-      expect(response.status).to have_http_status(:ok)
+      expect(response).to have_http_status(:ok)
     end
   end
 <% } %>
