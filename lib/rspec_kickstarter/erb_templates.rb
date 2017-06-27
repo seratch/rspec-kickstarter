@@ -94,7 +94,7 @@ require 'rails_helper'
 require 'shared_model_stuff' 
 
 RSpec.describe <%= (to_string_namespaced_path(self_path) + get_complete_class_name(c)).split('::').uniq.join('::') %>, type: :model do 
-     it_behaves_like 'real_model'
+  it_behaves_like 'real_model'
 <%= ERB.new(RAILS_MODEL_METHODS_PART_TEMPLATE, nil, '-').result(binding) -%>
 end
 SPEC
