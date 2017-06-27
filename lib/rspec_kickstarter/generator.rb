@@ -63,7 +63,12 @@ module RSpecKickstarter
     end
 
     def to_string_namespaced_path_whole(self_path)
-      self_path.sub('.rb', '').split('/').map { |x| camelize(x) }[2..-1].uniq.join('::')
+      self_path
+        .sub('.rb', '')
+        .split('/')
+        .map { |x| camelize(x) }[2..-1]
+        .uniq
+        .join('::')
     end
 
     def decorated_name(method)
@@ -75,7 +80,10 @@ module RSpecKickstarter
     # e.g. "lib/foo/bar_baz.rb" -> "spec/foo/bar_baz_spec.rb"
     #
     def get_spec_path(file_path)
-      spec_dir + '/' + file_path.gsub(/^\.\//, '').gsub(%r{^(lib/)|(app/)}, '').gsub(/\.rb$/, '_spec.rb')
+      spec_dir + '/' + file_path
+                         .gsub(/^\.\//, '')
+                         .gsub(%r{^(lib/)|(app/)}, '')
+                         .sub(/\.rb$/, '_spec.rb')
     end
 
     #
@@ -105,7 +113,10 @@ module RSpecKickstarter
     # e.g. "(a, b = 'foo')" -> ["a", "b"]
     #
     def to_param_names_array(params)
-      params.split(',').map { |p| p.gsub(/[\(\)\s]/, '').gsub(/=.+$/, '') }.reject { |p| p.nil? || p.empty? }
+      params
+        .split(',')
+        .map { |p| p.gsub(/[\(\)\s]/, '').gsub(/=.+$/, '') }
+        .reject { |p| p.nil? || p.empty? }
     end
 
     #
