@@ -12,6 +12,4 @@ module RSpecKickstarter
     generator = RSpecKickstarter::Generator.new(spec_dir)
     generator.write_spec(file_path, force_write, dry_run)
   end
-
 end
-

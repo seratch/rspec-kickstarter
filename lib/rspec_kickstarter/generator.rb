@@ -336,7 +336,7 @@ module RSpecKickstarter
     end
 
     def signature(method)
-      "'#{decorated_name(method)}'"
+      "'#{decorated_name(method).sub('?','\?')}'"
     end
 
     def colorize(text, color_code)

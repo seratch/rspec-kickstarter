@@ -201,15 +201,35 @@ CODE
 
       generator.write_spec('tmp/lib/foo.rb')
 
+      orig_size = File.size('tmp/spec/tmp/lib/foo_spec.rb')
+      expect(orig_size).to be > 0
+
       code2 = <<CODE
 class Foo
   def hello; 'aaa'; end
-  def bye; 'aaa'; end
+  def bye?; true; end
 end
 CODE
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code2) }
       generator.write_spec('tmp/lib/foo.rb', true, true)
       generator.write_spec('tmp/lib/foo.rb', true)
+
+      new_size = File.size('tmp/spec/tmp/lib/foo_spec.rb')
+      expect(new_size).to be > orig_size
+
+
+      code2 = <<CODE
+class Foo
+  def hello; 'aaa'; end
+  def bye?; true; end
+end
+CODE
+      File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code2) }
+      generator.write_spec('tmp/lib/foo.rb', true, true)
+      generator.write_spec('tmp/lib/foo.rb', true)
+
+      final_size = File.size('tmp/spec/tmp/lib/foo_spec.rb')
+      expect(final_size).to equal new_size
     end
 
     it 'appends new cases with delta_template' do
