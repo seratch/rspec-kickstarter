@@ -183,7 +183,7 @@ module RSpecKickstarter
 
       scope_methods_to_generate = scopes(class_or_module, file_path, spec_path)
       if lacking_methods.empty? && scope_methods_to_generate.empty?
-        puts yellow("#{spec_path} skipped.")
+        # puts yellow("#{spec_path} skipped.")
       else
         # These names are used in ERB template, don't delete.
         # rubocop:disable Lint/UselessAssignment
