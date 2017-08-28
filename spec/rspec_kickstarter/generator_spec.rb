@@ -171,7 +171,7 @@ RSpec.describe RSpecKickstarter::Generator do
       CannotExtractTargetClass.new.write_spec(file_path, true)
     end
 
-    it 'creates new spec with full_tempalte' do
+    it 'creates new spec with full_template' do
       FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
       FileUtils.mkdir_p('tmp/spec')
 
