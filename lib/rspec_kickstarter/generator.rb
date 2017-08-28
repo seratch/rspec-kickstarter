@@ -164,7 +164,10 @@ module RSpecKickstarter
     end
 
     def public_methods_found(class_or_module)
-      class_or_module.method_list.select { |m| m.visibility.equal?(:public) }
+      class_or_module.method_list.select do |m|
+        m.visibility.equal?(:public) && m.name != 'new'
+      end
+
     end
 
     # rubocop:enable Metrics/AbcSize

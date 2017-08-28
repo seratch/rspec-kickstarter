@@ -4,18 +4,18 @@ require 'rspec_kickstarter/generator'
 
 RSpec.describe RSpecKickstarter::Generator do
 
-  let(:generator) { RSpecKickstarter::Generator.new('tmp/spec') }
+  let(:generator) { described_class.new('tmp/spec') }
 
-  describe '#new' do
+  describe '#initialize' do
     it 'works without params' do
-      result = RSpecKickstarter::Generator.new
+      result = described_class.new
 
       expect(result).not_to be_nil
     end
     it 'works' do
       spec_dir = './spec'
 
-      result = RSpecKickstarter::Generator.new(spec_dir)
+      result = described_class.new(spec_dir)
 
       expect(result).not_to be_nil
     end
@@ -24,8 +24,8 @@ RSpec.describe RSpecKickstarter::Generator do
   describe '#get_complete_class_name' do
     it 'works' do
       parent = double(:parent, name: nil)
-      c = double(:c, parent: parent)
-      name = 'ClassName'
+      c      = double(:c, parent: parent)
+      name   = 'ClassName'
 
       result = generator.get_complete_class_name(c, name)
 
@@ -34,8 +34,8 @@ RSpec.describe RSpecKickstarter::Generator do
 
     it 'works' do
       parent = double(:parent, name: 'A')
-      c = double(:c, parent: parent)
-      name = 'A::ClassName'
+      c      = double(:c, parent: parent)
+      name   = 'A::ClassName'
 
       result = generator.get_complete_class_name(c, name)
 
@@ -75,7 +75,7 @@ RSpec.describe RSpecKickstarter::Generator do
   describe '#get_instantiation_code' do
     it 'works with modules' do
       method = double(:method, singleton: true, name: 'do_something')
-      c = double(:c, name: 'Foo', method_list: [method])
+      c      = double(:c, name: 'Foo', method_list: [method])
 
       result = generator.get_instantiation_code(c, method)
 
@@ -85,17 +85,17 @@ RSpec.describe RSpecKickstarter::Generator do
     it 'works with classes' do
       parent = double(:parent, name: nil)
       method = double(:method, singleton: false, name: 'do_something')
-      c = double(:c, name: 'Foo', parent: parent, method_list: [method])
+      c      = double(:c, name: 'Foo', parent: parent, method_list: [method])
 
       result = generator.get_instantiation_code(c, method)
-      
+
       expect(result).to eql("      foo = described_class.new\n")
     end
 
     it 'works with classes' do
       parent = double(:parent, name: 'Parent')
       method = double(:method, singleton: false, name: 'do_something')
-      c = double(:c, name: 'Foo', parent: parent, method_list: [method])
+      c      = double(:c, name: 'Foo', parent: parent, method_list: [method])
 
       result = generator.get_instantiation_code(c, method)
 
@@ -106,16 +106,24 @@ RSpec.describe RSpecKickstarter::Generator do
   describe '#get_method_invocation_code' do
     it 'works with modules' do
       parent = double(:parent, name: nil)
-      method = double(:method, singleton: true, name: 'do_something', params: '(a, b)', block_params: '')
-      c = double(:c, name: 'Module', parent: parent, method_list: [method])
+      method = double(:method,
+                      singleton:    true,
+                      name:         'do_something',
+                      params:       '(a, b)',
+                      block_params: '')
+      c      = double(:c, name: 'Module', parent: parent, method_list: [method])
 
       result = generator.get_method_invocation_code(c, method)
       expect(result).to eql('described_class.do_something(a, b)')
     end
     it 'works with classes' do
       parent = double(:parent, name: 'Module')
-      method = double(:method, singleton: false, name: 'do_something', params: '(a, b)', block_params: '')
-      c = double(:c, name: 'ClassName', parent: parent, method_list: [method])
+      method = double(:method,
+                      singleton:    false,
+                      name:         'do_something',
+                      params:       '(a, b)',
+                      block_params: '')
+      c      = double(:c, name: 'ClassName', parent: parent, method_list: [method])
 
       result = generator.get_method_invocation_code(c, method)
       expect(result).to eql('class_name.do_something(a, b)')
@@ -205,7 +213,7 @@ CODE
       expect(orig_size).to be > 0
 
       code2 = <<CODE
-class Foo
+class Foo  
   def hello; 'aaa'; end
   def bye?; true; end
 end
@@ -219,7 +227,8 @@ CODE
 
 
       code2 = <<CODE
-class Foo
+class Foo  
+  def initialize; end
   def hello; 'aaa'; end
   def bye?; true; end
 end
@@ -363,12 +372,12 @@ CODE
   describe '#get_spec_path' do
     it 'works' do
       file_path = 'lib/foo/bar.rb'
-      result = generator.get_spec_path(file_path)
+      result    = generator.get_spec_path(file_path)
       expect(result).to eql('tmp/spec/foo/bar_spec.rb')
     end
     it 'works with path which starts with current dir' do
       file_path = './lib/foo/bar.rb'
-      result = generator.get_spec_path(file_path)
+      result    = generator.get_spec_path(file_path)
       expect(result).to eql('tmp/spec/foo/bar_spec.rb')
     end
   end
@@ -376,7 +385,7 @@ CODE
   describe '#to_string_value_to_require' do
     it 'works' do
       file_path = 'lib/foo/bar.rb'
-      result = generator.to_string_value_to_require(file_path)
+      result    = generator.to_string_value_to_require(file_path)
       expect(result).to eql('foo/bar')
     end
   end
@@ -384,25 +393,25 @@ CODE
   describe '#to_string_namespaced_path' do
     it 'works' do
       file_path = 'lib/foo/bar.rb'
-      result = generator.to_string_namespaced_path(file_path)
+      result    = generator.to_string_namespaced_path(file_path)
       expect(result).to eql('Foo::')
     end
 
     it 'works' do
       file_path = 'lib/foo_baz/bar_bar/bar.rb'
-      result = generator.to_string_namespaced_path(file_path)
+      result    = generator.to_string_namespaced_path(file_path)
       expect(result).to eql('FooBaz::BarBar::')
     end
 
     it 'works' do
       file_path = 'lib/foo/foo/bar.rb'
-      result = generator.to_string_namespaced_path(file_path)
+      result    = generator.to_string_namespaced_path(file_path)
       expect(result).to eql('Foo::')
     end
 
     it 'works' do
       file_path = 'lib/bar.rb'
-      result = generator.to_string_namespaced_path(file_path)
+      result    = generator.to_string_namespaced_path(file_path)
       expect(result).to eql('')
     end
   end
@@ -410,7 +419,10 @@ CODE
 
   describe '#get_rails_helper_method_invocation_code' do
     it 'works' do
-      method = double(:method, singleton: false, name: 'do_something', params: '(a, b)', block_params: '')
+      method = double(:method,
+                      singleton: false,
+                      name:      'do_something',
+                      params:    '(a, b)', block_params: '')
       result = generator.get_rails_helper_method_invocation_code(method)
 
       expect(result).to eql('do_something(a, b)')
