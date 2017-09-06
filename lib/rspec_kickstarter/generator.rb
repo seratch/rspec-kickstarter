@@ -339,7 +339,7 @@ module RSpecKickstarter
     end
 
     def signature(method)
-      "'#{decorated_name(method).sub('?','\?')}'"
+      "'#{decorated_name(method).sub('?','\?').gsub('[', '\[').gsub(']','\]')}'"
     end
 
     def colorize(text, color_code)
