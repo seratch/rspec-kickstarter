@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # frozen_string_literal: true
 
 require 'rdoc'
@@ -82,9 +81,9 @@ module RSpecKickstarter
     #
     def get_spec_path(file_path)
       spec_dir + '/' + file_path.
-        gsub(/^\.\//, '').
-        gsub(%r{^(lib/)|(app/)}, '').
-        sub(/\.rb$/, '_spec.rb')
+                       gsub(/^\.\//, '').
+                       gsub(%r{^(lib/)|(app/)}, '').
+                       sub(/\.rb$/, '_spec.rb')
     end
 
     #
@@ -143,8 +142,8 @@ module RSpecKickstarter
       # rubocop:enable Lint/UselessAssignment
 
       erb  = RSpecKickstarter::ERBFactory.
-        new(@full_template).
-        get_instance_for_new_spec(rails_mode, file_path)
+             new(@full_template).
+             get_instance_for_new_spec(rails_mode, file_path)
       code = erb.result(binding)
 
       if dry_run
@@ -176,7 +175,7 @@ module RSpecKickstarter
     def append_to_existing_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
       existing_spec   = File.read(spec_path)
       lacking_methods = public_methods_found(class_or_module).
-        reject { |m| existing_spec.match(signature(m)) }
+                        reject { |m| existing_spec.match(signature(m)) }
 
       scope_methods_to_generate = scopes(class_or_module, file_path, spec_path)
       if lacking_methods.empty? && scope_methods_to_generate.empty?

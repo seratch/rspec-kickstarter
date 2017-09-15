@@ -78,7 +78,7 @@ Layout/AlignArray:
   Enabled: false
 
 # Do not prefix writer method names with set_
-Style/AccessorMethodName:
+Layout/AccessorMethodName:
   Enabled: false
 
 Rails/Output:
