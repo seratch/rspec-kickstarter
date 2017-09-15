@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'rdoc'
 require 'rspec_kickstarter'
@@ -63,12 +64,12 @@ module RSpecKickstarter
     end
 
     def to_string_namespaced_path_whole(self_path)
-      self_path
-        .sub('.rb', '')
-        .split('/')
-        .map { |x| camelize(x) }[2..-1]
-        .uniq
-        .join('::')
+      self_path.
+        sub('.rb', '').
+        split('/').
+        map { |x| camelize(x) }[2..-1].
+        uniq.
+        join('::')
     end
 
     def decorated_name(method)
@@ -80,10 +81,10 @@ module RSpecKickstarter
     # e.g. "lib/foo/bar_baz.rb" -> "spec/foo/bar_baz_spec.rb"
     #
     def get_spec_path(file_path)
-      spec_dir + '/' + file_path
-                         .gsub(/^\.\//, '')
-                         .gsub(%r{^(lib/)|(app/)}, '')
-                         .sub(/\.rb$/, '_spec.rb')
+      spec_dir + '/' + file_path.
+        gsub(/^\.\//, '').
+        gsub(%r{^(lib/)|(app/)}, '').
+        sub(/\.rb$/, '_spec.rb')
     end
 
     #
@@ -113,10 +114,10 @@ module RSpecKickstarter
     # e.g. "(a, b = 'foo')" -> ["a", "b"]
     #
     def to_param_names_array(params)
-      params
-        .split(',')
-        .map { |p| p.gsub(/[()\s]/, '').gsub(/=.+$/, '') }
-        .reject { |p| p.nil? || p.empty? }
+      params.
+        split(',').
+        map { |p| p.gsub(/[()\s]/, '').gsub(/=.+$/, '') }.
+        reject { |p| p.nil? || p.empty? }
     end
 
     #
@@ -135,29 +136,26 @@ module RSpecKickstarter
     # rubocop:disable Metrics/AbcSize
     def create_new_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
       # These names are used in ERB template, don't delete.
-      # rubocop:disable Lint/UselessAssignment
       methods_to_generate       = public_methods_found(class_or_module)
       scope_methods_to_generate = scopes(class_or_module, file_path, spec_path)
       c                         = class_or_module
       self_path                 = to_string_value_to_require(file_path)
       # rubocop:enable Lint/UselessAssignment
 
-      erb  = RSpecKickstarter::ERBFactory
-               .new(@full_template)
-               .get_instance_for_new_spec(rails_mode, file_path)
+      erb  = RSpecKickstarter::ERBFactory.
+        new(@full_template).
+        get_instance_for_new_spec(rails_mode, file_path)
       code = erb.result(binding)
 
       if dry_run
         puts "----- #{spec_path} -----"
         puts code
+      elsif File.exist?(spec_path)
+        # puts yellow("#{spec_path} already exists.")
       else
-        if File.exist?(spec_path)
-          # puts yellow("#{spec_path} already exists.")
-        else
-          FileUtils.mkdir_p(File.dirname(spec_path))
-          File.open(spec_path, 'w') { |f| f.write(code) }
-          puts green("#{spec_path} created.")
-        end
+        FileUtils.mkdir_p(File.dirname(spec_path))
+        File.open(spec_path, 'w') { |f| f.write(code) }
+        puts green("#{spec_path} created.")
       end
 
       code
@@ -167,7 +165,6 @@ module RSpecKickstarter
       class_or_module.method_list.select do |m|
         m.visibility.equal?(:public) && m.name != 'new'
       end
-
     end
 
     # rubocop:enable Metrics/AbcSize
@@ -186,7 +183,6 @@ module RSpecKickstarter
         # puts yellow("#{spec_path} skipped.")
       else
         # These names are used in ERB template, don't delete.
-        # rubocop:disable Lint/UselessAssignment
         methods_to_generate = lacking_methods
         c                   = class_or_module
         # rubocop:enable Lint/UselessAssignment
@@ -195,11 +191,11 @@ module RSpecKickstarter
         additional_spec = erb.result(binding)
 
         last_end_not_found = true
-        code               = existing_spec.split("\n").reverse.reject { |line|
+        code               = existing_spec.split("\n").reverse.reject do |line|
           before_modified    = last_end_not_found
           last_end_not_found = line.gsub(/#.+$/, '').strip != 'end' if before_modified
           before_modified
-        }.reverse.join("\n") + "\n" + additional_spec + "\nend\n"
+        end.reverse.join("\n") + "\n" + additional_spec + "\nend\n"
 
         if dry_run
           puts "----- #{spec_path} -----"
@@ -287,7 +283,7 @@ module RSpecKickstarter
     def parse_sexp(sexp, scopes, methods, stack = [])
       case sexp[0]
         when :module
-          parse_sexp(sexp[2], scopes, methods, stack+[sexp[0], sexp[1][1][1]])
+          parse_sexp(sexp[2], scopes, methods, stack + [sexp[0], sexp[1][1][1]])
 
         when :vcall
           name = sexp[1][1]
@@ -295,18 +291,18 @@ module RSpecKickstarter
 
         when :command
           if sexp[1][0] == :@ident && sexp[1][1] == 'scope'
-            name = sexp[2][1][0][1][1][1] 
+            name = sexp[2][1][0][1][1][1]
             scopes << name
           end
 
         when :class
-          parse_sexp(sexp[3], scopes, methods, stack+[sexp[0], sexp[1][1][1]])
+          parse_sexp(sexp[3], scopes, methods, stack + [sexp[0], sexp[1][1][1]])
 
         when :def
           name = sexp[1][1]
           # line_number = sexp[1][2][0]
 
-          parse_sexp(sexp[3], scopes, methods, stack+[sexp[0], sexp[1][1]])
+          parse_sexp(sexp[3], scopes, methods, stack + [sexp[0], sexp[1][1]])
 
           # puts "#{line_number}: Method: #{stack.last}##{name}\n"
           methods << name
@@ -321,7 +317,12 @@ module RSpecKickstarter
 
     def scopes(_klass, file_path, spec_path)
       content      = File.read(file_path)
-      spec_content = (File.read(spec_path) rescue '')
+      spec_content = (
+      begin
+        File.read(spec_path)
+      rescue
+        ''
+      end)
       sexp         = Ripper.sexp(content)
       methods      = []
       scopes       = []
@@ -333,13 +334,13 @@ module RSpecKickstarter
         unless spec_content.include?("'.#{method}'")
           scope_methods << method
         end
-      end 
+      end
 
       scope_methods
     end
 
     def signature(method)
-      "'#{decorated_name(method).sub('?','\?').gsub('[', '\[').gsub(']','\]')}'"
+      "'#{decorated_name(method).sub('?', '\?').gsub('[', '\[').gsub(']', '\]')}'"
     end
 
     def colorize(text, color_code)

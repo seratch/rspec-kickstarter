@@ -10,7 +10,6 @@ AllCops:
     - 'tmp/**/*' 
     - 'vendor/**/*'
     - 'Guardfile'
-  RunRailsCops: true
 
 AsciiComments:
   Enabled: false
@@ -30,17 +29,14 @@ Metrics/MethodLength:
 Style/AsciiComments:
   Enabled: false
 
-Style/Blocks:
-  Enabled: false
-
 # Respect RubyMine formatter
-Style/CaseIndentation:
+Layout/CaseIndentation:
   Enabled: false
 
 Style/Documentation:
   Enabled: false
 
-Style/DotPosition:
+Layout/DotPosition:
   EnforcedStyle: trailing
 
 Style/GuardClause:
@@ -54,7 +50,7 @@ Style/SingleLineBlockParams:
   Enabled: false
 
 # Respect RubyMine formatter
-Style/SpaceInsideHashLiteralBraces:
+Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
 
 # Cannot deal with AR#eager_load
@@ -62,14 +58,14 @@ Style/SymbolProc:
   Enabled: false
 
 # Final newline missing.
-Style/TrailingBlankLines:
+Layout/TrailingBlankLines:
   Enabled: false
 
 TrivialAccessors:
   Enabled: true
   ExactNameMatch: true
 
-Style/SpaceInsideBlockBraces:
+Layout/SpaceInsideBlockBraces:
   Enabled: false
 
 Style/MultilineBlockChain:
@@ -78,7 +74,7 @@ Style/MultilineBlockChain:
 Style/NumericLiterals:
   Enabled: false
 
-Style/AlignArray:
+Layout/AlignArray:
   Enabled: false
 
 # Do not prefix writer method names with set_
@@ -88,14 +84,14 @@ Style/AccessorMethodName:
 Rails/Output:
   Enabled: false
 
-Style/MultilineOperationIndentation:
+Layout/MultilineOperationIndentation:
   Enabled: false
 
-Style/EmptyLinesAroundClassBody:
+Layout/EmptyLinesAroundClassBody:
   Enabled: false
 
-Style/EmptyLinesAroundBlockBody:
+Layout/EmptyLinesAroundBlockBody:
   Enabled: false
 
-Style/EmptyLinesAroundModuleBody:
+Layout/EmptyLinesAroundModuleBody:
   Enabled: false

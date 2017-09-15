@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'spec_helper'
 require 'rspec_kickstarter/rdoc_factory'
@@ -8,7 +9,7 @@ RSpec.describe RSpecKickstarter::RDocFactory do
   describe '#get_rdoc_class_or_module' do
     it 'works' do
       file_path = 'lib/rspec_kickstarter.rb'
-      result = RSpecKickstarter::RDocFactory.get_rdoc_class_or_module(file_path)
+      result = described_class.get_rdoc_class_or_module(file_path)
       expect(result).not_to be_nil
     end
 
@@ -19,14 +20,13 @@ RSpec.describe RSpecKickstarter::RDocFactory do
           end
 
           class TopLevel
-            def store=(*)
-            end
+            def store=(*); end
           end
         end
 
         begin
           file_path = 'lib/rspec_kickstarter.rb'
-          result = RSpecKickstarter::RDocFactory.get_rdoc_class_or_module(file_path)
+          result = described_class.get_rdoc_class_or_module(file_path)
           expect(result).not_to be_nil
         ensure
           RDoc.class_eval do

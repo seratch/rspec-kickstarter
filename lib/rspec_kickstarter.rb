@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'rspec_kickstarter/generator'
 require 'rspec_kickstarter/version'
