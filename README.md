@@ -50,7 +50,7 @@ module Foo
     def self.xxx(a, b = "aaa")
     end
 
-    def yyy()
+    def yyy
     end
 
     private
@@ -92,7 +92,7 @@ describe Foo::BarBaz do
   describe '#yyy' do
     it 'works' do
       bar_baz = Foo::BarBaz.new
-      result = bar_baz.yyy()
+      result = bar_baz.yyy
       expect(result).not_to be_nil
     end
   end
@@ -113,7 +113,7 @@ module Foo
     def self.xxx(a, b = "aaa")
     end
 
-    def yyy()
+    def yyy
     end
 
     def additional_ops
@@ -140,12 +140,11 @@ The following code will be appended.
   describe '#additional_ops' do
     it 'works' do
       bar_baz = Foo::BarBaz.new
-      result = bar_baz.additional_ops()
+      result = bar_baz.additional_ops
       expect(result).not_to be_nil
     end
   end
 
-end
 ```
 
 ## Rails mode

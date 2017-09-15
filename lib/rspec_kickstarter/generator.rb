@@ -115,7 +115,7 @@ module RSpecKickstarter
     def to_param_names_array(params)
       params
         .split(',')
-        .map { |p| p.gsub(/[\(\)\s]/, '').gsub(/=.+$/, '') }
+        .map { |p| p.gsub(/[()\s]/, '').gsub(/=.+$/, '') }
         .reject { |p| p.nil? || p.empty? }
     end
 
@@ -319,7 +319,7 @@ module RSpecKickstarter
 
     require 'ripper'
 
-    def scopes(klass, file_path, spec_path)
+    def scopes(_klass, file_path, spec_path)
       content      = File.read(file_path)
       spec_content = (File.read(spec_path) rescue '')
       sexp         = Ripper.sexp(content)
