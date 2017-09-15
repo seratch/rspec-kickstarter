@@ -41,7 +41,7 @@ SPEC
     RAILS_CONTROLLER_METHODS_PART_TEMPLATE = <<~SPEC
       <%- methods_to_generate.map { |method| %>
         # TODO: auto-generated
-        describe '<%= decorated_name(method) %>'' do
+        describe '<%= decorated_name(method) %>' do
           it '<%= get_rails_http_method(method.name).upcase %> <%= method.name %>' do
             <%= get_rails_http_method(method.name) %> :<%= method.name %>, {}, {}
 
