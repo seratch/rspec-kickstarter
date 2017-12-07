@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rspec_kickstarter/generator'
+require 'rspec_kickstarter/config'
 require 'rspec_kickstarter/version'
 
 #
