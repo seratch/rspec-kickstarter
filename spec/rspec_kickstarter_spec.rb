@@ -14,4 +14,33 @@ RSpec.describe RSpecKickstarter do
     end
   end
 
+
+  # TODO: auto-generated
+  describe '.config' do
+    it 'config' do
+      result = described_class.config { |config| }
+
+      expect(result).not_to be_nil
+    end
+  end
+
+  # TODO: auto-generated
+  describe '.configure' do
+    it 'configure' do
+      result = described_class.configure
+
+      expect(result).not_to be_nil
+    end
+  end
+
+  # TODO: auto-generated
+  describe '.version' do
+    it 'version' do
+      result = described_class.version
+
+      expect(result).not_to be_nil
+    end
+  end
+
+
 end

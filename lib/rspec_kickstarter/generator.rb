@@ -81,9 +81,9 @@ module RSpecKickstarter
     #
     def get_spec_path(file_path)
       spec_dir + '/' + file_path.
-                       gsub(/^\.\//, '').
-                       gsub(%r{^(lib/)|(app/)}, '').
-                       sub(/\.rb$/, '_spec.rb')
+        gsub(/^\.\//, '').
+        gsub(%r{^(lib/)|(app/)}, '').
+        sub(/\.rb$/, '_spec.rb')
     end
 
     #
@@ -142,8 +142,8 @@ module RSpecKickstarter
       # rubocop:enable Lint/UselessAssignment
 
       erb  = RSpecKickstarter::ERBFactory.
-             new(@full_template).
-             get_instance_for_new_spec(rails_mode, file_path)
+        new(@full_template).
+        get_instance_for_new_spec(rails_mode, file_path)
       code = erb.result(binding)
 
       if dry_run
@@ -173,9 +173,12 @@ module RSpecKickstarter
     #
     # rubocop:disable Metrics/AbcSize
     def append_to_existing_spec(class_or_module, dry_run, rails_mode, file_path, spec_path)
-      existing_spec   = File.read(spec_path)
+      existing_spec = File.read(spec_path)
+      if skip?(existing_spec)
+        return
+      end
       lacking_methods = public_methods_found(class_or_module).
-                        reject { |m| existing_spec.match(signature(m)) }
+        reject { |m| existing_spec.match(signature(m)) }
 
       scope_methods_to_generate = scopes(class_or_module, file_path, spec_path)
       if lacking_methods.empty? && scope_methods_to_generate.empty?
@@ -206,6 +209,14 @@ module RSpecKickstarter
       end
 
       code
+    end
+
+    def skip?(text)
+      RSpecKickstarter.config.behaves_like_exclusions.each do |exclude_pattern|
+          return true if text.match(exclude_pattern)
+      end
+
+      false
     end
 
     # rubocop:enable Metrics/AbcSize
