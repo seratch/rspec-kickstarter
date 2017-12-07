@@ -6,27 +6,38 @@
 require 'optparse'
 require 'rspec_kickstarter/version'
 require 'rspec_kickstarter/generator'
+
 print_version = false
-force_write = false
-dry_run = false
-rails_mode = false
-spec_dir = './spec'
-delta_path = nil
-full_path = nil
+force_write   = false
+dry_run       = false
+rails_mode    = false
+spec_dir      = './spec'
+delta_path    = nil
+exc_spec_dir  = nil
+full_path     = nil
 
 opt = OptionParser.new
 opt.on('-f', 'Create if absent or append to the existing spec') { |_| force_write = true }
 opt.on('--force', '') { |_| force_write = true }
+
 opt.on('-n', 'Dry run mode (shows generated code to console)') { |_| dry_run = true }
 opt.on('--dry-run', '') { |_| dry_run = true }
+
 opt.on('-r', 'Run in Rails mode') { |_| rails_mode = true }
 opt.on('--rails', '') { |_| rails_mode = true }
+
 opt.on('-o VAL', 'Output directory (default: ./spec)') { |dir| spec_dir = dir }
 opt.on('--output-dir VAL', '') { |dir| spec_dir = dir }
+
+opt.on('-e VAL', 'Exclude directory (default: ./spec/no-run/**)') { |dir| exc_spec_dir = dir }
+opt.on('--exc-dir VAL', '') { |dir| exc_spec_dir = dir }
+
 opt.on('-D VAL', 'Delta template path (e.g. ./rails_controller_delta.erb)') { |path| delta_path = path }
 opt.on('--delta-template VAL', '') { |path| delta_path = path }
+
 opt.on('-F VAL', 'Full template path (e.g. ./rails_controller_full.erb)') { |path| full_path = path }
 opt.on('--full-template VAL', '') { |path| full_path = path }
+
 opt.on('-v', 'Print version') { |_| print_version = true }
 opt.on('--version', '') { |_| print_version = true }
 
@@ -55,6 +66,7 @@ if delta_path
     exit 1
   end
 end
+
 full_template = nil
 if full_path
   if File.exist?(full_path)
@@ -67,7 +79,10 @@ end
 
 generator = RSpecKickstarter::Generator.new(spec_dir, delta_template, full_template)
 
-Dir.glob(dir_or_file).each do |file_path|
+files = Dir.glob(dir_or_file)
+files -= Dir.glob(exc_spec_dir)
+
+files.each do |file_path|
   generator.write_spec(file_path, force_write, dry_run, rails_mode)
 end
 

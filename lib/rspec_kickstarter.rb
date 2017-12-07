@@ -19,7 +19,7 @@ module RSpecKickstarter
     alias configure config
 
     def version
-      VERSION::STRING
+      VERSION
     end
   end
 

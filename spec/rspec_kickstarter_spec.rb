@@ -13,8 +13,7 @@ RSpec.describe RSpecKickstarter do
       described_class.write_spec(file_path, spec_dir, force_write, dry_run)
     end
   end
-
-
+  
   # TODO: auto-generated
   describe '.config' do
     it 'config' do
@@ -41,6 +40,4 @@ RSpec.describe RSpecKickstarter do
       expect(result).not_to be_nil
     end
   end
-
-
 end
