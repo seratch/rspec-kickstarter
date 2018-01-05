@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require 'erb'
-require 'rspec_kickstarter'
-require 'rspec_kickstarter/erb_templates'
+require 'rspec_jumpstart'
+require 'rspec_jumpstart/erb_templates'
 
 #
 # ERB instance provider
 #
-module RSpecKickstarter
+module RSpecJumpstart
   class ERBFactory
 
     def initialize(custom_template)
@@ -51,33 +51,33 @@ module RSpecKickstarter
 
     def get_rails_controller_template(is_full)
       if is_full
-        RSpecKickstarter::ERBTemplates::RAILS_CONTROLLER_NEW_SPEC_TEMPLATE
+        RSpecJumpstart::ERBTemplates::RAILS_CONTROLLER_NEW_SPEC_TEMPLATE
       else
-        RSpecKickstarter::ERBTemplates::RAILS_CONTROLLER_METHODS_PART_TEMPLATE
+        RSpecJumpstart::ERBTemplates::RAILS_CONTROLLER_METHODS_PART_TEMPLATE
       end
     end
 
     def get_rails_model_template(is_full)
       if is_full
-        RSpecKickstarter::ERBTemplates::RAILS_MODEL_NEW_SPEC_TEMPLATE
+        RSpecJumpstart::ERBTemplates::RAILS_MODEL_NEW_SPEC_TEMPLATE
       else
-        RSpecKickstarter::ERBTemplates::RAILS_MODEL_METHODS_PART_TEMPLATE
+        RSpecJumpstart::ERBTemplates::RAILS_MODEL_METHODS_PART_TEMPLATE
       end
     end
 
     def get_rails_helper_template(is_full)
       if is_full
-        RSpecKickstarter::ERBTemplates::RAILS_HELPER_NEW_SPEC_TEMPLATE
+        RSpecJumpstart::ERBTemplates::RAILS_HELPER_NEW_SPEC_TEMPLATE
       else
-        RSpecKickstarter::ERBTemplates::RAILS_HELPER_METHODS_PART_TEMPLATE
+        RSpecJumpstart::ERBTemplates::RAILS_HELPER_METHODS_PART_TEMPLATE
       end
     end
 
     def get_basic_template(is_full)
       if is_full
-        RSpecKickstarter::ERBTemplates::BASIC_NEW_SPEC_TEMPLATE
+        RSpecJumpstart::ERBTemplates::BASIC_NEW_SPEC_TEMPLATE
       else
-        RSpecKickstarter::ERBTemplates::BASIC_METHODS_PART_TEMPLATE
+        RSpecJumpstart::ERBTemplates::BASIC_METHODS_PART_TEMPLATE
       end
     end
 

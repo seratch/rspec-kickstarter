@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe RSpecKickstarter do
+RSpec.describe RSpecJumpstart do
 
   describe '#write_spec' do
     it 'works' do
-      file_path = 'lib/rspec_kickstarter.rb'
+      file_path = 'lib/rspec_jumpstart.rb'
       spec_dir = './spec'
       force_write = false
       dry_run = false

@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 require 'rdoc'
-require 'rspec_kickstarter'
-require 'rspec_kickstarter/erb_factory'
-require 'rspec_kickstarter/erb_templates'
-require 'rspec_kickstarter/rdoc_factory'
+require 'rspec_jumpstart'
+require 'rspec_jumpstart/erb_factory'
+require 'rspec_jumpstart/erb_templates'
+require 'rspec_jumpstart/rdoc_factory'
 
 #
 # RSpec Code Generator
 #
-module RSpecKickstarter
+module RSpecJumpstart
   class Generator
-    include RSpecKickstarter::ERBTemplates
+    include RSpecJumpstart::ERBTemplates
 
     attr_accessor :spec_dir, :delta_template, :full_template
 
@@ -27,7 +27,7 @@ module RSpecKickstarter
     def write_spec(file_path, force_write = false, dry_run = false, rails_mode = false)
       begin
         code            = ''
-        class_or_module = RSpecKickstarter::RDocFactory.get_rdoc_class_or_module(file_path)
+        class_or_module = RSpecJumpstart::RDocFactory.get_rdoc_class_or_module(file_path)
         if class_or_module
           spec_path = get_spec_path(file_path)
 
@@ -141,7 +141,7 @@ module RSpecKickstarter
       self_path                 = to_string_value_to_require(file_path)
       # rubocop:enable Lint/UselessAssignment
 
-      erb  = RSpecKickstarter::ERBFactory.
+      erb  = RSpecJumpstart::ERBFactory.
         new(@full_template).
         get_instance_for_new_spec(rails_mode, file_path)
       code = erb.result(binding)
@@ -189,7 +189,7 @@ module RSpecKickstarter
         c                   = class_or_module
         # rubocop:enable Lint/UselessAssignment
 
-        erb             = RSpecKickstarter::ERBFactory.new(@delta_template).get_instance_for_appending(rails_mode, spec_path)
+        erb             = RSpecJumpstart::ERBFactory.new(@delta_template).get_instance_for_appending(rails_mode, spec_path)
         additional_spec = erb.result(binding)
 
         last_end_not_found = true
@@ -212,7 +212,7 @@ module RSpecKickstarter
     end
 
     def skip?(text)
-      RSpecKickstarter.config.behaves_like_exclusions.each do |exclude_pattern|
+      RSpecJumpstart.config.behaves_like_exclusions.each do |exclude_pattern|
           return true if text.match(exclude_pattern)
       end
 

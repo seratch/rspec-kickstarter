@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 #
-# rspec-kickstarter [dir/*.rb]
+# rspec-jumpstart [dir/*.rb]
 #
 
 require 'optparse'
-require 'rspec_kickstarter/version'
-require 'rspec_kickstarter/generator'
+require 'rspec_jumpstart/version'
+require 'rspec_jumpstart/generator'
 
 print_version = false
 force_write   = false
@@ -44,13 +44,13 @@ opt.on('--version', '') { |_| print_version = true }
 args = opt.parse(ARGV)
 
 if print_version
-  puts "rspec-kickstarter #{RSpecKickstarter::VERSION}"
+  puts "rspec-jumpstart #{RSpecJumpstart::VERSION}"
   exit 0
 end
 
 dir_or_file = args.first
 if dir_or_file.nil?
-  puts "Usage: rspec-kickstarter [dir/*.rb] -options"
+  puts "Usage: rspec-jumpstart [dir/*.rb] -options"
   exit 1
 end
 unless dir_or_file.match(/.rb$/)
@@ -77,10 +77,10 @@ if full_path
   end
 end
 
-generator = RSpecKickstarter::Generator.new(spec_dir, delta_template, full_template)
+generator = RSpecJumpstart::Generator.new(spec_dir, delta_template, full_template)
 
 files = Dir.glob(dir_or_file)
-files -= Dir.glob(exc_spec_dir) if exc_spec_dir
+files -= Dir.glob(exc_spec_dir)
 
 files.each do |file_path|
   generator.write_spec(file_path, force_write, dry_run, rails_mode)

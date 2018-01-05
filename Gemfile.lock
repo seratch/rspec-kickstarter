@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    rspec-kickstarter (1.1.0)
+    rspec-jumpstart (1.1.1)
 
 GEM
   remote: https://rubygems.org/
@@ -111,7 +111,7 @@ DEPENDENCIES
   guard-rspec
   guard-rubocop
   rspec
-  rspec-kickstarter!
+  rspec-jumpstart!
   rubocop-rspec!
   simplecov
 
