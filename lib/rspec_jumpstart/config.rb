@@ -2,7 +2,7 @@
 
 require 'singleton'
 
-module RSpecKickstarter
+module RSpecJumpstart
   # Global configuration affecting all threads.
   class Config
     include Singleton

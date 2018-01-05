@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'erb'
-require 'rspec_kickstarter'
+require 'rspec_jumpstart'
 
 #
 # ERB templates
 #
-module RSpecKickstarter
+module RSpecJumpstart
   module ERBTemplates
 
     BASIC_METHODS_PART_TEMPLATE = <<~SPEC

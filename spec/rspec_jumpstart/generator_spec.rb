@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rspec_kickstarter/generator'
+require 'rspec_jumpstart/generator'
 
-RSpec.describe RSpecKickstarter::Generator do
+RSpec.describe RSpecJumpstart::Generator do
 
   let(:generator) { described_class.new('tmp/spec') }
 
@@ -152,7 +152,7 @@ RSpec.describe RSpecKickstarter::Generator do
     end
   end
 
-  class CannotExtractTargetClass < RSpecKickstarter::Generator
+  class CannotExtractTargetClass < RSpecJumpstart::Generator
     def extract_target_class_or_module(*)
       nil
     end
@@ -161,22 +161,22 @@ RSpec.describe RSpecKickstarter::Generator do
   describe '#write_spec' do
 
     it 'just works' do
-      file_path = 'lib/rspec_kickstarter.rb'
+      file_path = 'lib/rspec_jumpstart.rb'
       generator.write_spec(file_path)
     end
 
     it 'works with -f option' do
-      file_path = 'lib/rspec_kickstarter.rb'
+      file_path = 'lib/rspec_jumpstart.rb'
       generator.write_spec(file_path, true)
     end
 
     it 'works with -n option' do
-      file_path = 'lib/rspec_kickstarter.rb'
+      file_path = 'lib/rspec_jumpstart.rb'
       generator.write_spec(file_path, false, true)
     end
 
     it 'works with no target class' do
-      file_path = 'lib/rspec_kickstarter.rb'
+      file_path = 'lib/rspec_jumpstart.rb'
       CannotExtractTargetClass.new.write_spec(file_path, true)
     end
 

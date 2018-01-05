@@ -3,5 +3,5 @@
 current_dir=`dirname $0`
 cd ${current_dir}
 
-ruby -I ./lib ./bin/rspec-kickstarter $@
+ruby -I ./lib ./bin/rspec-jumpstart $@
 

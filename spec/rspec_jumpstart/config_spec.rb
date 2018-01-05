@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rspec_kickstarter/config'
+require 'rspec_jumpstart/config'
 
-module RSpecKickstarter
+module RSpecJumpstart
   ::RSpec.describe Config do
     describe '.instance' do
       it 'returns the singleton instance' do

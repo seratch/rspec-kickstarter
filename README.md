@@ -1,28 +1,27 @@
-# rspec-kickstarter
+# rspec-jumpstart
 
 RSpec 3 code generator toward existing Ruby code. This gem will help you working on existing legacy code which has no tests.
 
-[![Build Status](https://travis-ci.org/seratch/rspec-kickstarter.png)](https://travis-ci.org/seratch/rspec-kickstarter)
-[![Coverage Status](https://coveralls.io/repos/seratch/rspec-kickstarter/badge.png)](https://coveralls.io/r/seratch/rspec-kickstarter)
-[![Code Climate](https://codeclimate.com/github/seratch/rspec-kickstarter.png)](https://codeclimate.com/github/seratch/rspec-kickstarter)
+[![Build Status](https://travis-ci.org/tjchambers/rspec-jumpstart.png)](https://travis-ci.org/tjchambers/rspec-jumpstart)
+[![Code Climate](https://codeclimate.com/github/tjchambers/rspec-jumpstart.png)](https://codeclimate.com/github/tjchambers/rspec-jumpstart)
 
 ## Installation
 
-https://rubygems.org/gems/rspec-kickstarter
+https://rubygems.org/gems/rspec-jumpstart
 
-    gem install rspec-kickstarter
+    gem install rspec-jumpstart
 
 ## Usage
 
-    rspec-kickstarter ./app
-    rspec-kickstarter ./lib
-    rspec-kickstarter ./lib/yourapp/util.rb
+    rspec-jumpstart ./app
+    rspec-jumpstart ./lib
+    rspec-jumpstart ./lib/yourapp/util.rb
 
 ## Options
 
 ```
-$ rspec-kickstarter -h
-Usage: rspec-kickstarter [options]
+$ rspec-jumpstart -h
+Usage: rspec-jumpstart [options]
     -f                               Create if absent or append to the existing spec
         --force
     -n                               Dry run mode (shows generated code to console)
@@ -62,10 +61,10 @@ module Foo
 end
 ```
 
-OK, run `rspec-kickstarter` now!
+OK, run `rspec-jumpstart` now!
 
 ```sh
-$ rspec-kickstarter lib/foo/bar_baz.rb
+$ rspec-jumpstart lib/foo/bar_baz.rb
 ./spec/foo/bar_baz_spec.rb created.
 ```
 
@@ -130,7 +129,7 @@ end
 
 Execute command.
 
-`rspec-kickstarter -f lib/foo/bar_baz.rb`
+`rspec-jumpstart -f lib/foo/bar_baz.rb`
 
 The following code will be appended.
 
@@ -149,10 +148,10 @@ The following code will be appended.
 
 ## Rails mode
 
-In Rails mode, rspec-kickstarter generates Rails way spec code for controllers and helpers.
+In Rails mode, rspec-jumpstart generates Rails way spec code for controllers and helpers.
 
 ```
-$ rspec-kickstarter -r app/controllers/root_controller.rb
+$ rspec-jumpstart -r app/controllers/root_controller.rb
 ```
 
 Output for scaffold:
@@ -229,14 +228,18 @@ end
 Try the template_samples.
 
 ```
-ruby -Ilib bin/rspec-kickstarter --delta-template=samples/delta_template.erb --full-template=samples/full_template.erb lib/foo.rb -n
+ruby -Ilib bin/rspec-jumpstart --delta-template=samples/delta_template.erb --full-template=samples/full_template.erb lib/foo.rb -n
 ```
 
-When you use customized templates for your apps, `gem install rspec-kickstarter` and do like this:
+When you use customized templates for your apps, `gem install rspec-jumpstart` and do like this:
 
 ```
-rspec-kickstarter lib -D misc/delta_template.erb -F misc/full_template.erb
+rspec-jumpstart lib -D misc/delta_template.erb -F misc/full_template.erb
 ```
+
+## Original work
+
+Many thanks to Kazuhiro Sera for rspec-kickstarter. 
 
 ## RubyKaigi 2013
 
@@ -262,9 +265,9 @@ ToFactory is a FactoryGirl's factories code generator for existing projects.
 
 ## License
 
-Copyright (c) 2013 - Kazuhiro Sera
+Copyright (c) 2018 - Tim Chambers
 
 MIT License
 
-https://github.com/seratch/rspec-kickstarter/blob/master/LICENSE.txt
+https://github.com/tjchambers/rspec-jumpstart/blob/master/LICENSE.txt
 

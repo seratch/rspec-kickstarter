@@ -3,6 +3,6 @@
 #
 # Gem version
 #
-module RSpecKickstarter
+module RSpecJumpstart
   VERSION = '1.1.1'
 end
