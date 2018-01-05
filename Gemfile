@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'rspec'
+gem 'rake'
 
 gem 'guard', require: false
 gem 'guard-rspec', require: false
