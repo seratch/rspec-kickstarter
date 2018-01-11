@@ -80,7 +80,7 @@ end
 generator = RSpecJumpstart::Generator.new(spec_dir, delta_template, full_template)
 
 files = Dir.glob(dir_or_file)
-files -= Dir.glob(exc_spec_dir)
+files -= Dir.glob(exc_spec_dir) if exc_spec_dir
 
 files.each do |file_path|
   generator.write_spec(file_path, force_write, dry_run, rails_mode)
