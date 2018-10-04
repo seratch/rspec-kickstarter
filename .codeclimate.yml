@@ -1,35 +1,20 @@
 ---
-exclude_paths:
-  - config/application.rb
-  - vendor/**/*
-  - log/**/*
-  - tmp/**/*
-  - test/**/*
-  - factories/**/*
-
-languages:
-  Ruby: true
-
-ratings:
-  paths:
-    - app/** 
-
-engines:
-   rubocop:
+version: "2"
+plugins:
+  rubocop:
     enabled: true
     #checks:
     # Rubocop/Metrics/ClassLength:
     #   enabled: false
-  brakeman:
-    enabled: true
-    #exclude_fingerprints:
-    #- 08c185b3f764f262539a1f76997d3a89
-  bundler-audit:
-    enabled: true
-  markdownlint:
-    enabled: true
   duplication:
     enabled: true
     config:
       languages:
       - ruby
+exclude_patterns:
+- config/application.rb
+- vendor/**/*
+- log/**/*
+- tmp/**/*
+- test/**/*
+- factories/**/*
