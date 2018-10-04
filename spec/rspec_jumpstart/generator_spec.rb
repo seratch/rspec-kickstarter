@@ -184,10 +184,10 @@ RSpec.describe RSpecJumpstart::Generator do
       FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
       FileUtils.mkdir_p('tmp/spec')
 
-      code = <<~CODE
-        class Foo
-          def hello; 'aaa'; end
-        end
+      code = <<-CODE
+  class Foo
+    def hello; 'aaa'; end
+  end
 CODE
       FileUtils.mkdir_p('tmp/lib')
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code) }
@@ -200,10 +200,10 @@ CODE
       FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
       FileUtils.mkdir_p('tmp/spec')
 
-      code = <<~CODE
-        class Foo
-          def hello; 'aaa'; end
-        end
+      code = <<-CODE
+  class Foo
+    def hello; 'aaa'; end
+  end
 CODE
       FileUtils.mkdir_p('tmp/lib')
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code) }
@@ -213,11 +213,11 @@ CODE
       orig_size = File.size('tmp/spec/tmp/lib/foo_spec.rb')
       expect(orig_size).to be > 0
 
-      code2 = <<~CODE
-        class Foo
-          def hello; 'aaa'; end
-          def bye?; true; end
-        end
+      code2 = <<-CODE
+  class Foo
+    def hello; 'aaa'; end
+    def bye?; true; end
+  end
 CODE
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code2) }
       generator.write_spec('tmp/lib/foo.rb', true, true)
@@ -226,12 +226,12 @@ CODE
       new_size = File.size('tmp/spec/tmp/lib/foo_spec.rb')
       expect(new_size).to be > orig_size
 
-      code2 = <<~CODE
-        class Foo
-          def initialize; end
-          def hello; 'aaa'; end
-          def bye?; true; end
-        end
+      code2 = <<-CODE
+  class Foo
+    def initialize; end
+    def hello; 'aaa'; end
+    def bye?; true; end
+  end
 CODE
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code2) }
       generator.write_spec('tmp/lib/foo.rb', true, true)
@@ -245,10 +245,10 @@ CODE
       FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
       FileUtils.mkdir_p('tmp/spec')
 
-      code = <<~CODE
-        class Foo
-          def hello; 'aaa'; end
-        end
+      code = <<-CODE
+  class Foo
+    def hello; 'aaa'; end
+  end
 CODE
       FileUtils.mkdir_p('tmp/lib')
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code) }
@@ -256,11 +256,11 @@ CODE
       generator.delta_template = 'sample/delta_template.erb'
       generator.write_spec('tmp/lib/foo.rb')
 
-      code2 = <<~CODE
-        class Foo
-          def hello; 'aaa'; end
-          def bye; 'aaa'; end
-        end
+      code2 = <<-CODE
+  class Foo
+    def hello; 'aaa'; end
+    def bye; 'aaa'; end
+  end
 CODE
       File.open('tmp/lib/foo.rb', 'w') { |f| f.write(code2) }
       generator.write_spec('tmp/lib/foo.rb', true, true)
@@ -272,10 +272,10 @@ CODE
       FileUtils.rm_rf('tmp/lib') if File.exist?('tmp/lib')
       FileUtils.mkdir_p('tmp/spec')
 
-      code = <<~CODE
-        class Foo::Bar < Foo
-          def hello; 'aaa'; end
-        end
+      code = <<-CODE
+  class Foo::Bar < Foo
+    def hello; 'aaa'; end
+  end
 CODE
       FileUtils.mkdir_p('tmp/lib/foo')
       File.open('tmp/lib/foo/bar.rb', 'w') { |f| f.write(code) }
@@ -283,11 +283,11 @@ CODE
       generator.delta_template = 'sample/delta_template.erb'
       generator.write_spec('tmp/lib/foo/bar.rb')
 
-      code2 = <<~CODE
-        class Foo::Bar < Foo
-          def hello; 'aaa'; end
-          def bye; 'aaa'; end
-        end
+      code2 = <<-CODE
+  class Foo::Bar < Foo
+    def hello; 'aaa'; end
+    def bye; 'aaa'; end
+  end
 CODE
 
       FileUtils.rm_rf('tmp/lib') if File.exist?('tmp/lib')
@@ -301,23 +301,23 @@ CODE
       FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
       FileUtils.mkdir_p('tmp/spec')
 
-      code = <<~CODE
-        class FooModel
-          scope :test_scope, -> { where(nil) }
-        end
+      code = <<-CODE
+  class FooModel
+    scope :test_scope, -> { where(nil) }
+  end
 CODE
       FileUtils.mkdir_p('tmp/app/models')
       File.open('tmp/app/models/foo_model.rb', 'w') { |f| f.write(code) }
       generator.write_spec('tmp/app/models/foo_model.rb', true, false, true)
 
-      code = <<~CODE
-        class FooModel
-          scope :test_scope, -> { where(nil) }
-          scope :test_scope1, -> { where(nil) }
+      code = <<-CODE
+  class FooModel
+    scope :test_scope, -> { where(nil) }
+    scope :test_scope1, -> { where(nil) }
 
-          def foo
-          end
-        end
+    def foo
+    end
+  end
 CODE
       File.open('tmp/app/models/foo_model.rb', 'w') { |f| f.write(code) }
       puts generator.write_spec('tmp/app/models/foo_model.rb', true, false, true)
@@ -327,19 +327,19 @@ CODE
       FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
       FileUtils.mkdir_p('tmp/spec')
 
-      code = <<~CODE
-        class FooController
-        end
+      code = <<-CODE
+  class FooController
+  end
 CODE
       FileUtils.mkdir_p('tmp/app/controllers')
       File.open('tmp/app/controllers/foo_controller.rb', 'w') { |f| f.write(code) }
       generator.write_spec('tmp/app/controllers/foo_controller.rb', true, false, true)
 
-      code = <<~CODE
-        class FooController
-          def foo
-          end
-        end
+      code = <<-CODE
+  class FooController
+    def foo
+    end
+  end
 CODE
       File.open('tmp/app/controllers/foo_controller.rb', 'w') { |f| f.write(code) }
       generator.write_spec('tmp/app/controllers/foo_controller.rb', true, false, true)
@@ -349,19 +349,19 @@ CODE
       FileUtils.rm_rf('tmp/spec') if File.exist?('tmp/spec')
       FileUtils.mkdir_p('tmp/spec')
 
-      code = <<~CODE
-        class FooHelper
-        end
+      code = <<-CODE
+  class FooHelper
+  end
 CODE
       FileUtils.mkdir_p('tmp/app/helpers')
       File.open('tmp/app/helpers/foo_helper.rb', 'w') { |f| f.write(code) }
       generator.write_spec('tmp/app/helpers/foo_helper.rb', true, false, true)
 
-      code = <<~CODE
-        class FooHelper
-          def foo
-          end
-        end
+      code = <<-CODE
+  class FooHelper
+    def foo
+    end
+  end
 CODE
       File.open('tmp/app/helpers/foo_helper.rb', 'w') { |f| f.write(code) }
       generator.write_spec('tmp/app/helpers/foo_helper.rb', true, false, true)

@@ -51,34 +51,34 @@ module RSpecJumpstart
 
     def get_rails_controller_template(is_full)
       if is_full
-        RSpecJumpstart::ERBTemplates::RAILS_CONTROLLER_NEW_SPEC_TEMPLATE
-      else
-        RSpecJumpstart::ERBTemplates::RAILS_CONTROLLER_METHODS_PART_TEMPLATE
+        return RSpecJumpstart::ERBTemplates::RAILS_CONTROLLER_NEW_SPEC_TEMPLATE
       end
+
+      RSpecJumpstart::ERBTemplates::RAILS_CONTROLLER_METHODS_PART_TEMPLATE
     end
 
     def get_rails_model_template(is_full)
       if is_full
-        RSpecJumpstart::ERBTemplates::RAILS_MODEL_NEW_SPEC_TEMPLATE
-      else
-        RSpecJumpstart::ERBTemplates::RAILS_MODEL_METHODS_PART_TEMPLATE
+        return RSpecJumpstart::ERBTemplates::RAILS_MODEL_NEW_SPEC_TEMPLATE
       end
+
+      RSpecJumpstart::ERBTemplates::RAILS_MODEL_METHODS_PART_TEMPLATE
     end
 
     def get_rails_helper_template(is_full)
       if is_full
-        RSpecJumpstart::ERBTemplates::RAILS_HELPER_NEW_SPEC_TEMPLATE
-      else
-        RSpecJumpstart::ERBTemplates::RAILS_HELPER_METHODS_PART_TEMPLATE
+        return RSpecJumpstart::ERBTemplates::RAILS_HELPER_NEW_SPEC_TEMPLATE
       end
+
+      RSpecJumpstart::ERBTemplates::RAILS_HELPER_METHODS_PART_TEMPLATE
     end
 
     def get_basic_template(is_full)
       if is_full
-        RSpecJumpstart::ERBTemplates::BASIC_NEW_SPEC_TEMPLATE
-      else
-        RSpecJumpstart::ERBTemplates::BASIC_METHODS_PART_TEMPLATE
+        return RSpecJumpstart::ERBTemplates::BASIC_NEW_SPEC_TEMPLATE
       end
+
+      RSpecJumpstart::ERBTemplates::BASIC_METHODS_PART_TEMPLATE
     end
 
   end

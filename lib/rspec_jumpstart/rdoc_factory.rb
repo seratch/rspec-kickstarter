@@ -26,20 +26,11 @@ module RSpecJumpstart
     #
     def self.get_ruby_parser(file_path)
       top_level = RDoc::TopLevel.new(file_path)
-      if RUBY_VERSION.to_f < 2.0
-        # reset is removed since 2.0
-        RDoc::TopLevel.reset
-      end
 
-      # RDoc::Stats initialization
-      if defined?(RDoc::Store)
-        # RDoc 4.0.0 requires RDoc::Store internally.
-        store = RDoc::Store.new
-        top_level.store = store
-        stats = RDoc::Stats.new(store, 1)
-      else
-        stats = RDoc::Stats.new(1)
-      end
+      # RDoc 4.0.0 requires RDoc::Store internally.
+      store           = RDoc::Store.new
+      top_level.store = store
+      stats           = RDoc::Stats.new(store, 1)
 
       RDoc::Parser::Ruby.new(
         top_level,
@@ -55,15 +46,13 @@ module RSpecJumpstart
     #
     def self.extract_target_class_or_module(top_level)
       c = top_level.classes.first
-      if c.nil?
-        m = top_level.modules.first
-        if m.nil?
-          top_level.is_a?(RDoc::NormalModule) ? top_level : nil
-        else
-          extract_target_class_or_module(m)
-        end
+      return c if c
+
+      m = top_level.modules.first
+      if m.nil?
+        top_level.is_a?(RDoc::NormalModule) ? top_level : nil
       else
-        c
+        extract_target_class_or_module(m)
       end
     end
 

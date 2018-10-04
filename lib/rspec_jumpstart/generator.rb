@@ -39,7 +39,7 @@ module RSpecJumpstart
         else
           puts red("#{file_path} skipped (Class/Module not found).")
         end
-      rescue Exception => e
+      rescue StandardError => e
         puts red("#{file_path} aborted - #{e.message}")
       end
 
@@ -80,10 +80,11 @@ module RSpecJumpstart
     # e.g. "lib/foo/bar_baz.rb" -> "spec/foo/bar_baz_spec.rb"
     #
     def get_spec_path(file_path)
-      spec_dir + '/' + file_path.
-        gsub(/^\.\//, '').
-        gsub(%r{^(lib/)|(app/)}, '').
-        sub(/\.rb$/, '_spec.rb')
+      spec_dir + '/' +
+        file_path
+          .gsub(/^\.\//, '')
+          .gsub(%r{^(lib/)|(app/)}, '')
+          .sub(/\.rb$/, '_spec.rb')
     end
 
     #
@@ -213,7 +214,7 @@ module RSpecJumpstart
 
     def skip?(text)
       RSpecJumpstart.config.behaves_like_exclusions.each do |exclude_pattern|
-          return true if text.match(exclude_pattern)
+        return true if text.match(exclude_pattern)
       end
 
       false
@@ -232,16 +233,14 @@ module RSpecJumpstart
     #     bar_baz = BarBaz.new(a, b)
     #
     def get_instantiation_code(c, method)
-      if method.singleton
-        ''
+      return '' if method.singleton
+
+      constructor = c.method_list.find { |m| m.name == 'new' }
+      if constructor.nil?
+        "      #{instance_name(c)} = described_class.new\n"
       else
-        constructor = c.method_list.find { |m| m.name == 'new' }
-        if constructor.nil?
-          "      #{instance_name(c)} = described_class.new\n"
-        else
-          get_params_initialization_code(constructor) +
-            "      #{instance_name(c)} = described_class.new#{to_params_part(constructor.params)}\n"
-        end
+        get_params_initialization_code(constructor) +
+          "      #{instance_name(c)} = described_class.new#{to_params_part(constructor.params)}\n"
       end
     end
 
@@ -277,11 +276,9 @@ module RSpecJumpstart
     # e.g. { |a, b| }
     #
     def get_block_code(method)
-      if method.block_params.nil? || method.block_params.empty?
-        ''
-      else
-        " { |#{method.block_params}| }"
-      end
+      return '' if method.block_params.nil? || method.block_params.empty?
+
+      " { |#{method.block_params}| }"
     end
 
     def get_rails_http_method(method_name)
