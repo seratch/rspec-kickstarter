@@ -3,7 +3,7 @@
 RSpec 3 code generator toward existing Ruby code. This gem will help you working on existing legacy code which has no tests.
 
 [![Build Status](https://travis-ci.org/tjchambers/rspec-jumpstart.png)](https://travis-ci.org/tjchambers/rspec-jumpstart)
-[![Code Climate](https://codeclimate.com/github/tjchambers/rspec-jumpstart.png)](https://codeclimate.com/github/tjchambers/rspec-jumpstart)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f4a2577cd12ddb9c75ff/maintainability)](https://codeclimate.com/github/tjchambers/rspec-jumpstart/maintainability)
 
 ## Installation
 
