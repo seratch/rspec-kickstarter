@@ -269,5 +269,5 @@ Copyright (c) 2018 - Tim Chambers
 
 MIT License
 
-https://github.com/tjchambers/rspec-jumpstart/blob/master/LICENSE.txt
+https://github.com/hintmedia/rspec-jumpstart/blob/master/LICENSE.txt
 
