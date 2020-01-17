@@ -191,14 +191,20 @@ module RSpecJumpstart
         # rubocop:enable Lint/UselessAssignment
 
         erb             = RSpecJumpstart::ERBFactory.new(@delta_template).get_instance_for_appending(rails_mode, spec_path)
-        additional_spec = erb.result(binding)
+        additional_spec = erb.result(binding).strip
 
         last_end_not_found = true
         code               = existing_spec.split("\n").reverse.reject do |line|
           before_modified    = last_end_not_found
           last_end_not_found = line.gsub(/#.+$/, '').strip != 'end' if before_modified
           before_modified
-        end.reverse.join("\n") + "\n" + additional_spec + "\nend\n"
+        end.reverse.join("\n")
+
+        unless additional_spec.empty?
+          code += "\n" + additional_spec + "\n"
+        end
+
+        code += "\nend\n"
 
         if dry_run
           puts "----- #{spec_path} -----"
