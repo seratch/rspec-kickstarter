@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'rspec_jumpstart/generator'
-require 'rspec_jumpstart/config'
-require 'rspec_jumpstart/version'
+require "rspec_jumpstart/generator"
+require "rspec_jumpstart/config"
+require "rspec_jumpstart/version"
 
 #
 # RSpecJumpstart Facade
@@ -23,7 +23,7 @@ module RSpecJumpstart
     end
   end
 
-  def self.write_spec(file_path, spec_dir = './spec', force_write = false, dry_run = false)
+  def self.write_spec(file_path, spec_dir = "./spec", force_write: false, dry_run: false)
     generator = RSpecJumpstart::Generator.new(spec_dir)
     generator.write_spec(file_path, force_write, dry_run)
   end

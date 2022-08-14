@@ -2,32 +2,26 @@ require: rubocop-rspec
 
 AllCops:
   # Include gemspec and Rakefile
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.6
   Include:
     - '**/*.rb'
   Exclude:
     - 'bin/**/*'
-    - 'tmp/**/*' 
+    - 'tmp/**/*'
     - 'vendor/**/*'
     - 'Guardfile'
-
-AsciiComments:
-  Enabled: false
 
 Metrics/ClassLength:
   Max: 200
 
 Metrics/CyclomaticComplexity:
-  Max: 8 
+  Max: 8
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 
 Metrics/MethodLength:
   Max: 80
-
-Style/AsciiComments:
-  Enabled: false
 
 # Respect RubyMine formatter
 Layout/CaseIndentation:
@@ -35,6 +29,9 @@ Layout/CaseIndentation:
 
 Style/Documentation:
   Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
 
 Layout/DotPosition:
   EnforcedStyle: trailing
@@ -58,12 +55,8 @@ Style/SymbolProc:
   Enabled: false
 
 # Final newline missing.
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Enabled: false
-
-TrivialAccessors:
-  Enabled: true
-  ExactNameMatch: true
 
 Layout/SpaceInsideBlockBraces:
   Enabled: false
@@ -74,14 +67,11 @@ Style/MultilineBlockChain:
 Style/NumericLiterals:
   Enabled: false
 
-Layout/AlignArray:
+Layout/ArrayAlignment:
   Enabled: false
 
 # Do not prefix writer method names with set_
-Layout/AccessorMethodName:
-  Enabled: false
-
-Rails/Output:
+Naming/AccessorMethodName:
   Enabled: false
 
 Layout/MultilineOperationIndentation:

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'singleton'
+require "singleton"
 
 module RSpecJumpstart
   # Global configuration affecting all threads.

@@ -1,7 +1,7 @@
 <%- methods_to_generate.map { |method| %>
   # TODO auto-generated
-  describe '#<%= method.name %>' do
-    it 'works' do
+  describe "#<%= method.name %>" do
+    it "works" do
       result = <%= get_rails_helper_method_invocation_code(method) %>
 
       expect(result).not_to be_nil

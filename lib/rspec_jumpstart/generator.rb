@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'rdoc'
-require 'rspec_jumpstart'
-require 'rspec_jumpstart/erb_factory'
-require 'rspec_jumpstart/erb_templates'
-require 'rspec_jumpstart/rdoc_factory'
+require "rdoc"
+require "rspec_jumpstart"
+require "rspec_jumpstart/erb_factory"
+require "rspec_jumpstart/erb_templates"
+require "rspec_jumpstart/rdoc_factory"
 
 #
 # RSpec Code Generator
@@ -15,8 +15,8 @@ module RSpecJumpstart
 
     attr_accessor :spec_dir, :delta_template, :full_template
 
-    def initialize(spec_dir = './spec', delta_template = nil, full_template = nil)
-      @spec_dir       = spec_dir.gsub(/\/$/, '')
+    def initialize(spec_dir = "./spec", delta_template = nil, full_template = nil)
+      @spec_dir       = spec_dir.gsub(%r{/$}, "")
       @delta_template = delta_template
       @full_template  = full_template
     end
@@ -24,9 +24,9 @@ module RSpecJumpstart
     #
     # Writes new spec or appends to the existing spec.
     #
-    def write_spec(file_path, force_write = false, dry_run = false, rails_mode = false)
+    def write_spec(file_path, force_write: false, dry_run: false, rails_mode: false)
       begin
-        code            = ''
+        code            = ""
         class_or_module = RSpecJumpstart::RDocFactory.get_rdoc_class_or_module(file_path)
         if class_or_module
           spec_path = get_spec_path(file_path)
@@ -58,21 +58,21 @@ module RSpecJumpstart
     end
 
     def to_string_namespaced_path(self_path)
-      path = self_path.split('/').map { |x| camelize(x) }[1..-2].uniq.join('::')
-      path.empty? ? '' : path + '::'
+      path = self_path.split("/").map { |x| camelize(x) }[1..-2].uniq.join("::")
+      path.empty? ? "" : "#{path}::"
     end
 
     def to_string_namespaced_path_whole(self_path)
       self_path.
-        sub('.rb', '').
-        split('/').
-        map { |x| camelize(x) }[2..-1].
+        sub(".rb", "").
+        split("/").
+        map { |x| camelize(x) }[2..].
         uniq.
-        join('::')
+        join("::")
     end
 
     def decorated_name(method)
-      (method.singleton ? '.' : '#') + method.name
+      (method.singleton ? "." : "#") + method.name
     end
 
     #
@@ -80,11 +80,8 @@ module RSpecJumpstart
     # e.g. "lib/foo/bar_baz.rb" -> "spec/foo/bar_baz_spec.rb"
     #
     def get_spec_path(file_path)
-      spec_dir + '/' +
-        file_path
-          .gsub(/^\.\//, '')
-          .gsub(%r{^(lib/)|(app/)}, '')
-          .sub(/\.rb$/, '_spec.rb')
+      "#{spec_dir}/" \
+        "#{file_path.gsub(%r{^\./}, '').gsub(%r{^(lib/)|(app/)}, '').sub(/\.rb$/, '_spec.rb')}"
     end
 
     #
@@ -92,19 +89,19 @@ module RSpecJumpstart
     # e.g. "lib/foo/bar_baz.rb" -> "foo/bar_baz"
     #
     def to_string_value_to_require(file_path)
-      file_path.gsub(%r{^(lib/)|(app/)}, '').gsub(/\.rb$/, '')
+      file_path.gsub(%r{^(lib/)|(app/)}, "").gsub(/\.rb$/, "")
     end
 
     #
     # Returns snake_case name.
     # e.g. FooBar -> "foo_bar"
     #
-    def instance_name(c)
-      c.name.
-        gsub(/::/, '/').
+    def instance_name(klass)
+      klass.name.
+        gsub(/::/, "/").
         gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').
         gsub(/([a-z\d])([A-Z])/, '\1_\2').
-        tr('-', '_').
+        tr("-", "_").
         downcase
     end
 
@@ -115,8 +112,8 @@ module RSpecJumpstart
     #
     def to_param_names_array(params)
       params.
-        split(',').
-        map { |p| p.gsub(/[()\s]/, '').gsub(/=.+$/, '') }.
+        split(",").
+        map { |p| p.gsub(/[()\s]/, "").gsub(/=.+$/, "") }.
         reject { |p| p.nil? || p.empty? }
     end
 
@@ -126,8 +123,8 @@ module RSpecJumpstart
     # e.g. [] -> ""
     #
     def to_params_part(params)
-      param_csv = to_param_names_array(params).join(', ')
-      param_csv.empty? ? '' : "(#{param_csv})"
+      param_csv = to_param_names_array(params).join(", ")
+      param_csv.empty? ? "" : "(#{param_csv})"
     end
 
     #
@@ -140,11 +137,9 @@ module RSpecJumpstart
       scope_methods_to_generate = scopes(class_or_module, file_path, spec_path)
       c                         = class_or_module
       self_path                 = to_string_value_to_require(file_path)
-      # rubocop:enable Lint/UselessAssignment
-
       erb  = RSpecJumpstart::ERBFactory.
-        new(@full_template).
-        get_instance_for_new_spec(rails_mode, file_path)
+             new(@full_template).
+             get_instance_for_new_spec(rails_mode, file_path)
       code = erb.result(binding)
 
       if dry_run
@@ -154,7 +149,7 @@ module RSpecJumpstart
         # puts yellow("#{spec_path} already exists.")
       else
         FileUtils.mkdir_p(File.dirname(spec_path))
-        File.open(spec_path, 'w') { |f| f.write(code) }
+        File.open(spec_path, "w") { |f| f.write(code) }
         puts green("#{spec_path} created.")
       end
 
@@ -163,7 +158,7 @@ module RSpecJumpstart
 
     def public_methods_found(class_or_module)
       class_or_module.method_list.select do |m|
-        m.visibility.equal?(:public) && m.name != 'new'
+        m.visibility.equal?(:public) && m.name != "new"
       end
     end
 
@@ -178,42 +173,41 @@ module RSpecJumpstart
       if skip?(existing_spec)
         return
       end
+
       lacking_methods = public_methods_found(class_or_module).
-        reject { |m| existing_spec.match(signature(m)) }
+                        reject { |m| existing_spec.match(signature(m)) }
 
       scope_methods_to_generate = scopes(class_or_module, file_path, spec_path)
-      if lacking_methods.empty? && scope_methods_to_generate.empty?
-        # puts yellow("#{spec_path} skipped.")
-      else
-        # These names are used in ERB template, don't delete.
-        methods_to_generate = lacking_methods
-        c                   = class_or_module
-        # rubocop:enable Lint/UselessAssignment
+      return if lacking_methods.empty? && scope_methods_to_generate.empty?
 
-        erb             = RSpecJumpstart::ERBFactory.new(@delta_template).get_instance_for_appending(rails_mode, spec_path)
-        additional_spec = erb.result(binding).strip
+      # These names are used in ERB template, don't delete.
+      methods_to_generate = lacking_methods
+      c                   = class_or_module
+      erb = RSpecJumpstart::ERBFactory.
+            new(@delta_template).
+            get_instance_for_appending(rails_mode, spec_path)
+      additional_spec = erb.result(binding).strip
 
-        last_end_not_found = true
-        code               = existing_spec.split("\n").reverse.reject do |line|
-          before_modified    = last_end_not_found
-          last_end_not_found = line.gsub(/#.+$/, '').strip != 'end' if before_modified
-          before_modified
-        end.reverse.join("\n")
+      last_end_not_found = true
+      code               = existing_spec.split("\n").reverse.reject do |line|
+        before_modified    = last_end_not_found
+        last_end_not_found = line.gsub(/#.+$/, "").strip != "end" if before_modified
+        before_modified
+      end.reverse.join("\n")
 
-        unless additional_spec.empty?
-          code += "\n" + additional_spec + "\n"
-        end
-
-        code += "\nend\n"
-
-        if dry_run
-          puts "----- #{spec_path} -----"
-          puts code
-        else
-          File.open(spec_path, 'w') { |f| f.write(code) }
-        end
-        puts green("#{spec_path} modified.")
+      unless additional_spec.empty?
+        code += "\n#{additional_spec}\n"
       end
+
+      code += "\nend\n"
+
+      if dry_run
+        puts "----- #{spec_path} -----"
+        puts code
+      else
+        File.open(spec_path, "w") { |f| f.write(code) }
+      end
+      puts green("#{spec_path} modified.")
 
       code
     end
@@ -238,15 +232,15 @@ module RSpecJumpstart
     #     b = double('b')
     #     bar_baz = BarBaz.new(a, b)
     #
-    def get_instantiation_code(c, method)
-      return '' if method.singleton
+    def get_instantiation_code(klass, method)
+      return "" if method.singleton
 
-      constructor = c.method_list.find { |m| m.name == 'new' }
+      constructor = klass.method_list.find { |m| m.name == "new" }
       if constructor.nil?
-        "      #{instance_name(c)} = described_class.new\n"
+        "      #{instance_name(klass)} = described_class.new\n"
       else
         get_params_initialization_code(constructor) +
-          "      #{instance_name(c)} = described_class.new#{to_params_part(constructor.params)}\n"
+          "      #{instance_name(klass)} = described_class.new#{to_params_part(constructor.params)}\n"
       end
     end
 
@@ -257,17 +251,17 @@ module RSpecJumpstart
     #
     def get_params_initialization_code(method)
       code = to_param_names_array(method.params).map do |p|
-        x = p.sub('*', '').sub('&', '')
+        x = p.sub("*", "").sub("&", "")
         "      #{x} = double('#{x}')" unless x.empty?
       end.compact.join("\n")
-      code.empty? ? '' : "#{code}\n"
+      code.empty? ? "" : "#{code}\n"
     end
 
     #
     # e.g. BarBaz.do_something(a, b) { |c| }
     #
-    def get_method_invocation_code(c, method)
-      target = method.singleton ? 'described_class' : instance_name(c)
+    def get_method_invocation_code(klass, method)
+      target = method.singleton ? "described_class" : instance_name(klass)
       "#{target}.#{method.name}#{to_params_part(method.params)}#{get_block_code(method)}"
     end
 
@@ -282,13 +276,13 @@ module RSpecJumpstart
     # e.g. { |a, b| }
     #
     def get_block_code(method)
-      return '' if method.block_params.nil? || method.block_params.empty?
+      return "" if method.block_params.nil? || method.block_params.empty?
 
       " { |#{method.block_params}| }"
     end
 
     def get_rails_http_method(method_name)
-      RAILS_RESOURCE_METHOD_AND_HTTP_METHOD[method_name] || 'get'
+      RAILS_RESOURCE_METHOD_AND_HTTP_METHOD[method_name] || "get"
     end
 
     private
@@ -300,10 +294,10 @@ module RSpecJumpstart
 
         when :vcall
           name = sexp[1][1]
-          return if name.eql?('private')
+          return if name.eql?("private")
 
         when :command
-          if sexp[1][0] == :@ident && sexp[1][1] == 'scope'
+          if sexp[1][0] == :@ident && sexp[1][1] == "scope"
             name = sexp[2][1][0][1][1][1]
             scopes << name
           end
@@ -326,15 +320,15 @@ module RSpecJumpstart
       end
     end
 
-    require 'ripper'
+    require "ripper"
 
     def scopes(_klass, file_path, spec_path)
       content      = File.read(file_path)
       spec_content = (
       begin
         File.read(spec_path)
-      rescue
-        ''
+      rescue StandardError
+        ""
       end)
       sexp         = Ripper.sexp(content)
       methods      = []
@@ -377,17 +371,17 @@ module RSpecJumpstart
     end
 
     def camelize(str)
-      str.split('_').map { |w| w.capitalize }.join
+      str.split("_").map { |w| w.capitalize }.join
     end
 
     RAILS_RESOURCE_METHOD_AND_HTTP_METHOD = {
-      'index'   => 'get',
-      'new'     => 'get',
-      'create'  => 'post',
-      'show'    => 'get',
-      'edit'    => 'get',
-      'update'  => 'patch',
-      'destroy' => 'delete'
+      "index" => "get",
+      "new" => "get",
+      "create" => "post",
+      "show" => "get",
+      "edit" => "get",
+      "update" => "patch",
+      "destroy" => "delete"
     }.freeze
 
   end

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'rdoc'
-require 'rdoc/generator'
-require 'rdoc/options'
-require 'rdoc/parser/ruby'
-require 'rdoc/stats'
-require 'rspec_jumpstart'
+require "rdoc"
+require "rdoc/generator"
+require "rdoc/options"
+require "rdoc/parser/ruby"
+require "rdoc/stats"
+require "rspec_jumpstart"
 
 #
 # RDoc instance factory

@@ -4,5 +4,5 @@
 # Gem version
 #
 module RSpecJumpstart
-  VERSION = '1.1.5'
+  VERSION = "1.1.5"
 end

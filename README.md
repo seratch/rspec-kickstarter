@@ -1,9 +1,6 @@
 # rspec-jumpstart
 
-RSpec 3 code generator toward existing Ruby code. This gem will help you working on existing legacy code which has no tests.
-
-[![Build Status](https://travis-ci.org/tjchambers/rspec-jumpstart.png)](https://travis-ci.org/tjchambers/rspec-jumpstart)
-[![Maintainability](https://api.codeclimate.com/v1/badges/f4a2577cd12ddb9c75ff/maintainability)](https://codeclimate.com/github/tjchambers/rspec-jumpstart/maintainability)
+RSpec 3 code generator for existing Ruby code. This gem will help you work on existing legacy code which has no tests.
 
 ## Installation
 
@@ -72,8 +69,7 @@ $ rspec-jumpstart lib/foo/bar_baz.rb
 
 ```ruby
 # -*- encoding: utf-8 -*-
-require 'spec_helper'
-require 'foo/bar_baz'
+require 'rails_helper'
 
 describe Foo::BarBaz do
 
@@ -148,13 +144,13 @@ The following code will be appended.
 
 ## Rails mode
 
-In Rails mode, rspec-jumpstart generates Rails way spec code for controllers and helpers.
+In Rails mode, rspec-jumpstart generates Rails style spec code for controllers and helpers.
 
 ```
 $ rspec-jumpstart -r app/controllers/root_controller.rb
 ```
 
-Output for scaffold:
+Output for scaffold controller:
 
 ```ruby
 # -*- encoding: utf-8 -*-
@@ -239,7 +235,7 @@ rspec-jumpstart lib -D misc/delta_template.erb -F misc/full_template.erb
 
 ## Original work
 
-Many thanks to Kazuhiro Sera for rspec-kickstarter. 
+Many thanks to Kazuhiro Sera for rspec-kickstarter.
 
 ## RubyKaigi 2013
 

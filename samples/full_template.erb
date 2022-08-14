@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "rails_helper"
 
 RSpec.describe <%= to_string_namespaced_path_whole(file_path) %> do
 <%= ERB.new(@delta_template, nil, '-').result(binding) -%>
 end
-

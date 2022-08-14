@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'erb'
-require 'rspec_jumpstart'
-require 'rspec_jumpstart/erb_templates'
+require "erb"
+require "rspec_jumpstart"
+require "rspec_jumpstart/erb_templates"
 
 #
 # ERB instance provider
@@ -19,7 +19,7 @@ module RSpecJumpstart
     #
     def get_instance_for_new_spec(rails_mode, target_path)
       template = get_erb_template(@custom_template, true, rails_mode, target_path)
-      ERB.new(template, nil, '-', '_new_spec_code')
+      ERB.new(template, trim_mode: "-", eoutvar: "_new_spec_code")
     end
 
     #
@@ -27,7 +27,7 @@ module RSpecJumpstart
     #
     def get_instance_for_appending(rails_mode, target_path)
       template = get_erb_template(@custom_template, false, rails_mode, target_path)
-      ERB.new(template, nil, '-', '_additional_spec_code')
+      ERB.new(template, trim_mode: "-", eoutvar: "_additional_spec_code")
     end
 
     private
@@ -36,16 +36,17 @@ module RSpecJumpstart
     # Returns ERB template
     #
     def get_erb_template(custom_template, is_full, rails_mode, target_path)
-      if custom_template
-        custom_template
-      elsif rails_mode && target_path.match(/controllers/)
+      return custom_template if custom_template
+
+      return get_basic_template(is_full) unless rails_mode
+
+      case target_path
+      when /controllers/
         get_rails_controller_template(is_full)
-      elsif rails_mode && target_path.match(/models/)
+      when /models/
         get_rails_model_template(is_full)
-      elsif rails_mode && target_path.match(/helpers/)
+      when /helpers/
         get_rails_helper_template(is_full)
-      else
-        get_basic_template(is_full)
       end
     end
 
